@@ -57,6 +57,7 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
     private fun BaseAppModuleExtension.configureApp(project: Project) {
         configureAndroid(KatanaConfiguration.PackageName)
 
+        compileOptions.isCoreLibraryDesugaringEnabled = true
         defaultConfig.applicationId = KatanaConfiguration.PackageName
         lint.abortOnError = false
 

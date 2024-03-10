@@ -34,17 +34,31 @@ import korlibs.time.locale.swedish
 import korlibs.time.locale.turkish
 import korlibs.time.locale.ukrainian
 import kotlin.jvm.JvmInline
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.DateTimeFormat.Companion.formatAsKotlinBuilderDsl
+import kotlinx.datetime.format.byUnicodePattern
 
 @JvmInline
-value class KatanaDateFormatter private constructor(private val format: String) {
-    operator fun invoke(date: Date?) = date?.format(format) ?: String.noData
-    operator fun invoke(datetime: DateTime?) = datetime?.format(format) ?: String.noData
-    operator fun invoke(datetime: DateTimeTz?) = datetime?.format(format) ?: String.noData
+value class KatanaDateFormatter private constructor(private val format: DateTimeFormat<*>) {
+
+    @Deprecated("")
+    operator fun invoke(date: Date?) = date?.format("format") ?: String.noData
+
+    @Deprecated("")
+    operator fun invoke(datetime: DateTime?) = datetime?.format("format") ?: String.noData
+
+    @Deprecated("")
+    operator fun invoke(datetime: DateTimeTz?) = datetime?.format("format") ?: String.noData
+
+    operator fun invoke(date: LocalDate?) = date?.format(format as DateTimeFormat<LocalDate>)
 
     companion object {
         val DateWithTime
             get() = with(klockLocale()) {
-                KatanaDateFormatter("$formatDateMedium - $formatTimeShort")
+                KatanaDateFormatter("${formatAsKotlinBuilderDsl(DateFormats.mediumFormat)} - $formatTimeShort")
             }
     }
 }
