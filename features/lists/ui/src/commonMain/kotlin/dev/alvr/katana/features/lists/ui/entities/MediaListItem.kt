@@ -16,8 +16,8 @@ import dev.alvr.katana.features.lists.ui.resources.entry_format_special
 import dev.alvr.katana.features.lists.ui.resources.entry_format_tv
 import dev.alvr.katana.features.lists.ui.resources.entry_format_tv_short
 import dev.alvr.katana.features.lists.ui.resources.entry_format_unknown
-import korlibs.time.Date
-import korlibs.time.DateTimeTz
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 @Immutable
 @Suppress("ComplexInterface")
@@ -34,9 +34,9 @@ internal sealed interface MediaListItem {
     val private: Boolean
     val notes: String
     val hiddenFromStatusLists: Boolean
-    val startedAt: Date?
-    val completedAt: Date?
-    val updatedAt: DateTimeTz?
+    val startedAt: LocalDate?
+    val completedAt: LocalDate?
+    val updatedAt: LocalDateTime?
 
     data class AnimeListItem(
         override val entryId: Int,
@@ -51,15 +51,15 @@ internal sealed interface MediaListItem {
         override val private: Boolean,
         override val notes: String,
         override val hiddenFromStatusLists: Boolean,
-        override val startedAt: Date?,
-        override val completedAt: Date?,
-        override val updatedAt: DateTimeTz?,
+        override val startedAt: LocalDate?,
+        override val completedAt: LocalDate?,
+        override val updatedAt: LocalDateTime?,
         val nextEpisode: NextEpisode?,
     ) : MediaListItem {
         @Stable
         data class NextEpisode(
             val number: Int,
-            val date: DateTimeTz,
+            val date: LocalDateTime,
         )
     }
 
@@ -76,9 +76,9 @@ internal sealed interface MediaListItem {
         override val private: Boolean,
         override val notes: String,
         override val hiddenFromStatusLists: Boolean,
-        override val startedAt: Date?,
-        override val completedAt: Date?,
-        override val updatedAt: DateTimeTz?,
+        override val startedAt: LocalDate?,
+        override val completedAt: LocalDate?,
+        override val updatedAt: LocalDateTime?,
         val volumesProgress: Int,
         val volumesTotal: Int?,
     ) : MediaListItem

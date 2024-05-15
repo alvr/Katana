@@ -42,7 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import dev.alvr.katana.core.common.formatters.KatanaDateFormatter
+import dev.alvr.katana.core.common.formatters.KatanaDateFormats
 import dev.alvr.katana.core.common.formatters.KatanaNumberFormatter
 import dev.alvr.katana.core.common.unknown
 import dev.alvr.katana.core.common.zero
@@ -296,7 +296,7 @@ private fun Subtitle(
             append(
                 Res.string.entry_next_episode.format(
                     nextEpisode.number,
-                    KatanaDateFormatter.DateWithTime(nextEpisode.date),
+                    KatanaDateFormats.nextEpisodeFormat(nextEpisode.date),
                 ),
             )
         }

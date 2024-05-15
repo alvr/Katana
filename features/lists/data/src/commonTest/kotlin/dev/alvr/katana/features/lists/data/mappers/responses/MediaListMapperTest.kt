@@ -31,10 +31,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.types.shouldNotBeTypeOf
-import korlibs.time.Date
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 @Suppress("LargeClass")
 internal class MediaListMapperTest : FreeSpec({
@@ -282,12 +280,9 @@ internal class MediaListMapperTest : FreeSpec({
                         private.shouldBeTrue()
                         notes shouldBe "My notes :)"
                         hiddenFromStatusLists.shouldBeTrue()
-                        startedAt.shouldNotBeNull() shouldBeEqualComparingTo Date(1999, 12, 23)
-                        completedAt.shouldNotBeNull() shouldBeEqualComparingTo Date(2009, 5, 5)
-                        updatedAt.shouldNotBeNull() shouldBeEqualComparingTo DateTimeTz.local(
-                            DateTime(2022, 4, 12, 19, 0, 0),
-                            TimezoneOffset.UTC,
-                        )
+                        startedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDate(1999, 12, 23)
+                        completedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDate(2009, 5, 5)
+                        updatedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDateTime(2022, 4, 12, 19, 0, 0)
                     }
 
                     with(entry.entry) {
@@ -301,10 +296,7 @@ internal class MediaListMapperTest : FreeSpec({
                         format shouldBe CommonMediaEntry.Format.TV
                         episodes shouldBe 23
                         with(nextEpisode.shouldNotBeNull()) {
-                            at shouldBeEqualComparingTo DateTimeTz.local(
-                                DateTime(2022, 4, 12, 19, 0, 0),
-                                TimezoneOffset.UTC,
-                            )
+                            at shouldBeEqualComparingTo LocalDateTime(2022, 4, 12, 19, 0, 0)
                             number shouldBe 13
                         }
                     }
@@ -574,12 +566,9 @@ internal class MediaListMapperTest : FreeSpec({
                         private.shouldBeTrue()
                         notes shouldBe "My notes :)"
                         hiddenFromStatusLists.shouldBeTrue()
-                        startedAt.shouldNotBeNull() shouldBeEqualComparingTo Date(1999, 12, 23)
-                        completedAt.shouldNotBeNull() shouldBeEqualComparingTo Date(2009, 5, 5)
-                        updatedAt.shouldNotBeNull() shouldBeEqualComparingTo DateTimeTz.local(
-                            DateTime(2022, 4, 12, 19, 0, 0),
-                            TimezoneOffset.UTC,
-                        )
+                        startedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDate(1999, 12, 23)
+                        completedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDate(2009, 5, 5)
+                        updatedAt.shouldNotBeNull() shouldBeEqualComparingTo LocalDateTime(2022, 4, 12, 19, 0, 0)
                     }
 
                     with(entry.entry) {

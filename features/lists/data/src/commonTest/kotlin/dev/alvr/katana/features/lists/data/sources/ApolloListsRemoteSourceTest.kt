@@ -51,10 +51,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.types.shouldNotBeTypeOf
-import korlibs.time.Date
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 @ApolloExperimental
 internal class ApolloListsRemoteSourceTest : FreeSpec() {
@@ -279,8 +277,8 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                             private.shouldBeTrue()
                             notes shouldBe "My notes :)"
                             hiddenFromStatusLists.shouldBeTrue()
-                            startedAt?.shouldBeEqualComparingTo(Date(1999, 12, 23))
-                            completedAt?.shouldBeEqualComparingTo(Date(2009, 5, 5))
+                            startedAt?.shouldBeEqualComparingTo(LocalDate(1999, 12, 23))
+                            completedAt?.shouldBeEqualComparingTo(LocalDate(2009, 5, 5))
                         }
 
                         with(entry.entry) {
@@ -294,10 +292,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                             format shouldBe CommonMediaEntry.Format.TV
                             episodes shouldBe 23
                             with(nextEpisode.shouldNotBeNull()) {
-                                at shouldBeEqualComparingTo DateTimeTz.local(
-                                    DateTime(2022, 4, 12, 19, 0, 0),
-                                    TimezoneOffset.UTC,
-                                )
+                                at shouldBeEqualComparingTo LocalDateTime(2022, 4, 12, 19, 0, 0)
                                 number shouldBe 13
                             }
                         }
@@ -543,8 +538,8 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                             private.shouldBeTrue()
                             notes shouldBe "My notes :)"
                             hiddenFromStatusLists.shouldBeTrue()
-                            startedAt?.shouldBeEqualComparingTo(Date(1999, 12, 23))
-                            completedAt?.shouldBeEqualComparingTo(Date(2009, 5, 5))
+                            startedAt?.shouldBeEqualComparingTo(LocalDate(1999, 12, 23))
+                            completedAt?.shouldBeEqualComparingTo(LocalDate(2009, 5, 5))
                         }
 
                         with(entry.entry) {

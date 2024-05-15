@@ -24,9 +24,7 @@ internal fun KotlinMultiplatformExtension.configureIos() {
 internal fun KotlinMultiplatformExtension.configureKotlin() {
     targets.configureEach {
         compilations.configureEach {
-            compileTaskProvider.configure {
-                configureKotlinCompiler()
-            }
+            compileTaskProvider.get().configureKotlinCompiler()
         }
     }
 }

@@ -7,10 +7,10 @@ import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaList
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListEntry
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
-import korlibs.time.Date
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import io.kotest.property.kotlinx.datetime.date
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 
 internal val animeListItem1 = MediaListItem.AnimeListItem(
     entryId = Int.zero,
@@ -26,9 +26,9 @@ internal val animeListItem1 = MediaListItem.AnimeListItem(
     notes = String.empty,
     hiddenFromStatusLists = false,
     nextEpisode = null,
-    startedAt = Date(Int.MAX_VALUE),
-    completedAt = Date(Int.MAX_VALUE),
-    updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+    startedAt = LocalDate(2020, 1, 20),
+    completedAt = LocalDate(2023, 1, 20),
+    updatedAt = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
 )
 
 internal val animeListItem2 = MediaListItem.AnimeListItem(
@@ -46,11 +46,11 @@ internal val animeListItem2 = MediaListItem.AnimeListItem(
     hiddenFromStatusLists = false,
     nextEpisode = MediaListItem.AnimeListItem.NextEpisode(
         number = Int.zero,
-        date = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+        date = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
     ),
-    startedAt = Date(Int.MAX_VALUE),
-    completedAt = Date(Int.MAX_VALUE),
-    updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+    startedAt = null,
+    completedAt = null,
+    updatedAt = null,
 )
 
 internal val mangaListItem1 = MediaListItem.MangaListItem(
@@ -68,9 +68,9 @@ internal val mangaListItem1 = MediaListItem.MangaListItem(
     private = false,
     notes = String.empty,
     hiddenFromStatusLists = false,
-    startedAt = Date(Int.MAX_VALUE),
-    completedAt = Date(Int.MAX_VALUE),
-    updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+    startedAt = LocalDate(2020, 1, 20),
+    completedAt = LocalDate(2023, 1, 20),
+    updatedAt = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
 )
 
 internal val mangaListItem2 = MediaListItem.MangaListItem(
@@ -88,9 +88,9 @@ internal val mangaListItem2 = MediaListItem.MangaListItem(
     private = true,
     notes = String.empty,
     hiddenFromStatusLists = false,
-    startedAt = Date(Int.MAX_VALUE),
-    completedAt = Date(Int.MAX_VALUE),
-    updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+    startedAt = null,
+    completedAt = null,
+    updatedAt = null,
 )
 
 internal val animeMediaEntry1 = MediaListEntry(
@@ -103,9 +103,9 @@ internal val animeMediaEntry1 = MediaListEntry(
         private = false,
         notes = String.empty,
         hiddenFromStatusLists = false,
-        startedAt = Date(Int.MAX_VALUE),
-        completedAt = Date(Int.MAX_VALUE),
-        updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+        startedAt = LocalDate(2020, 1, 20),
+        completedAt = LocalDate(2023, 1, 20),
+        updatedAt = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
     ),
     entry = MediaEntry.Anime(
         entry = CommonMediaEntry(
@@ -129,9 +129,9 @@ internal val animeMediaEntry2 = MediaListEntry(
         private = true,
         notes = String.empty,
         hiddenFromStatusLists = false,
-        startedAt = Date(Int.MAX_VALUE),
-        completedAt = Date(Int.MAX_VALUE),
-        updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+        startedAt = null,
+        completedAt = null,
+        updatedAt = null,
     ),
     entry = MediaEntry.Anime(
         entry = CommonMediaEntry(
@@ -143,7 +143,7 @@ internal val animeMediaEntry2 = MediaListEntry(
         episodes = null,
         nextEpisode = MediaEntry.Anime.NextEpisode(
             number = Int.zero,
-            at = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+            at = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
         ),
     ),
 )
@@ -158,9 +158,9 @@ internal val mangaMediaEntry1 = MediaListEntry(
         private = false,
         notes = String.empty,
         hiddenFromStatusLists = false,
-        startedAt = Date(Int.MAX_VALUE),
-        completedAt = Date(Int.MAX_VALUE),
-        updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+        startedAt = LocalDate(2020, 1, 20),
+        completedAt = LocalDate(2023, 1, 20),
+        updatedAt = LocalDateTime(LocalDate(2020, 1, 20), LocalTime(12, 0)),
     ),
     entry = MediaEntry.Manga(
         entry = CommonMediaEntry(
@@ -184,9 +184,9 @@ internal val mangaMediaEntry2 = MediaListEntry(
         private = true,
         notes = String.empty,
         hiddenFromStatusLists = false,
-        startedAt = Date(Int.MAX_VALUE),
-        completedAt = Date(Int.MAX_VALUE),
-        updatedAt = DateTimeTz.local(DateTime(Long.MAX_VALUE), TimezoneOffset.UTC),
+        startedAt = null,
+        completedAt = null,
+        updatedAt = null,
     ),
     entry = MediaEntry.Manga(
         entry = CommonMediaEntry(

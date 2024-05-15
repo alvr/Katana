@@ -6,6 +6,7 @@ import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import dev.alvr.katana.buildlogic.KatanaConfiguration
 import dev.alvr.katana.buildlogic.catalogBundle
+import dev.alvr.katana.buildlogic.catalogLib
 import dev.alvr.katana.buildlogic.commonTasks
 import dev.alvr.katana.buildlogic.configureAndroid
 import dev.alvr.katana.buildlogic.configureKotlinCompiler

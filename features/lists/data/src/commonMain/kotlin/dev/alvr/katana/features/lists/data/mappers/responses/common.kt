@@ -1,9 +1,13 @@
 package dev.alvr.katana.features.lists.data.mappers.responses
 
 import dev.alvr.katana.core.remote.type.MediaType
-import korlibs.time.DateTimeTz
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
-internal fun Number.toLocalDateTime() = DateTimeTz.fromUnix(toLong() * TO_UNIX)
+internal fun Number.toLocalDateTime() = Instant
+    .fromEpochMilliseconds(toLong() * TO_UNIX)
+    .toLocalDateTime(TimeZone.UTC)
 
 internal fun <R> MediaType.onMediaEntry(
     anime: () -> R,

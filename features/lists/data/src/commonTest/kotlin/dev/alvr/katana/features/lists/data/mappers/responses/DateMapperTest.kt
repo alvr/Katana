@@ -4,12 +4,12 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
-import korlibs.time.Date
+import kotlinx.datetime.LocalDate
 
 internal class DateMapperTest : FreeSpec({
     "valid date should be mapped to date" {
         dateMapper(13, 4, 2022)
-            .shouldNotBeNull() shouldBeEqual Date(2022, 4, 13)
+            .shouldNotBeNull() shouldBeEqual LocalDate(2022, 4, 13)
     }
 
     listOf(

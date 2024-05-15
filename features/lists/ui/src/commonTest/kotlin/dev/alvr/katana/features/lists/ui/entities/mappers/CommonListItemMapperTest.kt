@@ -12,10 +12,8 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
-import korlibs.time.Date
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 internal class CommonListItemMapperTest : FreeSpec() {
 
@@ -32,12 +30,9 @@ internal class CommonListItemMapperTest : FreeSpec() {
         private = false,
         notes = String.noData,
         hiddenFromStatusLists = true,
-        startedAt = Date(2022, 7, 20),
-        completedAt = Date(2022, 7, 20),
-        updatedAt = DateTimeTz.local(
-            DateTime(2022, 8, 14, 9, 0),
-            TimezoneOffset.UTC,
-        ),
+        startedAt = LocalDate(2022, 7, 20),
+        completedAt = LocalDate(2022, 7, 20),
+        updatedAt = LocalDateTime(2022, 8, 14, 9, 0),
         nextEpisode = null,
     )
     private val mangaListItem = MediaListItem.MangaListItem(
@@ -55,12 +50,9 @@ internal class CommonListItemMapperTest : FreeSpec() {
         private = true,
         notes = String.noData,
         hiddenFromStatusLists = false,
-        startedAt = Date(2022, 7, 20),
-        completedAt = Date(2022, 7, 20),
-        updatedAt = DateTimeTz.local(
-            DateTime(2022, 8, 14, 9, 0),
-            TimezoneOffset.UTC,
-        ),
+        startedAt = LocalDate(2022, 7, 20),
+        completedAt = LocalDate(2022, 7, 20),
+        updatedAt = LocalDateTime(2022, 8, 14, 9, 0),
     )
 
     private val animeMediaList = MediaList(
@@ -72,12 +64,9 @@ internal class CommonListItemMapperTest : FreeSpec() {
         private = false,
         notes = String.noData,
         hiddenFromStatusLists = true,
-        startedAt = Date(2022, 7, 20),
-        completedAt = Date(2022, 7, 20),
-        updatedAt = DateTimeTz.local(
-            DateTime(2022, 8, 14, 9, 0),
-            TimezoneOffset.UTC,
-        ),
+        startedAt = LocalDate(2022, 7, 20),
+        completedAt = LocalDate(2022, 7, 20),
+        updatedAt = LocalDateTime(2022, 8, 14, 9, 0),
     )
     private val mangaMediaList = MediaList(
         id = 5678,
@@ -88,12 +77,9 @@ internal class CommonListItemMapperTest : FreeSpec() {
         private = true,
         notes = String.noData,
         hiddenFromStatusLists = false,
-        startedAt = Date(2022, 7, 20),
-        completedAt = Date(2022, 7, 20),
-        updatedAt = DateTimeTz.local(
-            DateTime(2022, 8, 14, 9, 0),
-            TimezoneOffset.UTC,
-        ),
+        startedAt = LocalDate(2022, 7, 20),
+        completedAt = LocalDate(2022, 7, 20),
+        updatedAt = LocalDateTime(2022, 8, 14, 9, 0),
     )
 
     init {
