@@ -5,9 +5,12 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.dropUnlessResumed
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
+import androidx.navigation.NavDestination.Companion.hasRoute
+import dev.alvr.katana.core.ui.screens.KatanaScreen
+import kotlin.reflect.KClass
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
 
@@ -19,11 +22,12 @@ val WindowInsets.Companion.noInsets: WindowInsets
 fun isLandscape() = calculateWindowSizeClass().widthSizeClass > WindowWidthSizeClass.Medium
 
 @Composable
-fun doNavigation(onNavigation: () -> Unit) = dropUnlessResumed(LocalLifecycleOwner.current, onNavigation)
+fun doNavigation(onNavigation: () -> Unit) = dropUnlessResumed(block = onNavigation)
 
 fun navDeepLink(deepLinkBuilder: NavDeepLink.Builder.() -> Unit): NavDeepLink =
     NavDeepLink.Builder().apply(deepLinkBuilder).build()
 
+fun <T : KatanaScreen> NavBackStackEntry?.hasRoute(route: KClass<T>) = this?.destination?.hasRoute(route) ?: false
 @Composable
 fun imageRequest(builder: ImageRequest.Builder.() -> Unit) =
     ImageRequest.Builder(LocalPlatformContext.current)
