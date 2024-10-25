@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation.NavDeepLink
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
 
 val WindowInsets.Companion.noInsets: WindowInsets
     get() = WindowInsets(0)
@@ -21,3 +23,9 @@ fun doNavigation(onNavigation: () -> Unit) = dropUnlessResumed(LocalLifecycleOwn
 
 fun navDeepLink(deepLinkBuilder: NavDeepLink.Builder.() -> Unit): NavDeepLink =
     NavDeepLink.Builder().apply(deepLinkBuilder).build()
+
+@Composable
+fun imageRequest(builder: ImageRequest.Builder.() -> Unit) =
+    ImageRequest.Builder(LocalPlatformContext.current)
+        .apply(builder)
+        .build()

@@ -1,8 +1,6 @@
 package dev.alvr.katana.features.account.ui.screen.components
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.core.ui.utils.doNavigation
+import dev.alvr.katana.core.ui.utils.imageRequest
 import dev.alvr.katana.features.account.ui.entities.UserInfoUi
 import dev.alvr.katana.features.account.ui.resources.Res
 import dev.alvr.katana.features.account.ui.resources.logout_button
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 
 @Composable
 internal fun UserInfo(
@@ -55,18 +53,12 @@ private fun UsernameAvatar(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape),
-        ) {
-            KamelImage(
-                resource = asyncPainterResource(avatar),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                animationSpec = tween(),
-            )
-        }
+        AsyncImage(
+            model = imageRequest { data(avatar) },
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(72.dp).clip(CircleShape),
+        )
 
         Text(text = username)
     }

@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.common)
+            implementation(libs.coil.ktor)
             implementation(libs.compose.placeholder)
             implementation(libs.compose.windowsize)
             implementation(libs.materialkolor)

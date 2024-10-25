@@ -5,6 +5,7 @@ androidx-splashscreen = "1.0.1"
 apollo = "4.0.1"
 apollo-mockserver = "0.1.0"
 arrow = "1.2.4"
+coil = "3.0.0-rc01"
 compose = "1.6.11"
 compose-placeholder = "1.0.8"
 compose-windowsize = "0.5.0"
@@ -12,7 +13,6 @@ datastore = "1.1.1"
 detekt = "1.23.7"
 detekt-compose = "0.4.16"
 detekt-compose2 = "1.4.0"
-kamel = "0.9.5"
 kermit = "2.0.4"
 kaml = { strictly = "0.59.0" }
 koin = "3.6.0-Beta4"
@@ -70,6 +70,10 @@ apollo-test = { module = "com.apollographql.apollo:apollo-testing-support", vers
 # Arrow
 arrow = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 
+# Coil
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+
 # Compose
 compose-placeholder = { module = "com.eygraber:compose-placeholder-material3", version.ref = "compose-placeholder" }
 compose-windowsize = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "compose-windowsize" }
@@ -96,9 +100,6 @@ gradle-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin
 gradle-mokkery = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
 gradle-sentry = { module = "io.sentry:sentry-android-gradle-plugin", version.ref = "sentry-plugin" }
 gradle-sentry-multiplatform = { module = "io.sentry.kotlin.multiplatform.gradle:io.sentry.kotlin.multiplatform.gradle.gradle.plugin", version.ref = "sentry-multiplatform" }
-
-# Kamel
-kamel = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 
 # Kermit
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
@@ -128,7 +129,7 @@ kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-seria
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 
 # Ktor
-ktor-android = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-ios = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 # Lifecycle
@@ -296,9 +297,9 @@ data-remote-ios-test-ksp = []
 
 # Deps for UI
 ui-common = [
+    "coil",
     "lifecycle-runtime",
     "lifecycle-viewmodel",
-    "kamel",
     "koin-compose",
     "koin-compose-viewmodel",
     "kotlinx-serialization-json",
@@ -326,6 +327,7 @@ app-common = []
 app-android = [
     "androidx-activity",
     "androidx-splashscreen",
+    "coil",
     "sentry",
 ]
 app-ios = []
