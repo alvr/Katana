@@ -13,6 +13,10 @@ import co.touchlab.kermit.LogWriter
 import co.touchlab.kermit.Logger
 import co.touchlab.kermit.Severity
 import co.touchlab.kermit.platformLogWriter
+import coil3.ImageLoader
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.request.crossfade
 import dev.alvr.katana.core.common.KatanaBuildConfig
 import dev.alvr.katana.core.ui.theme.KatanaTheme
 import dev.alvr.katana.core.ui.utils.noInsets
@@ -21,6 +25,7 @@ import dev.alvr.katana.features.home.ui.screen.home
 import dev.alvr.katana.features.login.ui.screen.login
 import dev.alvr.katana.shared.navigation.KatanaRootNavigator
 import dev.alvr.katana.shared.navigation.rememberKatanaRootNavigator
+import dev.alvr.katana.shared.utils.coilDiskCache
 import dev.alvr.katana.shared.viewmodel.MainViewModel
 import io.sentry.kotlin.multiplatform.PlatformOptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
@@ -29,11 +34,9 @@ import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
 import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
-internal expect fun sentryOptionsConfiguration(): PlatformOptionsConfiguration
-
 @Composable
 fun Katana() {
-    initApp()
+    InitApp()
 
     KatanaTheme {
         KatanaApp()
@@ -64,9 +67,26 @@ private fun KatanaApp(
     }
 }
 
-private fun initApp() {
+@Composable
+private fun InitApp() {
+    InitCoil()
     initSentry()
     initNapier()
+}
+
+@Composable
+private fun InitCoil() {
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .crossfade(true)
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(context.coilDiskCache())
+                    .maxSizePercent(CoilMaxSizePercent)
+                    .build()
+            }
+            .build()
+    }
 }
 
 private fun initNapier() {
@@ -76,6 +96,8 @@ private fun initNapier() {
         Logger.setLogWriters(SentryLogger(Severity.Error))
     }
 }
+
+internal expect fun sentryOptionsConfiguration(): PlatformOptionsConfiguration
 
 private fun initSentry() {
     Sentry.initWithPlatformOptions(sentryOptionsConfiguration())
@@ -107,3 +129,5 @@ private class SentryLogger(private val minSeverity: Severity) : LogWriter() {
         }
     }
 }
+
+private const val CoilMaxSizePercent = 0.02

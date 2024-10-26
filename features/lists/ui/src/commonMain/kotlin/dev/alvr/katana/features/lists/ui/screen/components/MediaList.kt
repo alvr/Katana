@@ -1,8 +1,6 @@
 package dev.alvr.katana.features.lists.ui.screen.components
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import dev.alvr.katana.core.common.formatters.KatanaDateFormatter
 import dev.alvr.katana.core.common.formatters.KatanaNumberFormatter
 import dev.alvr.katana.core.common.unknown
@@ -52,6 +51,7 @@ import dev.alvr.katana.core.ui.modifiers.katanaPlaceholder
 import dev.alvr.katana.core.ui.resources.asPainter
 import dev.alvr.katana.core.ui.resources.format
 import dev.alvr.katana.core.ui.resources.value
+import dev.alvr.katana.core.ui.utils.imageRequest
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
 import dev.alvr.katana.features.lists.ui.resources.Res
 import dev.alvr.katana.features.lists.ui.resources.default_cover
@@ -59,10 +59,7 @@ import dev.alvr.katana.features.lists.ui.resources.entry_next_episode
 import dev.alvr.katana.features.lists.ui.resources.entry_next_episode_separator
 import dev.alvr.katana.features.lists.ui.resources.entry_plus_one
 import dev.alvr.katana.features.lists.ui.resources.entry_progress
-import dev.alvr.katana.features.lists.ui.resources.error_cover
 import dev.alvr.katana.features.lists.ui.viewmodel.ListState
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -261,19 +258,12 @@ private fun Cover(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    KamelImage(
+    AsyncImage(
         modifier = modifier,
-        resource = asyncPainterResource(cover),
+        model = imageRequest { data(cover) },
         contentDescription = title,
         contentScale = ContentScale.Crop,
-        animationSpec = tween(),
-        onFailure = {
-            Image(
-                modifier = Modifier.align(Alignment.Center),
-                painter = Res.drawable.default_cover.asPainter,
-                contentDescription = Res.string.error_cover.value,
-            )
-        },
+        error = Res.drawable.default_cover.asPainter,
     )
 }
 

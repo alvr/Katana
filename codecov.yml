@@ -31,6 +31,7 @@ ignore:
   - '**/shared/navigation/**'
   - '**/shared/resources/**'
   - '**/shared/screen/**'
+  - '**/shared/utils/**'
   - '**/ui/navigation/**'
   - '**/ui/resources/**'
   - '**/ui/screen/**'
