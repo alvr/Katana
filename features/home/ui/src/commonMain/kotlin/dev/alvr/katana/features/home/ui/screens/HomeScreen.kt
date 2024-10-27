@@ -1,4 +1,4 @@
-package dev.alvr.katana.features.home.ui.screen
+package dev.alvr.katana.features.home.ui.screens
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -17,31 +17,29 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBar
 import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBarType
-import dev.alvr.katana.core.ui.screens.HomeScreen
-import dev.alvr.katana.core.ui.screens.RootScreen
+import dev.alvr.katana.core.ui.navigation.destinations.HomeDestination
+import dev.alvr.katana.core.ui.navigation.destinations.RootDestination
 import dev.alvr.katana.core.ui.utils.doNavigation
 import dev.alvr.katana.core.ui.utils.noInsets
 import dev.alvr.katana.core.ui.viewmodel.collectEffect
-import dev.alvr.katana.features.account.ui.screen.account
-import dev.alvr.katana.features.explore.ui.screen.explore
+import dev.alvr.katana.features.account.ui.navigation.account
+import dev.alvr.katana.features.explore.ui.navigation.explore
 import dev.alvr.katana.features.home.ui.navigation.HomeNavigationBarItem.Companion.hasRoute
 import dev.alvr.katana.features.home.ui.navigation.HomeNavigator
 import dev.alvr.katana.features.home.ui.navigation.homeNavigationBarItems
 import dev.alvr.katana.features.home.ui.viewmodel.HomeEffect
 import dev.alvr.katana.features.home.ui.viewmodel.HomeViewModel
-import dev.alvr.katana.features.lists.ui.screen.lists
-import dev.alvr.katana.features.social.ui.screen.social
+import dev.alvr.katana.features.lists.ui.navigation.lists
+import dev.alvr.katana.features.social.ui.navigation.social
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.annotation.KoinExperimentalAPI
 
 fun NavGraphBuilder.home(homeNavigator: HomeNavigator) {
-    composable<RootScreen.Home> {
+    composable<RootDestination.Home> {
         HomeScreen(homeNavigator)
     }
 }
 
 @Composable
-@OptIn(KoinExperimentalAPI::class)
 private fun HomeScreen(
     homeNavigator: HomeNavigator,
     viewModel: HomeViewModel = koinViewModel(),
@@ -80,7 +78,7 @@ private fun HomeScreen(
 
             NavHost(
                 navController = homeNavigator.homeNavController,
-                startDestination = HomeScreen.AnimeLists,
+                startDestination = HomeDestination.AnimeLists,
             ) {
                 lists(listsNavigator = homeNavigator)
                 explore(exploreNavigator = homeNavigator)

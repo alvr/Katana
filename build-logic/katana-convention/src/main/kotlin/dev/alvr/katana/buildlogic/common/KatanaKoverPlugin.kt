@@ -55,7 +55,7 @@ internal class KatanaKoverPlugin : Plugin<Project> {
         // UI
         "*.navigation",
         "*.resources",
-        "*.screen",
+        "*.screens",
     )
 
     override fun apply(target: Project) = with(target) {

@@ -1,15 +1,11 @@
-package dev.alvr.katana.features.lists.ui.screen.components
+package dev.alvr.katana.features.lists.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.twotone.List
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +38,7 @@ internal fun ChangeListSheet(
     lists: Array<UserList>,
     selectedList: String,
     onDismissRequest: () -> Unit,
-    onClick: suspend (String) -> Unit,
+    onClick: (String) -> Unit,
 ) {
     if (!isVisible) return
 
@@ -59,24 +55,10 @@ internal fun ChangeListSheet(
         },
     ) {
         Column(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.navigationBarsPadding(),
         ) {
             lists.forEach { (name, count) ->
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            coroutineScope.launch {
-                                sheetState.hide()
-                                onClick(name)
-                            }
-                        }
-                        .defaultMinSize(minHeight = 48.dp)
-                        .padding(all = 8.dp)
-                        .wrapContentHeight(),
                     text = buildAnnotatedString {
                         append(name)
                         withStyle(
@@ -91,6 +73,16 @@ internal fun ChangeListSheet(
                     },
                     fontWeight = if (selectedList == name) FontWeight.SemiBold else FontWeight.Normal,
                     style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            coroutineScope.launch {
+                                sheetState.hide()
+                                onClick(name)
+                            }
+                        }
+                        .height(48.dp)
+                        .padding(all = 8.dp),
                 )
             }
         }

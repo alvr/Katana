@@ -9,14 +9,11 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
+import dev.alvr.katana.core.common.KatanaBuildConfig
 
 @Immutable
 interface KatanaNavigator {
     fun navigateBack()
-
-    fun <T> popBackStackWithResult(result: T)
-
-    fun <T> getNavigationResult(onResult: (T) -> Unit)
 }
 
 @Composable
@@ -30,12 +27,14 @@ internal expect fun NavHostController.sentryObserver(): NavHostController
 
 @Composable
 private fun NavHostController.loggerObserver() = apply {
-    DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            Logger.d { "Navigating to route ${destination.route}" }
-        }
+    if (KatanaBuildConfig.DEBUG) {
+        DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
+            val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+                Logger.d { "Navigating to route ${destination.route}" }
+            }
 
-        addOnDestinationChangedListener(listener)
-        onDispose { removeOnDestinationChangedListener(listener) }
+            addOnDestinationChangedListener(listener)
+            onDispose { removeOnDestinationChangedListener(listener) }
+        }
     }
 }
