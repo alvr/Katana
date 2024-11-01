@@ -1,4 +1,4 @@
-package dev.alvr.katana.features.lists.ui.screen.components
+package dev.alvr.katana.features.lists.ui.screens.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -34,11 +34,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -113,7 +115,9 @@ private fun MediaList(
         ) { item ->
             MediaListItem(
                 item = item,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
                 itemLoading = itemLoading,
                 onAddPlusOne = { onAddPlusOne(item.entryId) },
                 onEditEntry = { onEditEntry(item.entryId) },
@@ -385,8 +389,11 @@ private fun Progress(
     }
 
     LinearProgressIndicator(
-        progress = { currentProgress },
         modifier = modifier,
+        progress = { currentProgress },
+        gapSize = Dp.Hairline,
+        strokeCap = StrokeCap.Butt,
+        drawStopIndicator = {},
     )
 }
 

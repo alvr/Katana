@@ -1,4 +1,4 @@
-package dev.alvr.katana.features.lists.ui.screen.components
+package dev.alvr.katana.features.lists.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -39,7 +38,7 @@ internal fun ChangeListSheet(
     lists: Array<UserList>,
     selectedList: String,
     onDismissRequest: () -> Unit,
-    onClick: suspend (String) -> Unit,
+    onClick: (String) -> Unit,
 ) {
     if (!isVisible) return
 
@@ -55,38 +54,36 @@ internal fun ChangeListSheet(
             }
         },
     ) {
-        Surface {
-            Column(
-                modifier = Modifier.navigationBarsPadding(),
-            ) {
-                lists.forEach { (name, count) ->
-                    Text(
-                        text = buildAnnotatedString {
-                            append(name)
-                            withStyle(
-                                SpanStyle(
-                                    baselineShift = BaselineShift.Superscript,
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                ),
-                            ) {
-                                append(" $count")
+        Column(
+            modifier = Modifier.navigationBarsPadding(),
+        ) {
+            lists.forEach { (name, count) ->
+                Text(
+                    text = buildAnnotatedString {
+                        append(name)
+                        withStyle(
+                            SpanStyle(
+                                baselineShift = BaselineShift.Superscript,
+                                fontSize = 12.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
+                        ) {
+                            append(" $count")
+                        }
+                    },
+                    fontWeight = if (selectedList == name) FontWeight.SemiBold else FontWeight.Normal,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            coroutineScope.launch {
+                                sheetState.hide()
+                                onClick(name)
                             }
-                        },
-                        fontWeight = if (selectedList == name) FontWeight.SemiBold else FontWeight.Normal,
-                        style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                coroutineScope.launch {
-                                    sheetState.hide()
-                                    onClick(name)
-                                }
-                            }
-                            .height(48.dp)
-                            .padding(all = 8.dp),
-                    )
-                }
+                        }
+                        .height(48.dp)
+                        .padding(all = 8.dp),
+                )
             }
         }
     }

@@ -21,9 +21,9 @@ import dev.alvr.katana.core.common.KatanaBuildConfig
 import dev.alvr.katana.core.ui.theme.KatanaTheme
 import dev.alvr.katana.core.ui.utils.noInsets
 import dev.alvr.katana.core.ui.viewmodel.collectAsState
-import dev.alvr.katana.features.home.ui.screen.home
-import dev.alvr.katana.features.login.ui.screen.login
-import dev.alvr.katana.shared.navigation.KatanaRootNavigator
+import dev.alvr.katana.features.home.ui.screens.home
+import dev.alvr.katana.features.login.ui.screens.login
+import dev.alvr.katana.shared.navigation.RootNavigator
 import dev.alvr.katana.shared.navigation.rememberKatanaRootNavigator
 import dev.alvr.katana.shared.utils.coilDiskCache
 import dev.alvr.katana.shared.viewmodel.MainViewModel
@@ -31,6 +31,7 @@ import io.sentry.kotlin.multiplatform.PlatformOptionsConfiguration
 import io.sentry.kotlin.multiplatform.Sentry
 import io.sentry.kotlin.multiplatform.SentryLevel
 import io.sentry.kotlin.multiplatform.protocol.Breadcrumb
+import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -38,8 +39,10 @@ import org.koin.core.annotation.KoinExperimentalAPI
 fun Katana() {
     InitApp()
 
-    KatanaTheme {
-        KatanaApp()
+    KoinContext {
+        KatanaTheme {
+            KatanaApp()
+        }
     }
 }
 
@@ -47,7 +50,7 @@ fun Katana() {
 @OptIn(KoinExperimentalAPI::class)
 private fun KatanaApp(
     modifier: Modifier = Modifier,
-    navigator: KatanaRootNavigator = rememberKatanaRootNavigator(),
+    navigator: RootNavigator = rememberKatanaRootNavigator(),
     vm: MainViewModel = koinNavViewModel()
 ) {
     val state by vm.collectAsState()
@@ -59,7 +62,7 @@ private fun KatanaApp(
         NavHost(
             modifier = Modifier.fillMaxSize().padding(paddingValues),
             navController = navigator.navController,
-            startDestination = state.initialScreen.name,
+            startDestination = state.initialScreen,
         ) {
             login(loginNavigator = navigator)
             home(homeNavigator = navigator)

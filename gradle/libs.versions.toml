@@ -6,9 +6,8 @@ apollo = "4.0.1"
 apollo-mockserver = "0.1.0"
 arrow = "1.2.4"
 coil = "3.0.0-rc02"
-compose = "1.6.11"
+compose = "1.7.0"
 compose-placeholder = "1.0.8"
-compose-windowsize = "0.5.0"
 datastore = "1.1.1"
 desugaring = "2.1.2"
 detekt = "1.23.7"
@@ -16,8 +15,7 @@ detekt-compose = "0.4.17"
 detekt-compose2 = "1.4.0"
 kermit = "2.0.4"
 kaml = { strictly = "0.59.0" }
-koin = "3.6.0-Beta4"
-koin-compose = "1.2.0-Beta4"
+koin = "4.0.0"
 kotest = "5.9.1"
 kotest-property-datetime = "2.0.0"
 kotlin = "2.0.21"
@@ -27,13 +25,14 @@ kotlinx-datetime = "0.6.1"
 kotlinx-immutable = "0.3.8"
 kotlinx-serialization = "1.7.3"
 kover = "0.8.3"
-ksp = "2.0.21-1.0.25"
+ksp = "2.0.21-1.0.26"
 ktor = "3.0.1"
 lifecycle = "2.8.3"
 materialkolor = "2.0.0"
 mockk = "1.13.13"
 mokkery = "2.4.0"
-navigation = "2.7.0-alpha07"
+navigation = "2.8.0-alpha10"
+navigation-material = "1.7.0-beta02"
 okio = "3.9.1"
 orbit = "9.0.0"
 sentry = "7.16.0"
@@ -78,7 +77,7 @@ coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coi
 
 # Compose
 compose-placeholder = { module = "com.eygraber:compose-placeholder-material3", version.ref = "compose-placeholder" }
-compose-windowsize = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "compose-windowsize" }
+compose-windowsize = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "compose" }
 
 # Datastore
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
@@ -115,8 +114,9 @@ kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 # Koin
 koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-compose" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 # Kotlin
@@ -144,6 +144,7 @@ materialkolor = { module = "com.materialkolor:material-kolor", version.ref = "ma
 
 # Navigation
 navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+navigation-material = { module = "org.jetbrains.compose.material:material-navigation", version.ref = "navigation-material" }
 
 # Okio
 okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
@@ -308,8 +309,10 @@ ui-common = [
     "lifecycle-viewmodel",
     "koin-compose",
     "koin-compose-viewmodel",
+    "koin-compose-viewmodel-navigation",
     "kotlinx-serialization-json",
     "navigation",
+    "navigation-material",
     "orbit",
 ]
 ui-android = []

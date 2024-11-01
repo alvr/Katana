@@ -1,10 +1,8 @@
 package dev.alvr.katana.features.lists.ui.navigation
 
 import dev.alvr.katana.core.ui.navigation.KatanaNavigator
-import dev.alvr.katana.features.lists.ui.entities.UserList
 
-interface ListsNavigator : KatanaNavigator {
+sealed interface ListsNavigator : KatanaNavigator {
     fun navigateToEntryDetails(id: Int)
     fun showEditEntry(id: Int)
-    fun showListSelector(lists: Array<UserList>, selectedList: String)
 }

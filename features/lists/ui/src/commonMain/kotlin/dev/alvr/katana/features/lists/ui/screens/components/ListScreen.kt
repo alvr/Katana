@@ -1,12 +1,11 @@
-package dev.alvr.katana.features.lists.ui.screen.components
+package dev.alvr.katana.features.lists.ui.screens.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import dev.alvr.katana.core.common.zero
@@ -21,11 +20,12 @@ import dev.alvr.katana.features.lists.ui.resources.Res
 import dev.alvr.katana.features.lists.ui.resources.anime_toolbar_search_placeholder
 import dev.alvr.katana.features.lists.ui.resources.error_message
 import dev.alvr.katana.features.lists.ui.resources.manga_toolbar_search_placeholder
+import dev.alvr.katana.features.lists.ui.screens.ChangeListButton
+import dev.alvr.katana.features.lists.ui.screens.ChangeListSheet
 import dev.alvr.katana.features.lists.ui.viewmodel.AnimeListsViewModel
 import dev.alvr.katana.features.lists.ui.viewmodel.ListsViewModel
 import dev.alvr.katana.features.lists.ui.viewmodel.MangaListsViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun ListScreen(
     viewModel: ListsViewModel<*, *>,
@@ -39,7 +39,7 @@ internal fun ListScreen(
     val katanaScaffoldState = rememberKatanaHomeScaffoldState()
     val lazyGridState = rememberLazyGridState()
 
-    var showListSelector by remember { mutableStateOf(false) }
+    var showListSelector by rememberSaveable { mutableStateOf(false) }
 
     ChangeListSheet(
         isVisible = showListSelector,
@@ -49,7 +49,7 @@ internal fun ListScreen(
         onClick = { name ->
             showListSelector = false
             viewModel.selectList(name).also {
-                lazyGridState.scrollToItem(Int.zero)
+                lazyGridState.requestScrollToItem(Int.zero)
                 katanaScaffoldState.resetToolbar()
             }
         },

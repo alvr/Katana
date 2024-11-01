@@ -52,6 +52,7 @@ internal class KatanaMultiplatformComposePlugin : Plugin<Project> {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.runtime)
+                implementation(compose.runtimeSaveable)
                 implementation(compose.ui)
                 implementation(catalogBundle("ui-common"))
             }

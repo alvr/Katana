@@ -1,4 +1,4 @@
-package dev.alvr.katana.features.home.ui.screen
+package dev.alvr.katana.features.home.ui.screens
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.dialog
+import dev.alvr.katana.core.ui.navigation.destinations.HomeDestination
 import dev.alvr.katana.core.ui.resources.value
-import dev.alvr.katana.core.ui.screens.KatanaScreen
 import dev.alvr.katana.features.home.ui.navigation.HomeNavigator
 import dev.alvr.katana.features.home.ui.resources.Res
 import dev.alvr.katana.features.home.ui.resources.session_expired_error_confirm_button
@@ -16,8 +16,7 @@ import dev.alvr.katana.features.home.ui.resources.session_expired_error_message
 import dev.alvr.katana.features.home.ui.resources.session_expired_error_title
 
 internal fun NavGraphBuilder.expiredSessionDialog(homeNavigator: HomeNavigator) {
-    dialog(
-        route = KatanaScreen.ExpiredSessionDialog.name,
+    dialog<HomeDestination.ExpiredSessionDialog>(
         dialogProperties = DialogProperties(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,

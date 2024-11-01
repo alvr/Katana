@@ -7,7 +7,6 @@ internal actual fun sentryOptionsConfiguration(): PlatformOptionsConfiguration =
     options.isDebug = KatanaBuildConfig.DEBUG
     options.dsn = KatanaBuildConfig.SENTRY_DSN
 
-    options.enableTracing = !KatanaBuildConfig.DEBUG
     options.tracesSampleRate = 1.0
 
     options.isEnableAppStartProfiling = !KatanaBuildConfig.DEBUG
