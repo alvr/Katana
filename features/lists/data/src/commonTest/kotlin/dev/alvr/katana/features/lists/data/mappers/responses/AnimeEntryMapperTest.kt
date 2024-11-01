@@ -7,9 +7,7 @@ import dev.alvr.katana.features.lists.domain.models.entries.CommonMediaEntry
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.equals.shouldBeEqual
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import kotlinx.datetime.LocalDateTime
 import dev.alvr.katana.features.lists.data.fragment.MediaEntry as MediaEntryFragment
 
 internal class AnimeEntryMapperTest : FreeSpec({
@@ -97,9 +95,8 @@ internal class AnimeEntryMapperTest : FreeSpec({
                 episodes = 1000,
                 nextEpisode = MediaEntry.Anime.NextEpisode(
                     1001,
-                    DateTimeTz.local(
-                        DateTime(2009, 5, 5, 10, 0, 0),
-                        TimezoneOffset.UTC,
+                    LocalDateTime(
+                        2009, 5, 5, 10, 0, 0,
                     ),
                 ),
             )
@@ -108,10 +105,7 @@ internal class AnimeEntryMapperTest : FreeSpec({
                 episodes = 1000,
                 nextEpisode = MediaEntry.Anime.NextEpisode(
                     1001,
-                    DateTimeTz.local(
-                        DateTime(2009, 5, 5, 10, 0, 0),
-                        TimezoneOffset.UTC,
-                    ),
+                    LocalDateTime(2009, 5, 5, 10, 0, 0),
                 ),
             )
         }

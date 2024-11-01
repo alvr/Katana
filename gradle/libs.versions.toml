@@ -10,6 +10,7 @@ compose = "1.6.11"
 compose-placeholder = "1.0.8"
 compose-windowsize = "0.5.0"
 datastore = "1.1.1"
+desugaring = "2.1.2"
 detekt = "1.23.7"
 detekt-compose = "0.4.17"
 detekt-compose2 = "1.4.0"
@@ -17,11 +18,12 @@ kermit = "2.0.4"
 kaml = { strictly = "0.59.0" }
 koin = "3.6.0-Beta4"
 koin-compose = "1.2.0-Beta4"
-korge-foundation = "5.4.0"
 kotest = "5.9.1"
+kotest-property-datetime = "2.0.0"
 kotlin = "2.0.21"
 kotlinpoet = "2.0.0"
 kotlinx-coroutines = "1.9.0"
+kotlinx-datetime = "0.6.1"
 kotlinx-immutable = "0.3.8"
 kotlinx-serialization = "1.7.3"
 kover = "0.8.3"
@@ -87,6 +89,9 @@ detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "det
 detekt-compose2 = { module = "ru.kode:detekt-rules-compose", version.ref = "detekt-compose2" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
+# Desugaring
+desugaring = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugaring" }
+
 # Gradle
 gradle-android = { module = "com.android.tools.build:gradle", version.ref = "android" }
 gradle-apollo = { module = "com.apollographql.apollo:apollo-gradle-plugin", version.ref = "apollo" }
@@ -114,13 +119,11 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-com
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin-compose" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
-# KorGE Foundation
-korge-foundation = { module = "com.soywiz.korge:korge-foundation", version.ref = "korge-foundation" }
-
 # Kotlin
 kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinx-serialization" }
@@ -164,6 +167,7 @@ kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.
 kotest-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
+kotest-property-datetime = { module = "io.kotest.extensions:kotest-property-datetime", version.ref = "kotest-property-datetime" }
 
 ## MockK
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -176,9 +180,9 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 core-common = [
     "arrow",
     "koin",
-    "korge-foundation",
     "kotlin",
     "kotlinx-coroutines",
+    "kotlinx-datetime",
     "kotlinx-immutable",
 ]
 core-jvm = []
@@ -193,6 +197,7 @@ core-common-test = [
     "kotest-assertions-core",
     "kotest-engine",
     "kotest-property",
+    "kotest-property-datetime",
     "kotlinx-coroutines-test",
     "turbine",
 ]
@@ -210,9 +215,9 @@ core-ios-test-ksp = []
 mobile-common = [
     "arrow",
     "koin",
-    "korge-foundation",
     "kotlin",
     "kotlinx-coroutines",
+    "kotlinx-datetime",
     "kotlinx-immutable",
     "kermit",
 ]
@@ -233,6 +238,7 @@ mobile-common-test = [
     "kotest-assertions-core",
     "kotest-engine",
     "kotest-property",
+    "kotest-property-datetime",
     "kotlinx-coroutines-test",
     "turbine",
 ]

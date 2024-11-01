@@ -10,8 +10,10 @@ import dev.alvr.katana.features.lists.data.MediaListEntriesMutation
 import dev.alvr.katana.features.lists.domain.models.lists.MediaList
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.equals.shouldBeEqual
-import korlibs.time.Date
-import korlibs.time.DateTimeTz
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 internal class MediaListMapperTest : FreeSpec({
     "a MediaList with all values present" {
@@ -24,9 +26,9 @@ internal class MediaListMapperTest : FreeSpec({
             private = false,
             notes = String.empty,
             hiddenFromStatusLists = false,
-            startedAt = Date(2022, 7, 20),
-            completedAt = Date(2022, 7, 20),
-            updatedAt = DateTimeTz.nowLocal(),
+            startedAt = LocalDate(2022, 7, 20),
+            completedAt = LocalDate(2022, 7, 20),
+            updatedAt = Clock.System.now().toLocalDateTime(TimeZone.UTC),
         ).toMutation() shouldBeEqual MediaListEntriesMutation(
             id = Int.zero,
             score = Double.zero.present,

@@ -7,10 +7,8 @@ import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.next
 import io.kotest.property.arbitrary.string
-import korlibs.time.Date
-import korlibs.time.DateTime
-import korlibs.time.DateTimeTz
-import korlibs.time.TimezoneOffset
+import io.kotest.property.kotlinx.datetime.date
+import io.kotest.property.kotlinx.datetime.datetime
 
 internal val mediaListMock = MediaList(
     id = Arb.int().next(),
@@ -21,7 +19,7 @@ internal val mediaListMock = MediaList(
     private = Arb.boolean().next(),
     notes = Arb.string().next(),
     hiddenFromStatusLists = Arb.boolean().next(),
-    startedAt = Date(2022, 1, 1),
-    completedAt = Date(2022, 12, 31),
-    updatedAt = DateTimeTz.local(DateTime(2022, 12, 31, 23, 59, 59), TimezoneOffset.UTC),
+    startedAt = Arb.date().next(),
+    completedAt = Arb.date().next(),
+    updatedAt = Arb.datetime().next(),
 )
