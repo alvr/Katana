@@ -14,7 +14,7 @@ detekt = "1.23.7"
 detekt-compose = "0.4.17"
 detekt-compose2 = "1.4.0"
 kermit = "2.0.4"
-kaml = { strictly = "0.59.0" }
+kaml = { strictly = "0.63.0" }
 koin = "4.0.0"
 kotest = "5.9.1"
 kotest-property-datetime = "2.0.0"
