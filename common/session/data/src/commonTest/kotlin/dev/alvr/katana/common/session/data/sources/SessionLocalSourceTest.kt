@@ -71,16 +71,16 @@ internal class SessionLocalSourceTest : FreeSpec() {
             }
 
             listOf(
-                Session(anilistToken = null, isSessionActive = false),
-                Session(anilistToken = null, isSessionActive = true),
-                Session(anilistToken = anilistTokenMock, isSessionActive = false),
-                Session(anilistToken = anilistTokenMock, isSessionActive = true),
-            ).forEach { session ->
+                Session(anilistToken = null, isSessionActive = false) to false,
+                Session(anilistToken = null, isSessionActive = true) to false,
+                Session(anilistToken = anilistTokenMock, isSessionActive = false) to false,
+                Session(anilistToken = anilistTokenMock, isSessionActive = true) to true,
+            ).forEach { (session, expected) ->
                 "checking session active for ${session.anilistToken} and ${session.isSessionActive}" {
                     every { store.data } returns flowOf(session)
 
                     source.sessionActive.test {
-                        awaitItem().shouldBeRight((session.anilistToken == null && session.isSessionActive).not())
+                        awaitItem().shouldBeRight(expected)
                         cancelAndIgnoreRemainingEvents()
                     }
 

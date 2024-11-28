@@ -21,7 +21,7 @@ internal class SessionLocalSourceImpl(
     @Suppress("USELESS_CAST")
     override val sessionActive
         get() = store.data.map { session ->
-            (session.anilistToken == null && session.isSessionActive).not().right() as Either<Failure, Boolean>
+            (session.anilistToken != null && session.isSessionActive).right() as Either<Failure, Boolean>
         }.catch { error ->
             Logger.e(error) { "Error observing the session, setting the as inactive" }
             emit(SessionFailure.CheckingActiveSession.left())
