@@ -1,4 +1,4 @@
-package dev.alvr.katana.features.home.ui.viewmodel
+package dev.alvr.katana.shared.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import dev.alvr.katana.common.session.domain.usecases.ClearActiveSessionUseCase
@@ -7,11 +7,11 @@ import dev.alvr.katana.core.domain.usecases.invoke
 import dev.alvr.katana.core.ui.viewmodel.BaseViewModel
 import org.orbitmvi.orbit.container
 
-internal class HomeViewModel(
-    private val observeActiveSessionUseCase: ObserveActiveSessionUseCase,
+internal class KatanaViewModel(
     private val clearActiveSessionUseCase: ClearActiveSessionUseCase,
-) : BaseViewModel<HomeState, HomeEffect>() {
-    override val container = viewModelScope.container<HomeState, HomeEffect>(HomeState()) {
+    private val observeActiveSessionUseCase: ObserveActiveSessionUseCase,
+) : BaseViewModel<KatanaState, KatanaEffect>() {
+    override val container = viewModelScope.container<KatanaState, KatanaEffect>(KatanaState()) {
         observeSession()
     }
 
@@ -22,6 +22,10 @@ internal class HomeViewModel(
     }
 
     private fun observeSession() {
+        observeActiveSession()
+    }
+
+    private fun observeActiveSession() {
         observeActiveSessionUseCase()
 
         intent {

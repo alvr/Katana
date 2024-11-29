@@ -1,91 +1,80 @@
 package dev.alvr.katana.features.home.ui.screens
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBar
-import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBarType
-import dev.alvr.katana.core.ui.navigation.destinations.HomeDestination
-import dev.alvr.katana.core.ui.navigation.destinations.RootDestination
-import dev.alvr.katana.core.ui.utils.doNavigation
-import dev.alvr.katana.core.ui.utils.noInsets
-import dev.alvr.katana.core.ui.viewmodel.collectEffect
-import dev.alvr.katana.features.account.ui.navigation.account
-import dev.alvr.katana.features.explore.ui.navigation.explore
-import dev.alvr.katana.features.home.ui.navigation.HomeNavigationBarItem.Companion.hasRoute
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
+import dev.alvr.katana.core.ui.components.KatanaScaffold
+import dev.alvr.katana.core.ui.resources.asPainter
+import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.features.home.ui.navigation.HomeNavigator
-import dev.alvr.katana.features.home.ui.navigation.homeNavigationBarItems
-import dev.alvr.katana.features.home.ui.viewmodel.HomeEffect
+import dev.alvr.katana.features.home.ui.resources.Res
+import dev.alvr.katana.features.home.ui.resources.a11y_katana_logo
+import dev.alvr.katana.features.home.ui.resources.katana_logo
 import dev.alvr.katana.features.home.ui.viewmodel.HomeViewModel
-import dev.alvr.katana.features.lists.ui.navigation.lists
-import dev.alvr.katana.features.social.ui.navigation.social
 import org.koin.compose.viewmodel.koinViewModel
 
-fun NavGraphBuilder.home(homeNavigator: HomeNavigator) {
-    composable<RootDestination.Home> {
-        HomeScreen(homeNavigator)
-    }
-}
-
 @Composable
-private fun HomeScreen(
+@Suppress("UNUSED_PARAMETER")
+@OptIn(ExperimentalMaterial3Api::class)
+internal fun HomeScreen(
     homeNavigator: HomeNavigator,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
-    val currentNav by homeNavigator.homeNavController.currentBackStackEntryAsState()
+    val pagerState = rememberPagerState { HomeTab.entries.size }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    val sessionExpired by rememberUpdatedState(doNavigation(homeNavigator::onSessionExpired))
-    viewModel.collectEffect { effect ->
-        when (effect) {
-            HomeEffect.ExpiredToken -> sessionExpired()
-        }
-    }
-
-    val navigationBar = @Composable { type: KatanaNavigationBarType ->
-        KatanaNavigationBar(
-            items = homeNavigationBarItems,
-            isSelected = { item -> currentNav.hasRoute(item) },
-            onClick = { item -> homeNavigator.onHomeNavigationBarItemClicked(item) },
-            type = type,
-        )
-    }
-
-    Scaffold(
-        modifier = Modifier
-            .statusBarsPadding()
-            .displayCutoutPadding(),
-        contentWindowInsets = WindowInsets.noInsets,
-        bottomBar = { navigationBar(KatanaNavigationBarType.Bottom) },
+    KatanaScaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Image(
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        painter = Res.drawable.katana_logo.asPainter,
+                        contentDescription = Res.string.a11y_katana_logo.value,
+                    )
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
     ) { paddingValues ->
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            navigationBar(KatanaNavigationBarType.Rail)
+        Column(modifier = Modifier.padding(paddingValues)) {
+            PrimaryTabRow(selectedTabIndex = pagerState.currentPage) {
+                HomeTab.entries.fastForEach { tab ->
+                    Tab(
+                        selected = pagerState.currentPage == tab.ordinal,
+                        onClick = { pagerState.requestScrollToPage(tab.ordinal) },
+                        text = { Text(text = tab.title.value) },
+                    )
+                }
+            }
 
-            NavHost(
-                navController = homeNavigator.homeNavController,
-                startDestination = HomeDestination.AnimeLists,
-            ) {
-                lists(listsNavigator = homeNavigator)
-                explore(exploreNavigator = homeNavigator)
-                social(socialNavigator = homeNavigator)
-                account(accountNavigator = homeNavigator)
-
-                expiredSessionDialog(homeNavigator = homeNavigator)
+            HorizontalPager(
+                modifier = Modifier.fillMaxSize(),
+                state = pagerState,
+                verticalAlignment = Alignment.Top,
+            ) { page ->
+                when (page) {
+                    HomeTab.ForYou.ordinal -> Text(HomeTab.ForYou.title.value)
+                    HomeTab.Activity.ordinal -> Text(HomeTab.Activity.title.value)
+                }
             }
         }
     }

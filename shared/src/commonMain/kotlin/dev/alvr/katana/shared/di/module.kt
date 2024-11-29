@@ -21,12 +21,12 @@ import dev.alvr.katana.features.login.ui.di.featuresLoginUiModule
 import dev.alvr.katana.features.social.data.di.featuresSocialDataModule
 import dev.alvr.katana.features.social.domain.di.featuresSocialDomainModule
 import dev.alvr.katana.features.social.ui.di.featuresSocialUiModule
-import dev.alvr.katana.shared.viewmodel.MainViewModel
+import dev.alvr.katana.shared.viewmodel.KatanaViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 private val viewModelsModule = module {
-    viewModelOf(::MainViewModel)
+    viewModelOf(::KatanaViewModel)
 }
 
 val katanaModule = module {
