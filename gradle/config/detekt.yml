@@ -980,7 +980,7 @@ Compose:
     active: true
   CompositionLocalAllowlist:
     active: true
-    allowedCompositionLocals:
+    allowedCompositionLocals: LocalScaffoldContentPadding
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:

@@ -1,6 +1,7 @@
 package dev.alvr.katana.core.ui.viewmodel
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisallowComposableCalls
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -21,7 +22,7 @@ interface UiEffect
 
 data object EmptyState : UiState
 
-class EmptyEffect private constructor() : UiEffect
+data object EmptyEffect : UiEffect
 
 abstract class BaseViewModel<S : UiState, E : UiEffect> : ViewModel(), ContainerHost<S, E> {
     @OrbitDsl
@@ -47,7 +48,9 @@ fun <S : UiState, E : UiEffect> BaseViewModel<S, E>.collectAsState(): State<S> =
 
 @Composable
 @Suppress("ComposableFunctionName", "LambdaParameterInRestartableEffect")
-fun <S : UiState, E : UiEffect> BaseViewModel<S, E>.collectEffect(onEffect: suspend (E) -> Unit) {
+fun <S : UiState, E : UiEffect> BaseViewModel<S, E>.collectEffect(
+    onEffect: @DisallowComposableCalls suspend (E) -> Unit
+) {
     val sideEffectFlow = container.refCountSideEffectFlow
     val lifecycleOwner = LocalLifecycleOwner.current
 
