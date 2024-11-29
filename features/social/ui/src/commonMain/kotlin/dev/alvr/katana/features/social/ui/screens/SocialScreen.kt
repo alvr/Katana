@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.alvr.katana.core.ui.components.home.KatanaHomeScaffold
 import dev.alvr.katana.core.ui.resources.value
-import dev.alvr.katana.features.social.ui.navigation.SocialNavigator
 import dev.alvr.katana.features.social.ui.resources.Res
 import dev.alvr.katana.features.social.ui.resources.social_toolbar_search_placeholder
 import dev.alvr.katana.features.social.ui.resources.social_toolbar_title
@@ -14,9 +13,8 @@ import dev.alvr.katana.features.social.ui.viewmodel.SocialViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-@Suppress("UNUSED_PARAMETER")
+@Suppress("UNUSED_PARAMETER", "unused")
 internal fun SocialScreen(
-    navigator: SocialNavigator,
     viewModel: SocialViewModel = koinViewModel(),
 ) {
     KatanaHomeScaffold(

@@ -17,6 +17,7 @@ import dev.alvr.katana.features.account.ui.viewmodel.AccountViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
+@Suppress("UNUSED_PARAMETER")
 internal fun AccountScreen(
     navigator: AccountNavigator,
     viewModel: AccountViewModel = koinViewModel(),
@@ -25,10 +26,7 @@ internal fun AccountScreen(
 
     AccountScreen(
         userInfo = state.userInfo,
-        onLogoutClick = {
-            viewModel.clearSession()
-            navigator.navigateToLogin()
-        },
+        onLogoutClick = viewModel::clearSession,
     )
 }
 
