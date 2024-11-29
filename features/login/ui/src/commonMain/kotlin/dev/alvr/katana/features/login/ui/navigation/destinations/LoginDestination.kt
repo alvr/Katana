@@ -1,6 +1,6 @@
 package dev.alvr.katana.features.login.ui.navigation.destinations
 
-import dev.alvr.katana.core.ui.navigation.destinations.KatanaDestination
+import dev.alvr.katana.core.ui.navigation.KatanaDestination
 import kotlinx.serialization.Serializable
 
 sealed interface LoginDestination : KatanaDestination {

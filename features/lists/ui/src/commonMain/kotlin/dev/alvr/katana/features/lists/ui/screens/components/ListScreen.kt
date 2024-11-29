@@ -15,7 +15,6 @@ import dev.alvr.katana.core.ui.components.home.KatanaHomeScaffold
 import dev.alvr.katana.core.ui.components.home.rememberKatanaHomeScaffoldState
 import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.core.ui.viewmodel.collectAsState
-import dev.alvr.katana.features.lists.ui.navigation.ListsNavigator
 import dev.alvr.katana.features.lists.ui.resources.Res
 import dev.alvr.katana.features.lists.ui.resources.anime_toolbar_search_placeholder
 import dev.alvr.katana.features.lists.ui.resources.error_message
@@ -29,10 +28,11 @@ import dev.alvr.katana.features.lists.ui.viewmodel.MangaListsViewModel
 @Composable
 internal fun ListScreen(
     viewModel: ListsViewModel<*, *>,
-    navigator: ListsNavigator,
     title: String,
     emptyStateRes: String,
     backContent: @Composable () -> Unit,
+    onEditEntryClick: (Int) -> Unit,
+    onEntryDetailsClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state by viewModel.collectAsState()
@@ -96,8 +96,8 @@ internal fun ListScreen(
                 listState = state,
                 onRefresh = viewModel::refreshList,
                 onAddPlusOne = viewModel::addPlusOne,
-                onEditEntry = navigator::showEditEntry,
-                onEntryDetails = navigator::navigateToEntryDetails,
+                onEditEntry = onEditEntryClick,
+                onEntryDetails = onEntryDetailsClick,
             )
         }
     }

@@ -2,7 +2,7 @@ package dev.alvr.katana.core.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
@@ -11,13 +11,13 @@ import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.common.KatanaBuildConfig
 
-@Immutable
-interface KatanaNavigator {
+@Stable
+interface BaseNavigator {
     fun navigateBack()
 }
 
 @Composable
-fun <T : KatanaNavigator> rememberKatanaNavigator(factory: (NavHostController) -> T): T {
+fun <T : BaseNavigator> rememberKatanaNavigator(factory: (NavHostController) -> T): T {
     val navigator = rememberNavController().sentryObserver().loggerObserver()
     return remember(navigator) { factory(navigator) }
 }

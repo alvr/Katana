@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import dev.alvr.katana.core.ui.navigation.KatanaNavigationBarItem
 import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.core.ui.utils.isLandscape
 import kotlinx.collections.immutable.ImmutableList

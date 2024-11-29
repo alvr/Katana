@@ -10,7 +10,7 @@ import androidx.navigation.NavDeepLink
 import androidx.navigation.NavDestination.Companion.hasRoute
 import coil3.compose.LocalPlatformContext
 import coil3.request.ImageRequest
-import dev.alvr.katana.core.ui.navigation.destinations.KatanaDestination
+import dev.alvr.katana.core.ui.navigation.KatanaDestination
 import kotlin.reflect.KClass
 
 val WindowInsets.Companion.noInsets: WindowInsets
