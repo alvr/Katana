@@ -30,8 +30,6 @@ kotlin {
             implementation(projects.features.lists.domain)
             implementation(projects.features.lists.ui)
 
-            implementation(projects.features.login.ui)
-
             implementation(projects.features.social.data)
             implementation(projects.features.social.domain)
             implementation(projects.features.social.ui)
