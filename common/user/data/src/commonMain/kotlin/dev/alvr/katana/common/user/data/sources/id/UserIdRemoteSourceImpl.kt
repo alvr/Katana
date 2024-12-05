@@ -18,7 +18,7 @@ internal class UserIdRemoteSourceImpl(
     override suspend fun getUserId() = Either.catch {
         userIdHandler(FetchPolicy.CacheOnly)
     }.mapLeft { error ->
-        Logger.e(error) { "Was not possible to get the userId" }
+        Logger.e(LOG_TAG, error) { "Was not possible to get the userId" }
 
         error.toFailure(cache = UserFailure.GettingUserId)
     }
@@ -26,7 +26,7 @@ internal class UserIdRemoteSourceImpl(
     override suspend fun saveUserId() = Either.catchUnit {
         userIdHandler(FetchPolicy.NetworkOnly)
     }.mapLeft { error ->
-        Logger.e(error) { "Was not possible to save the userId" }
+        Logger.e(LOG_TAG, error) { "Was not possible to save the userId" }
 
         error.toFailure(
             network = UserFailure.FetchingUser,
@@ -40,3 +40,5 @@ internal class UserIdRemoteSourceImpl(
         .executeOrThrow()
         .dataAssertNoErrors()
 }
+
+private const val LOG_TAG = "UserIdRemoteSource"

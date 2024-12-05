@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.util.fastForEach
 import dev.alvr.katana.core.ui.navigation.KatanaNavigationBarItem
 import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.core.ui.utils.isLandscape
@@ -49,7 +50,7 @@ private fun <T : KatanaNavigationBarItem> BottomNavigationBar(
     modifier: Modifier = Modifier,
 ) {
     NavigationBar(modifier = modifier) {
-        items.forEach { item ->
+        items.fastForEach { item ->
             val selected = isSelected(item)
 
             NavigationBarItem(
@@ -72,7 +73,7 @@ private fun <T : KatanaNavigationBarItem> RailNavigationBar(
 ) {
     NavigationRail(modifier = modifier) {
         Spacer(Modifier.weight(1f))
-        items.forEach { item ->
+        items.fastForEach { item ->
             val selected = isSelected(item)
 
             NavigationRailItem(

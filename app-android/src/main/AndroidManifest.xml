@@ -34,7 +34,7 @@
 
                 <data
                     android:host="app"
-                    android:scheme="katana" />
+                    android:scheme="dev.alvr.katana" />
             </intent-filter>
         </activity>
 

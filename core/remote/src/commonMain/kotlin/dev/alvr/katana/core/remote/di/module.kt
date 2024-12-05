@@ -121,7 +121,7 @@ private val apolloInterceptorsModule = module {
 
     single<HttpInterceptor>(named(Interceptor.LOGGING)) {
         LoggingInterceptor(
-            log = { Logger.i("ApolloLoggingInterceptor") { it } },
+            log = { Logger.i(LOG_TAG) { it } },
             level = if (KatanaBuildConfig.DEBUG) {
                 LoggingInterceptor.Level.BODY
             } else {
@@ -145,3 +145,5 @@ private const val CACHE_TYPE_KEY = "__typename"
 
 private const val HTTP_BAD_REQUEST = 400
 private const val HTTP_UNAUTHORIZED = 401
+
+private const val LOG_TAG = "ApolloClient"

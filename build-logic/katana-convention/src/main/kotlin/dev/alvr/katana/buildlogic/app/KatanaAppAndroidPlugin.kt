@@ -120,7 +120,7 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
 
     private fun SentryPluginExtension.configureSentry() {
         includeProguardMapping = true
-        autoUploadProguardMapping = true
+        autoUploadProguardMapping = System.getenv("CI").toBoolean()
         dexguardEnabled = false
         uploadNativeSymbols = false
         includeNativeSources = false

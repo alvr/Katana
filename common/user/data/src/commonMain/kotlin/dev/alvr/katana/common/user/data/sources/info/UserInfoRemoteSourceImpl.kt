@@ -28,7 +28,7 @@ internal class UserInfoRemoteSourceImpl(
             .watchFiltered()
             .map { res -> res.dataAssertNoErrors().right() as Either<Failure, UserInfo> }
             .catch { error ->
-                Logger.e(error) { "Was not possible to get the user info" }
+                Logger.e(LOG_TAG, error) { "Was not possible to get the user info" }
 
                 emit(
                     error.toFailure(
@@ -38,3 +38,5 @@ internal class UserInfoRemoteSourceImpl(
                 )
             }
 }
+
+private const val LOG_TAG = "UserInfoRemoteSource"

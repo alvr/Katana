@@ -16,6 +16,13 @@ interface BaseNavigator {
     fun navigateBack()
 }
 
+@Suppress("UnusedReceiverParameter")
+fun BaseNavigator.overridden(
+    navigator: String = "KatanaRootNavigator",
+) {
+    Logger.i(LOG_TAG) { "Implementation overridden in $navigator" }
+}
+
 @Composable
 fun <T : BaseNavigator> rememberKatanaNavigator(factory: (NavHostController) -> T): T {
     val navigator = rememberNavController().sentryObserver().loggerObserver()
@@ -29,8 +36,16 @@ internal expect fun NavHostController.sentryObserver(): NavHostController
 private fun NavHostController.loggerObserver() = apply {
     if (KatanaBuildConfig.DEBUG) {
         DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
-            val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-                Logger.d { "Navigating to route ${destination.route}" }
+            val listener = NavController.OnDestinationChangedListener { navController, destination, args ->
+                Logger.d(LOG_TAG) {
+                    buildString {
+                        append("Navigating to route ${destination.route}")
+
+                        navController.previousBackStackEntry?.destination?.route?.let { previousRoute ->
+                            append(" from $previousRoute")
+                        }
+                    }
+                }
             }
 
             addOnDestinationChangedListener(listener)
@@ -38,3 +53,5 @@ private fun NavHostController.loggerObserver() = apply {
         }
     }
 }
+
+private const val LOG_TAG = "KatanaNavigator"

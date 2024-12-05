@@ -3,6 +3,7 @@ package dev.alvr.katana.features.lists.ui.navigation
 import androidx.compose.runtime.Composable
 import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.ui.navigation.BaseNavigator
+import dev.alvr.katana.core.ui.navigation.overridden
 import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
 interface MangaListsNavigator : BaseNavigator {
@@ -12,15 +13,15 @@ interface MangaListsNavigator : BaseNavigator {
 
 private class KatanaMangaListsNavigator : MangaListsNavigator {
     override fun navigateBack() {
-        Logger.i { "Implementation done in KatanaNavigator" }
+        overridden()
     }
 
     override fun mangaEntryDetails(id: Int) {
-        Logger.d { "Entry details $id" }
+        Logger.d(LOG_TAG) { "Entry details $id" }
     }
 
     override fun editMangaEntry(id: Int) {
-        Logger.d { "Edit entry $id" }
+        Logger.d(LOG_TAG) { "Edit entry $id" }
     }
 }
 
@@ -28,3 +29,5 @@ private class KatanaMangaListsNavigator : MangaListsNavigator {
 fun rememberKatanaMangaListsNavigator(): MangaListsNavigator = rememberKatanaNavigator { _ ->
     KatanaMangaListsNavigator()
 }
+
+private const val LOG_TAG = "MangaListsNavigator"
