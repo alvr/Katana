@@ -9,5 +9,5 @@ sealed interface HomeDestination : KatanaDestination {
     data object Root : HomeDestination
 
     @Serializable
-    data object Home : HomeDestination
+    data class Home(val token: String? = null) : HomeDestination
 }

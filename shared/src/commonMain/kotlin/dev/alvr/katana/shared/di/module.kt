@@ -13,6 +13,8 @@ import dev.alvr.katana.features.account.ui.di.featuresAccountUiModule
 import dev.alvr.katana.features.explore.data.di.featuresExploreDataModule
 import dev.alvr.katana.features.explore.domain.di.featuresExploreDomainModule
 import dev.alvr.katana.features.explore.ui.di.featuresExploreUiModule
+import dev.alvr.katana.features.home.data.di.featuresHomeDataModule
+import dev.alvr.katana.features.home.domain.di.featuresHomeDomainModule
 import dev.alvr.katana.features.home.ui.di.featuresHomeUiModule
 import dev.alvr.katana.features.lists.data.di.featuresListsDataModule
 import dev.alvr.katana.features.lists.domain.di.featuresListsDomainModule
@@ -54,6 +56,8 @@ val katanaModule = module {
         featuresExploreUiModule,
 
         // Feature Home
+        featuresHomeDataModule,
+        featuresHomeDomainModule,
         featuresHomeUiModule,
 
         // Feature Lists

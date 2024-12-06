@@ -9,6 +9,7 @@ kotlin {
             implementation(libs.coil.ktor)
             implementation(libs.compose.placeholder)
             implementation(libs.compose.windowsize)
+            implementation(libs.haze.materials)
             implementation(libs.materialkolor)
         }
 

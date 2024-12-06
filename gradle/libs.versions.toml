@@ -13,6 +13,7 @@ desugaring = "2.1.4"
 detekt = "1.23.7"
 detekt-compose = "0.4.22"
 detekt-compose2 = "1.4.0"
+haze = "1.1.1"
 kermit = "2.0.5"
 kaml = { strictly = "0.67.0" }
 koin = "4.0.1"
@@ -104,6 +105,10 @@ gradle-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin
 gradle-mokkery = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
 gradle-sentry = { module = "io.sentry:sentry-android-gradle-plugin", version.ref = "sentry-plugin" }
 gradle-sentry-multiplatform = { module = "io.sentry.kotlin.multiplatform.gradle:io.sentry.kotlin.multiplatform.gradle.gradle.plugin", version.ref = "sentry-multiplatform" }
+
+# Haze
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 
 # Kermit
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
@@ -305,6 +310,7 @@ data-remote-ios-test-ksp = []
 # Deps for UI
 ui-common = [
     "coil",
+    "haze",
     "lifecycle-runtime",
     "lifecycle-viewmodel",
     "koin-compose",

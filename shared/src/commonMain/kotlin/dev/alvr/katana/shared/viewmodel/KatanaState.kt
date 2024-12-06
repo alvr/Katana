@@ -5,5 +5,6 @@ import dev.alvr.katana.core.ui.viewmodel.UiState
 
 @Immutable
 internal data class KatanaState(
+    val loading: Boolean = true,
     val isSessionActive: Boolean = false,
 ) : UiState

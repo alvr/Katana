@@ -8,16 +8,16 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.dialog
 import dev.alvr.katana.core.ui.resources.value
-import dev.alvr.katana.shared.destinations.KatanaDestination
-import dev.alvr.katana.shared.navigation.KatanaNavigator
+import dev.alvr.katana.shared.destinations.RootDestination
+import dev.alvr.katana.shared.navigation.RootNavigator
 import dev.alvr.katana.shared.navigation.mainNavigationBarItems
 import dev.alvr.katana.shared.resources.Res
 import dev.alvr.katana.shared.resources.session_expired_error_confirm_button
 import dev.alvr.katana.shared.resources.session_expired_error_message
 import dev.alvr.katana.shared.resources.session_expired_error_title
 
-internal fun NavGraphBuilder.expiredSessionDialog(navigator: KatanaNavigator) {
-    dialog<KatanaDestination.ExpiredSessionDialog>(
+internal fun NavGraphBuilder.expiredSessionDialog(navigator: RootNavigator) {
+    dialog<RootDestination.ExpiredSessionDialog>(
         dialogProperties = DialogProperties(
             dismissOnBackPress = false,
             dismissOnClickOutside = false,
