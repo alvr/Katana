@@ -1,16 +1,12 @@
 plugins {
-    id("katana.multiplatform.ui")
+    id("katana.multiplatform.core")
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.common.session.domain)
-
             implementation(projects.core.common)
-            implementation(projects.core.ui)
-
-            implementation(projects.features.home.domain)
+            api(projects.core.domain)
         }
 
         commonTest.dependencies { implementation(projects.core.tests) }

@@ -1,14 +1,11 @@
 plugins {
-    id("katana.multiplatform.ui")
+    id("katana.multiplatform.data.remote")
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.common.session.domain)
-
-            implementation(projects.core.common)
-            implementation(projects.core.ui)
+            implementation(projects.core.remote)
 
             implementation(projects.features.home.domain)
         }

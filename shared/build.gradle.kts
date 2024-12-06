@@ -24,6 +24,8 @@ kotlin {
             implementation(projects.features.explore.domain)
             implementation(projects.features.explore.ui)
 
+            implementation(projects.features.home.data)
+            implementation(projects.features.home.domain)
             implementation(projects.features.home.ui)
 
             implementation(projects.features.lists.data)
