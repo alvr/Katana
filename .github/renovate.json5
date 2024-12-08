@@ -21,12 +21,12 @@
             "groupSlug": "kotlin",
             "matchPackagePrefixes": [
                 "com.google.devtools.ksp",
-                "org.jetbrains.compose",
                 "dev.mokkery",
+                "org.jetbrains.compose",
+                "org.jetbrains.kotlinx",
             ],
             "matchPackagePatterns": [
                 "org.jetbrains.kotlin.*",
-                "org.jetbrains.kotlinx.*"
             ],
         },
         {

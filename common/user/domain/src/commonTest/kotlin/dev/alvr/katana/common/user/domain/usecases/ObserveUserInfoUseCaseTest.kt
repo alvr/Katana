@@ -8,8 +8,6 @@ import dev.alvr.katana.common.user.domain.repositories.UserRepository
 import dev.alvr.katana.common.user.domain.userInfoMock
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
 import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.tests.di.coreTestsModule
-import dev.alvr.katana.core.tests.koinExtension
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.mokkery.answering.returns
@@ -59,6 +57,4 @@ internal class ObserveUserInfoUseCaseTest : FreeSpec(), KoinTest {
     override suspend fun beforeEach(testCase: TestCase) {
         useCase = ObserveUserInfoUseCase(dispatcher, repo)
     }
-
-    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }

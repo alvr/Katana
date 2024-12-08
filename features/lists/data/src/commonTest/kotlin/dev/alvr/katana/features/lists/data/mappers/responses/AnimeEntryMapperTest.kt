@@ -3,6 +3,7 @@ package dev.alvr.katana.features.lists.data.mappers.responses
 import dev.alvr.katana.core.common.empty
 import dev.alvr.katana.core.common.zero
 import dev.alvr.katana.core.remote.type.MediaFormat
+import dev.alvr.katana.core.tests.random
 import dev.alvr.katana.features.lists.domain.models.entries.CommonMediaEntry
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import io.kotest.core.spec.style.FreeSpec
@@ -13,6 +14,7 @@ import dev.alvr.katana.features.lists.data.fragment.MediaEntry as MediaEntryFrag
 internal class AnimeEntryMapperTest : FreeSpec({
     "an entry with null values" {
         val entry = MediaEntryFragment(
+            __typename = String.random,
             id = Int.zero,
             title = MediaEntryFragment.Title(String.empty),
             episodes = null,
@@ -43,6 +45,7 @@ internal class AnimeEntryMapperTest : FreeSpec({
 
     "an entry with null values but data classes with null" {
         val entry = MediaEntryFragment(
+            __typename = String.random,
             id = Int.zero,
             title = MediaEntryFragment.Title(String.empty),
             episodes = null,
@@ -74,6 +77,7 @@ internal class AnimeEntryMapperTest : FreeSpec({
 
     "an entry with all properties" {
         val entry = MediaEntryFragment(
+            __typename = String.random,
             id = Int.zero,
             title = MediaEntryFragment.Title("One Piece"),
             episodes = 1000,

@@ -4,8 +4,6 @@ import arrow.core.left
 import arrow.core.right
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
 import dev.alvr.katana.core.domain.failures.Failure
-import dev.alvr.katana.core.tests.di.coreTestsModule
-import dev.alvr.katana.core.tests.koinExtension
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
@@ -49,6 +47,4 @@ internal class UpdateListUseCaseTest : FreeSpec(), KoinTest {
     override suspend fun beforeEach(testCase: TestCase) {
         useCase = UpdateListUseCase(dispatcher, repo)
     }
-
-    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }

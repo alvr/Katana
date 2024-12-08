@@ -1,5 +1,6 @@
 package dev.alvr.katana.shared.di
 
+import androidx.lifecycle.SavedStateHandle
 import io.kotest.core.spec.style.FreeSpec
 import io.mockk.mockkClass
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -13,6 +14,10 @@ internal class SharedModuleTest : FreeSpec({
     }
 
     "verify katanaModule" - {
-        katanaModule.verify()
+        katanaModule.verify(
+            extraTypes = listOf(
+                SavedStateHandle::class,
+            ),
+        )
     }
 })

@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import dev.alvr.katana.core.ui.navigation.KatanaDestination
-import dev.alvr.katana.core.ui.navigation.KatanaNavigationBarItem.Companion.hasRoute
 import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 import dev.alvr.katana.core.ui.utils.hasRoute
 import dev.alvr.katana.features.account.ui.navigation.AccountNavigator
@@ -20,7 +19,6 @@ import dev.alvr.katana.features.lists.ui.navigation.MangaListsDestination
 import dev.alvr.katana.features.lists.ui.navigation.MangaListsNavigator
 import dev.alvr.katana.features.lists.ui.navigation.rememberKatanaAnimeListsNavigator
 import dev.alvr.katana.features.lists.ui.navigation.rememberKatanaMangaListsNavigator
-import dev.alvr.katana.shared.destinations.RootDestination
 
 internal sealed interface RootNavigator :
     HomeNavigator,

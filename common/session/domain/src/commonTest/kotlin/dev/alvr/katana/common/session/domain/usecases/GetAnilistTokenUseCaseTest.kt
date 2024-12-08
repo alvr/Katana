@@ -6,8 +6,6 @@ import dev.alvr.katana.common.session.domain.anilistTokenMock
 import dev.alvr.katana.common.session.domain.repositories.SessionRepository
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
 import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.tests.di.coreTestsModule
-import dev.alvr.katana.core.tests.koinExtension
 import dev.alvr.katana.core.tests.shouldBeNone
 import dev.alvr.katana.core.tests.shouldBeSome
 import dev.mokkery.answering.returns
@@ -42,6 +40,4 @@ internal class GetAnilistTokenUseCaseTest : FreeSpec(), KoinTest {
     override suspend fun beforeEach(testCase: TestCase) {
         useCase = GetAnilistTokenUseCase(dispatcher, repo)
     }
-
-    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }
