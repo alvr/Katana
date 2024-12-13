@@ -16,7 +16,7 @@ detekt-compose2 = "1.4.0"
 kermit = "2.0.5"
 kaml = { strictly = "0.66.0" }
 koin = "4.0.0"
-kotest = "5.9.1"
+kotest = "6.0.0-LOCAL"
 kotest-property-datetime = "2.0.0"
 kotlin = "2.0.21"
 kotlinpoet = "2.0.0"
