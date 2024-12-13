@@ -21,14 +21,14 @@ internal class SessionLocalSourceImpl(
     @Suppress("USELESS_CAST")
     override val sessionActive
         get() = store.data.map { session ->
-            (session.anilistToken != null && session.isSessionActive).right() as Either<Failure, Boolean>
+            (session.anilistToken != null && session.sessionActive).right() as Either<Failure, Boolean>
         }.catch { error ->
             Logger.e(LOG_TAG, error) { "Error observing the session, setting the as inactive" }
             emit(SessionFailure.CheckingActiveSession.left())
         }
 
     override suspend fun clearActiveSession() = Either.catch {
-        store.updateData { p -> p.copy(isSessionActive = false) }
+        store.updateData { p -> p.copy(sessionActive = false) }
         Logger.d(LOG_TAG) { "Session cleared" }
     }.mapLeft { error ->
         Logger.e(LOG_TAG, error) { "Error clearing session" }
@@ -51,7 +51,7 @@ internal class SessionLocalSourceImpl(
         }.first()
 
     override suspend fun logout() = Either.catch {
-        store.updateData { p -> p.copy(anilistToken = null, isSessionActive = false) }
+        store.updateData { p -> p.copy(anilistToken = null, sessionActive = false) }
         Logger.d(LOG_TAG) { "Logged out" }
     }.mapLeft { error ->
         Logger.e(LOG_TAG, error) { "Was not possible to logout" }
@@ -59,7 +59,7 @@ internal class SessionLocalSourceImpl(
     }
 
     override suspend fun saveSession(anilistToken: AnilistToken) = Either.catch {
-        store.updateData { p -> p.copy(anilistToken = anilistToken, isSessionActive = true) }
+        store.updateData { p -> p.copy(anilistToken = anilistToken, sessionActive = true) }
         Logger.d(LOG_TAG) { "Token saved: ${anilistToken.token}" }
     }.mapLeft { error ->
         Logger.e(LOG_TAG, error) { "Was not possible to save the token" }

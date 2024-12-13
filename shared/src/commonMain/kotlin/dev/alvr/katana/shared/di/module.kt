@@ -19,9 +19,6 @@ import dev.alvr.katana.features.home.ui.di.featuresHomeUiModule
 import dev.alvr.katana.features.lists.data.di.featuresListsDataModule
 import dev.alvr.katana.features.lists.domain.di.featuresListsDomainModule
 import dev.alvr.katana.features.lists.ui.di.featuresListsUiModule
-import dev.alvr.katana.features.social.data.di.featuresSocialDataModule
-import dev.alvr.katana.features.social.domain.di.featuresSocialDomainModule
-import dev.alvr.katana.features.social.ui.di.featuresSocialUiModule
 import dev.alvr.katana.shared.viewmodel.KatanaViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -64,11 +61,6 @@ val katanaModule = module {
         featuresListsDataModule,
         featuresListsDomainModule,
         featuresListsUiModule,
-
-        // Feature Social
-        featuresSocialDataModule,
-        featuresSocialDomainModule,
-        featuresSocialUiModule,
 
         // Shared
         viewModelsModule,

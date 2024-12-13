@@ -13,7 +13,7 @@ internal data class Session(
     @Serializable(with = AnilistTokenSerializer::class)
     val anilistToken: AnilistToken? = null,
     @SerialName("sa")
-    val isSessionActive: Boolean = false,
+    val sessionActive: Boolean = false,
 ) {
     internal companion object {
         fun serializer(securer: PreferencesEncrypt) = serializer().encrypted(

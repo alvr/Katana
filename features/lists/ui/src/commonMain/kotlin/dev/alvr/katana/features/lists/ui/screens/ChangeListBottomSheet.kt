@@ -34,13 +34,13 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun ChangeListSheet(
-    isVisible: Boolean,
     lists: Array<UserList>,
+    visible: Boolean,
     selectedList: String,
     onDismissRequest: () -> Unit,
     onClick: (String) -> Unit,
 ) {
-    if (!isVisible) return
+    if (!visible) return
 
     val sheetState = rememberModalBottomSheetState(true)
     val coroutineScope = rememberCoroutineScope()

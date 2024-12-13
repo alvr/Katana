@@ -32,14 +32,14 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
                 updateData { p ->
                     p.copy(
                         anilistToken = AnilistToken("token"),
-                        isSessionActive = true,
+                        sessionActive = true,
                     )
                 }
 
                 data.test {
                     awaitItem() shouldBeEqual Session(
                         anilistToken = AnilistToken("token"),
-                        isSessionActive = true,
+                        sessionActive = true,
                     )
                     cancelAndConsumeRemainingEvents()
                 }

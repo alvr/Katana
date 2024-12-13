@@ -10,5 +10,5 @@ internal val anilistTokenMock = AnilistToken("TOKEN")
 
 internal val sessionMock = Session(
     anilistToken = anilistTokenMock,
-    isSessionActive = Arb.boolean().next(),
+    sessionActive = Arb.boolean().next(),
 )

@@ -45,7 +45,7 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 every { store.data } returns flowOf(
                     Session(
                         anilistToken = anilistTokenMock,
-                        isSessionActive = true,
+                        sessionActive = true,
                     ),
                 )
                 source.getAnilistToken().shouldBeSome(anilistTokenMock)
@@ -71,12 +71,12 @@ internal class SessionLocalSourceTest : FreeSpec() {
             }
 
             listOf(
-                Session(anilistToken = null, isSessionActive = false) to false,
-                Session(anilistToken = null, isSessionActive = true) to false,
-                Session(anilistToken = anilistTokenMock, isSessionActive = false) to false,
-                Session(anilistToken = anilistTokenMock, isSessionActive = true) to true,
+                Session(anilistToken = null, sessionActive = false) to false,
+                Session(anilistToken = null, sessionActive = true) to false,
+                Session(anilistToken = anilistTokenMock, sessionActive = false) to false,
+                Session(anilistToken = anilistTokenMock, sessionActive = true) to true,
             ).forEach { (session, expected) ->
-                "checking session active for ${session.anilistToken} and ${session.isSessionActive}" {
+                "checking session active for ${session.anilistToken} and ${session.sessionActive}" {
                     every { store.data } returns flowOf(session)
 
                     source.sessionActive.test {
