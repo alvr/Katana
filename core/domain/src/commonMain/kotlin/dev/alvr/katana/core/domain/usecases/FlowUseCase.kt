@@ -21,13 +21,19 @@ abstract class FlowUseCase<in P, out R> internal constructor(dispatcher: KatanaD
     )
 
     val flow: Flow<R> = paramState.flatMapLatest {
-        createFlow(it).distinctUntilChanged()
-    }.flowOn(dispatcher.io)
+        createFlow(it)
+            .flowOn(dispatcher.io)
+            .distinctUntilChanged()
+    }
 
     protected abstract fun createFlow(params: P): Flow<R>
 
     operator fun invoke(params: P) {
         paramState.tryEmit(params)
+    }
+
+    suspend operator fun invoke(params: P, u: Unit = Unit) {
+        paramState.emit(params)
     }
 }
 

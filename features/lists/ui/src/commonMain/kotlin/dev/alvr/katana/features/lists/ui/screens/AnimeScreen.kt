@@ -20,8 +20,8 @@ internal fun AnimeScreen(
         title = Res.string.anime_toolbar.value,
         emptyStateRes = Res.string.empty_anime_list.value,
         backContent = { Filter() },
-        onEditEntryClick = navigator::editAnimeEntry,
-        onEntryDetailsClick = navigator::animeEntryDetails,
+        onEditEntry = navigator::editAnimeEntry,
+        onEntryDetails = navigator::animeEntryDetails,
     )
 }
 

@@ -19,9 +19,9 @@ internal fun MangaScreen(
         viewModel = koinViewModel<MangaListsViewModel>(),
         title = Res.string.manga_toolbar.value,
         emptyStateRes = Res.string.empty_manga_list.value,
+        onEditEntry = navigator::editMangaEntry,
+        onEntryDetails = navigator::mangaEntryDetails,
         backContent = { Filter() },
-        onEditEntryClick = navigator::editMangaEntry,
-        onEntryDetailsClick = navigator::mangaEntryDetails,
     )
 }
 

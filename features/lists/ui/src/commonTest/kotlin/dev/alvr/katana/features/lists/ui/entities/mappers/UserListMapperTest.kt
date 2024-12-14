@@ -9,12 +9,14 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 
 internal class UserListMapperTest : FreeSpec({
     "a collection of anime" {
-        mapOf(
-            "MyCustomAnimeList" to listOf(animeListItem1),
-            "MyCustomAnimeList2" to listOf(animeListItem2),
+        persistentMapOf(
+            "MyCustomAnimeList" to persistentListOf(animeListItem1),
+            "MyCustomAnimeList2" to persistentListOf(animeListItem2),
         ).also { collection ->
             collection.toUserList()
                 .shouldHaveSize(collection.size)
@@ -26,9 +28,9 @@ internal class UserListMapperTest : FreeSpec({
     }
 
     "a collection of manga" {
-        mapOf(
-            "MyCustomMangaList" to listOf(mangaListItem1),
-            "MyCustomMangaList2" to listOf(mangaListItem2),
+        persistentMapOf(
+            "MyCustomMangaList" to persistentListOf(mangaListItem1),
+            "MyCustomMangaList2" to persistentListOf(mangaListItem2),
         ).also { collection ->
             collection.toUserList()
                 .shouldHaveSize(collection.size)

@@ -29,13 +29,14 @@ import dev.alvr.katana.core.ui.resources.value
 import dev.alvr.katana.features.lists.ui.entities.UserList
 import dev.alvr.katana.features.lists.ui.resources.Res
 import dev.alvr.katana.features.lists.ui.resources.change_list_button
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun ChangeListSheet(
-    lists: Array<UserList>,
     visible: Boolean,
+    lists: ImmutableList<UserList>,
     selectedList: String,
     onDismissRequest: () -> Unit,
     onClick: (String) -> Unit,

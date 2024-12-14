@@ -5,9 +5,11 @@ import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListGroup
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
+import kotlinx.collections.immutable.toImmutableList
 
 internal fun List<MediaListGroup<MediaEntry.Manga>>.toMediaItems() =
     flatMap { list -> list.entries.map(MediaListEntry<MediaEntry.Manga>::toMediaItem) }
+        .toImmutableList()
 
 private fun MediaListEntry<MediaEntry.Manga>.toMediaItem() = MediaListItem.MangaListItem(
     entryId = list.id,
