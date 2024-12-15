@@ -2,10 +2,10 @@ package dev.alvr.katana.common.user.data.di
 
 import dev.alvr.katana.common.user.data.managers.UserIdManagerImpl
 import dev.alvr.katana.common.user.data.repositories.UserRepositoryImpl
-import dev.alvr.katana.common.user.data.sources.id.UserIdRemoteSource
-import dev.alvr.katana.common.user.data.sources.id.UserIdRemoteSourceImpl
-import dev.alvr.katana.common.user.data.sources.info.UserInfoRemoteSource
-import dev.alvr.katana.common.user.data.sources.info.UserInfoRemoteSourceImpl
+import dev.alvr.katana.common.user.data.sources.UserLocalSource
+import dev.alvr.katana.common.user.data.sources.UserLocalSourceImpl
+import dev.alvr.katana.common.user.data.sources.UserRemoteSource
+import dev.alvr.katana.common.user.data.sources.UserRemoteSourceImpl
 import dev.alvr.katana.common.user.domain.managers.UserIdManager
 import dev.alvr.katana.common.user.domain.repositories.UserRepository
 import org.koin.core.module.dsl.singleOf
@@ -21,8 +21,8 @@ private val repositoriesModule = module {
 }
 
 private val sourcesModule = module {
-    singleOf(::UserIdRemoteSourceImpl) bind UserIdRemoteSource::class
-    singleOf(::UserInfoRemoteSourceImpl) bind UserInfoRemoteSource::class
+    singleOf(::UserLocalSourceImpl) bind UserLocalSource::class
+    singleOf(::UserRemoteSourceImpl) bind UserRemoteSource::class
 }
 
 val commonUserDataModule = module {

@@ -7,6 +7,8 @@ import com.apollographql.apollo.testing.QueueTestNetworkTransport
 import com.apollographql.apollo.testing.enqueueTestNetworkError
 import com.apollographql.apollo.testing.enqueueTestResponse
 import dev.alvr.katana.common.user.data.UserIdQuery
+import dev.alvr.katana.common.user.data.sources.UserRemoteSource
+import dev.alvr.katana.common.user.data.sources.UserRemoteSourceImpl
 import dev.alvr.katana.common.user.domain.models.UserId
 import dev.alvr.katana.core.domain.failures.Failure
 import dev.alvr.katana.core.remote.type.buildUser
@@ -18,7 +20,7 @@ import io.kotest.core.spec.style.FreeSpec
 @OptIn(ApolloExperimental::class)
 internal class UserIdRemoteSourceTest : FreeSpec() {
     private val client = ApolloClient.Builder().networkTransport(QueueTestNetworkTransport()).build()
-    private val source: UserIdRemoteSource = UserIdRemoteSourceImpl(client)
+    private val source: UserRemoteSource = UserRemoteSourceImpl(client)
 
     init {
         "getting the userId" - {

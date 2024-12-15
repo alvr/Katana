@@ -7,6 +7,8 @@ import com.apollographql.apollo.testing.MapTestNetworkTransport
 import com.apollographql.apollo.testing.registerTestNetworkError
 import com.apollographql.apollo.testing.registerTestResponse
 import dev.alvr.katana.common.user.data.UserInfoQuery
+import dev.alvr.katana.common.user.data.sources.UserRemoteSource
+import dev.alvr.katana.common.user.data.sources.UserRemoteSourceImpl
 import dev.alvr.katana.common.user.domain.failures.UserFailure
 import dev.alvr.katana.common.user.domain.models.UserInfo
 import dev.alvr.katana.core.remote.type.buildUser
@@ -18,7 +20,7 @@ import io.kotest.core.spec.style.FreeSpec
 @OptIn(ApolloExperimental::class)
 internal class UserInfoRemoteSourceTest : FreeSpec() {
     private val client = ApolloClient.Builder().networkTransport(MapTestNetworkTransport()).build()
-    private val source: UserInfoRemoteSource = UserInfoRemoteSourceImpl(client)
+    private val source: UserRemoteSource = UserRemoteSourceImpl(client)
 
     init {
         "observing the user info" - {
