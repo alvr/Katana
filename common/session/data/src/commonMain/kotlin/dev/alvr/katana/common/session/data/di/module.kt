@@ -1,15 +1,24 @@
 package dev.alvr.katana.common.session.data.di
 
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.data.repositories.SessionRepositoryImpl
 import dev.alvr.katana.common.session.data.sources.SessionLocalSource
 import dev.alvr.katana.common.session.data.sources.SessionLocalSourceImpl
 import dev.alvr.katana.common.session.domain.repositories.SessionRepository
-import org.koin.core.module.Module
+import dev.alvr.katana.core.preferences.datastore.dataStoreFactory
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal expect fun dataStoreModule(): Module
+private val dataStoreModule = module {
+    single {
+        dataStoreFactory(
+            name = "session",
+            serializer = Session.preferencesSerializer(get()),
+            create = { Session() },
+        )
+    }
+}
 
 private val repositoriesModule = module {
     singleOf(::SessionRepositoryImpl) bind SessionRepository::class
@@ -20,7 +29,5 @@ private val sourcesModule = module {
 }
 
 val commonSessionDataModule = module {
-    includes(dataStoreModule(), repositoriesModule, sourcesModule)
+    includes(dataStoreModule, repositoriesModule, sourcesModule)
 }
-
-internal const val DATASTORE_FILE = "session.pb"

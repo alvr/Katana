@@ -18,7 +18,7 @@ internal class KatanaViewModel(
         execute(
             useCase = observeActiveSessionUseCase,
             params = Unit,
-            onError = { state { copy(loading = false, sessionActive = false) } },
+            onFailure = { state { copy(loading = false, sessionActive = false) } },
             onSuccess = { isActive ->
                 state { copy(loading = false, sessionActive = isActive) }
             },

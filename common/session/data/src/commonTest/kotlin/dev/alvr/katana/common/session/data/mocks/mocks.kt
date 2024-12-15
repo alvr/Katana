@@ -1,6 +1,6 @@
 package dev.alvr.katana.common.session.data.mocks
 
-import dev.alvr.katana.common.session.data.models.Session
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.domain.models.AnilistToken
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.boolean

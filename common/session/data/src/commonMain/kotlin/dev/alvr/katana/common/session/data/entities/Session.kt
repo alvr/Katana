@@ -1,4 +1,4 @@
-package dev.alvr.katana.common.session.data.models
+package dev.alvr.katana.common.session.data.entities
 
 import dev.alvr.katana.common.session.data.serializers.AnilistTokenSerializer
 import dev.alvr.katana.common.session.domain.models.AnilistToken
@@ -16,7 +16,7 @@ internal data class Session(
     val sessionActive: Boolean = false,
 ) {
     internal companion object {
-        fun serializer(securer: PreferencesEncrypt) = serializer().encrypted(
+        fun preferencesSerializer(securer: PreferencesEncrypt) = serializer().encrypted(
             defaultValue = Session(),
             securer = securer,
         )

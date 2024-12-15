@@ -115,12 +115,12 @@ abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
         useCase: EitherUseCase<P, R>,
         params: P,
         onSuccess: (R) -> Unit,
-        onError: (Failure) -> Unit,
+        onFailure: (Failure) -> Unit,
     ) {
         viewModelScope.launch(dispatcher.io) {
             val result = useCase(params)
             withContext(dispatcher.main) {
-                result.fold(onError, onSuccess)
+                result.fold(onFailure, onSuccess)
             }
         }
     }
@@ -145,13 +145,13 @@ abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
         useCase: FlowEitherUseCase<P, R>,
         params: P,
         onSuccess: (R) -> Unit,
-        onError: (Failure) -> Unit,
+        onFailure: (Failure) -> Unit,
     ) {
         viewModelScope.launch(dispatcher.io) {
             useCase(params)
             useCase.flow.collect { result ->
                 withContext(dispatcher.main) {
-                    result.fold(onError, onSuccess)
+                    result.fold(onFailure, onSuccess)
                 }
             }
         }

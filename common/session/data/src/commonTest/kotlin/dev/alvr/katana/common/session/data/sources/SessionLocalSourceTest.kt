@@ -3,9 +3,9 @@ package dev.alvr.katana.common.session.data.sources
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import app.cash.turbine.test
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.data.mocks.anilistTokenMock
 import dev.alvr.katana.common.session.data.mocks.sessionMock
-import dev.alvr.katana.common.session.data.models.Session
 import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeNone

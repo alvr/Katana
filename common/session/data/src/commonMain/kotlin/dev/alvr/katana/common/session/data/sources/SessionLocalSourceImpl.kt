@@ -7,7 +7,7 @@ import arrow.core.left
 import arrow.core.right
 import arrow.core.toOption
 import co.touchlab.kermit.Logger
-import dev.alvr.katana.common.session.data.models.Session
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.common.session.domain.models.AnilistToken
 import dev.alvr.katana.core.domain.failures.Failure

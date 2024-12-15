@@ -26,7 +26,7 @@ internal class AccountViewModel(
         execute(
             useCase = observeUserInfoUseCase,
             params = Unit,
-            onError = { state { copy(error = true, loading = false) } },
+            onFailure = { state { copy(error = true, loading = false) } },
             onSuccess = { userInfo ->
                 state {
                     copy(
@@ -43,7 +43,7 @@ internal class AccountViewModel(
         execute(
             useCase = logOutUseCase,
             params = Unit,
-            onError = {
+            onFailure = {
                 state { copy(userInfo = null) }
                 effect(AccountEffect.LoggingOutFailure)
             },

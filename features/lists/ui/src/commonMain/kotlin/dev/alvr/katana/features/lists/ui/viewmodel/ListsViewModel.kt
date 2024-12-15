@@ -47,7 +47,7 @@ internal sealed class ListsViewModel<E : MediaEntry, I : MediaListItem>(
         execute(
             useCase = observeListUseCase,
             params = Unit,
-            onError = {
+            onFailure = {
                 state {
                     copy(
                         collection = persistentMapOf(),
@@ -88,7 +88,7 @@ internal sealed class ListsViewModel<E : MediaEntry, I : MediaListItem>(
             useCase = updateListUseCase,
             params = entry,
             onSuccess = { /* no-op */ },
-            onError = { effect(ListsEffect.AddPlusOneFailure) },
+            onFailure = { effect(ListsEffect.AddPlusOneFailure) },
         )
     }
 

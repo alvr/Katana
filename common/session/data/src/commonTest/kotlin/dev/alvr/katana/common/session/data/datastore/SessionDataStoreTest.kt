@@ -6,7 +6,7 @@ import dev.alvr.katana.common.session.data.di.corruptedDataStoreNamed
 import dev.alvr.katana.common.session.data.di.dataStoreNamed
 import dev.alvr.katana.common.session.data.di.deleteDataStoreFiles
 import dev.alvr.katana.common.session.data.di.testDataStoreModule
-import dev.alvr.katana.common.session.data.models.Session
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.domain.models.AnilistToken
 import dev.alvr.katana.core.tests.koinExtension
 import io.kotest.core.spec.style.FreeSpec
