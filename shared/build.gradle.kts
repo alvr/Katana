@@ -35,6 +35,9 @@ kotlin {
             implementation(libs.sentry.multiplatform)
         }
 
-        commonTest.dependencies { implementation(projects.core.tests) }
+        commonTest.dependencies {
+            implementation(projects.core.tests)
+            implementation(projects.core.tests.ui)
+        }
     }
 }

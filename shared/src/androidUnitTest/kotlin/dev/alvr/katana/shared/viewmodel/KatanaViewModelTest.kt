@@ -5,16 +5,15 @@ import arrow.core.right
 import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.common.session.domain.usecases.ObserveActiveSessionUseCase
 import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.tests.orbitTestScope
+import dev.alvr.katana.core.tests.ui.test
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.test.TestCase
-import io.mockk.clearMocks
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
-import org.orbitmvi.orbit.test.test
 
 internal class KatanaViewModelTest : BehaviorSpec() {
     private val observeActiveSession = mockk<ObserveActiveSessionUseCase>()
@@ -29,10 +28,8 @@ internal class KatanaViewModelTest : BehaviorSpec() {
                         justRun { observeActiveSession() }
                         every { observeActiveSession.flow } returns flowOf(true.right())
 
-                        viewModel.test(orbitTestScope) {
-                            runOnCreate()
-                            expectInitialState()
-                            expectState { copy(loading = false, isSessionActive = true) }
+                        viewModel.test {
+                            expectState { copy(loading = false, sessionActive = true) }
                             verifyMocks()
                         }
                     }
@@ -42,11 +39,9 @@ internal class KatanaViewModelTest : BehaviorSpec() {
                             justRun { observeActiveSession() }
                             every { observeActiveSession.flow } returns flowOf(true.right(), false.right())
 
-                            viewModel.test(orbitTestScope) {
-                                runOnCreate()
-                                expectInitialState()
-//                                expectState { copy(loading = false, isSessionActive = true) }
-                                expectState { copy(loading = false, isSessionActive = false) }
+                            viewModel.test {
+                                expectState { copy(loading = false, sessionActive = true) }
+                                expectState { copy(loading = false, sessionActive = false) }
                                 verifyMocks()
                             }
                         }
@@ -58,10 +53,8 @@ internal class KatanaViewModelTest : BehaviorSpec() {
                         justRun { observeActiveSession() }
                         every { observeActiveSession.flow } returns flowOf(false.right())
 
-                        viewModel.test(orbitTestScope) {
-                            runOnCreate()
-                            expectInitialState()
-                            expectState { copy(loading = false, isSessionActive = false) }
+                        viewModel.test {
+                            expectState { copy(loading = false, sessionActive = false) }
                             verifyMocks()
                         }
                     }
@@ -72,10 +65,8 @@ internal class KatanaViewModelTest : BehaviorSpec() {
                         justRun { observeActiveSession() }
                         every { observeActiveSession.flow } returns flowOf(SessionFailure.CheckingActiveSession.left())
 
-                        viewModel.test(orbitTestScope) {
-                            runOnCreate()
-                            expectInitialState()
-                            expectState { copy(loading = false, isSessionActive = false) }
+                        viewModel.test {
+                            expectState { copy(loading = false, sessionActive = false) }
                             verifyMocks()
                         }
                     }
@@ -85,8 +76,7 @@ internal class KatanaViewModelTest : BehaviorSpec() {
     }
 
     override suspend fun beforeEach(testCase: TestCase) {
-        clearMocks(observeActiveSession)
-
+        clearAllMocks()
         viewModel = KatanaViewModel(observeActiveSession)
     }
 
