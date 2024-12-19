@@ -8,6 +8,7 @@ import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 import dev.alvr.katana.core.ui.utils.hasRoute
 import dev.alvr.katana.features.account.ui.navigation.AccountNavigator
 import dev.alvr.katana.features.account.ui.navigation.rememberKatanaAccountNavigator
+import dev.alvr.katana.features.explore.ui.navigation.ExploreDestination
 import dev.alvr.katana.features.explore.ui.navigation.ExploreNavigator
 import dev.alvr.katana.features.explore.ui.navigation.rememberKatanaExploreNavigator
 import dev.alvr.katana.features.home.ui.navigation.HomeDestination
@@ -75,6 +76,19 @@ private class KatanaRootNavigator(
     override fun navigateToMangaLists() {
         onNavigationBarItemClicked(MangaListsDestination.Root)
     }
+
+    override fun navigateToTrending() {
+        onNavigationBarItemClicked(ExploreDestination.Root)
+    }
+
+    override fun navigateToPopular() {
+        onNavigationBarItemClicked(ExploreDestination.Root)
+    }
+
+    override fun navigateToUpcoming() {
+        onNavigationBarItemClicked(ExploreDestination.Root)
+    }
+
     // endregion [HomeNavigator]
 
     private fun onNavigationBarItemClicked(screen: KatanaDestination) {
