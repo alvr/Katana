@@ -20,22 +20,25 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 
 internal class SessionRepositoryTest : FreeSpec() {
-    private val source: SessionLocalSource = mock<SessionLocalSource>()
-
-    private val repo: SessionRepository = SessionRepositoryImpl(source)
+    private val source: SessionLocalSource = mock<SessionLocalSource> {
+        every { sessionActive } returns emptyFlow()
+    }
+    private lateinit var repo: SessionRepository
 
     init {
         "observing" - {
-            "observing if the session is active" {
-                every { source.sessionActive } returns flowOf(
-                    true.right(),
-                    true.right(),
-                    false.right(),
-                )
+            every { source.sessionActive } returns flowOf(
+                true.right(),
+                true.right(),
+                false.right(),
+            )
 
+            "observing if the session is active" {
                 repo.sessionActive.test {
                     awaitItem().shouldBeRight(true)
                     awaitItem().shouldBeRight(true)
@@ -116,5 +119,9 @@ internal class SessionRepositoryTest : FreeSpec() {
                 verifySuspend { source.logout() }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        repo = SessionRepositoryImpl(source)
     }
 }

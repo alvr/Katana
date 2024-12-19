@@ -8,7 +8,7 @@ internal class UserRepositoryImpl(
     private val localSource: UserLocalSource,
     private val remoteSource: UserRemoteSource,
 ) : UserRepository {
-    override val userInfo get() = remoteSource.userInfo
+    override val userInfo = remoteSource.userInfo
 
     override suspend fun getUserId() = remoteSource.getUserId()
     override suspend fun saveUserId() = remoteSource.saveUserId()

@@ -39,6 +39,7 @@ private typealias MangaState = ListsState<MediaListItem.MangaListItem>
 internal class MangaListsViewModelTest : FreeSpec() {
     private val observeManga = mockk<ObserveMangaListUseCase>()
     private val updateList = mockk<UpdateListUseCase>()
+
     private lateinit var viewModel: MangaListsViewModel
 
     init {
@@ -61,7 +62,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    verify(exactly = 1) { observeManga() }
+                    coVerify(exactly = 1) { observeManga() }
                     verify(exactly = 1) { observeManga.flow }
                 }
             }
@@ -74,7 +75,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     currentState.empty.shouldBeFalse()
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -93,7 +94,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         )
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -110,7 +111,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
         }
@@ -125,7 +126,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.AddPlusOne(mangaListItem1.entryId))
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
 
                 coVerify(exactly = 1) {
@@ -156,7 +157,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.AddPlusOne(234))
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
                 coVerify(exactly = 0) { updateList(any()) }
             }
@@ -178,7 +179,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     }
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -199,7 +200,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     }
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -222,7 +223,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    verify(exactly = 1) { observeManga() }
+                    coVerify(exactly = 1) { observeManga() }
                     verify(exactly = 1) { observeManga.flow }
                 }
             }
@@ -239,7 +240,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.Refresh)
                 }
 
-                verify(exactly = 2) { observeManga() }
+                coVerify(exactly = 2) { observeManga() }
                 verify(exactly = 2) { observeManga.flow }
             }
 
@@ -282,7 +283,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 2) { observeManga() }
+                coVerify(exactly = 2) { observeManga() }
                 verify(exactly = 2) { observeManga.flow }
             }
         }

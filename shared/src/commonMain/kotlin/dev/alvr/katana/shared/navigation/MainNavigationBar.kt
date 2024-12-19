@@ -38,7 +38,9 @@ private class MainNavigationBar(
     override val unselectedIcon: ImageVector,
     override val label: StringResource,
     override val requireSession: Boolean,
-) : MainNavigationBarItem
+) : MainNavigationBarItem {
+    override fun toString(): String = label.key
+}
 
 internal interface MainNavigationBarItem : KatanaNavigationBarItem {
     val requireSession: Boolean

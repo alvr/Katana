@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 @Composable
 @OptIn(KatanaInternalApi::class)
 fun <S : UiState, E : UiEffect, I : UiIntent> KatanaBaseViewModel<S, E, I>.collectAsState() =
-    uiState.collectAsStateWithLifecycle()
+    uiState.collectAsStateWithLifecycle(context = dispatcher.main)
 
 @Composable
 @OptIn(KatanaInternalApi::class)

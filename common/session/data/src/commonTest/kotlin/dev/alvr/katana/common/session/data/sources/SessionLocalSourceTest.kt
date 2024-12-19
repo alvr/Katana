@@ -20,17 +20,22 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 
 internal class SessionLocalSourceTest : FreeSpec() {
-    private val store = mock<DataStore<Session>>()
+    private val store = mock<DataStore<Session>> {
+        every { data } returns emptyFlow()
+    }
 
-    private val source: SessionLocalSource = SessionLocalSourceImpl(store)
+    private lateinit var source: SessionLocalSource
 
     init {
         "successful" - {
+            every { store.data } returns flowOf(Session(anilistToken = null))
+
             "getting a token from datastore for the first time" {
-                every { store.data } returns flowOf(Session(anilistToken = null))
                 source.getAnilistToken().shouldBeNone()
                 verify { store.data }
             }
@@ -48,6 +53,7 @@ internal class SessionLocalSourceTest : FreeSpec() {
                         sessionActive = true,
                     ),
                 )
+
                 source.getAnilistToken().shouldBeSome(anilistTokenMock)
                 verify { store.data }
             }
@@ -76,9 +82,9 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 Session(anilistToken = anilistTokenMock, sessionActive = false) to false,
                 Session(anilistToken = anilistTokenMock, sessionActive = true) to true,
             ).forEach { (session, expected) ->
-                "checking session active for ${session.anilistToken} and ${session.sessionActive}" {
-                    every { store.data } returns flowOf(session)
+                every { store.data } returns flowOf(session)
 
+                "checking session active for ${session.anilistToken} and ${session.sessionActive}" {
                     source.sessionActive.test {
                         awaitItem().shouldBeRight(expected)
                         cancelAndIgnoreRemainingEvents()
@@ -138,5 +144,9 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 verifySuspend { store.updateData(any()) }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        source = SessionLocalSourceImpl(store)
     }
 }

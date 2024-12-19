@@ -1,5 +1,6 @@
 package dev.alvr.katana.common.session.data.di
 
+import dev.alvr.katana.common.session.data.datastore.sessionDataStore
 import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.data.repositories.SessionRepositoryImpl
 import dev.alvr.katana.common.session.data.sources.SessionLocalSource
@@ -11,7 +12,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 private val dataStoreModule = module {
-    single {
+    single(sessionDataStore) {
         dataStoreFactory(
             name = "session",
             serializer = Session.preferencesSerializer(get()),
@@ -25,7 +26,11 @@ private val repositoriesModule = module {
 }
 
 private val sourcesModule = module {
-    singleOf(::SessionLocalSourceImpl) bind SessionLocalSource::class
+    single<SessionLocalSource> {
+        SessionLocalSourceImpl(
+            store = get(sessionDataStore),
+        )
+    }
 }
 
 val commonSessionDataModule = module {

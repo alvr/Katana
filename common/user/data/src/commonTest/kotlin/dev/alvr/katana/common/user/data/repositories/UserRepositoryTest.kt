@@ -18,13 +18,16 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
 import kotlinx.coroutines.flow.emptyFlow
 
 internal class UserRepositoryTest : FreeSpec() {
     private val userLocalSource = mock<UserLocalSource>()
-    private val userRemoteSource = mock<UserRemoteSource>()
+    private val userRemoteSource = mock<UserRemoteSource> {
+        every { userInfo } returns emptyFlow()
+    }
 
-    private val repo: UserRepository = UserRepositoryImpl(userLocalSource, userRemoteSource)
+    private lateinit var repo: UserRepository
 
     init {
         "userId" - {
@@ -72,5 +75,9 @@ internal class UserRepositoryTest : FreeSpec() {
                 }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        repo = UserRepositoryImpl(userLocalSource, userRemoteSource)
     }
 }

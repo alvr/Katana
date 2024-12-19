@@ -20,7 +20,7 @@ interface BaseNavigator {
 fun BaseNavigator.overridden(
     navigator: String = "KatanaRootNavigator",
 ) {
-    Logger.i(LOG_TAG) { "Implementation overridden in $navigator" }
+    Logger.i(LogTag) { "Implementation overridden in $navigator" }
 }
 
 @Composable
@@ -37,7 +37,7 @@ private fun NavHostController.loggerObserver() = apply {
     if (KatanaBuildConfig.DEBUG) {
         DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
             val listener = NavController.OnDestinationChangedListener { navController, destination, args ->
-                Logger.d(LOG_TAG) {
+                Logger.d(LogTag) {
                     buildString {
                         append("Navigating to route ${destination.route}")
 
@@ -54,4 +54,4 @@ private fun NavHostController.loggerObserver() = apply {
     }
 }
 
-private const val LOG_TAG = "KatanaNavigator"
+private const val LogTag = "KatanaNavigator"

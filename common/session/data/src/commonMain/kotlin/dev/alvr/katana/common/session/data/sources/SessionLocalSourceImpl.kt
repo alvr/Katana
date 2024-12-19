@@ -18,53 +18,52 @@ import kotlinx.coroutines.flow.map
 internal class SessionLocalSourceImpl(
     private val store: DataStore<Session>,
 ) : SessionLocalSource {
-    @Suppress("USELESS_CAST")
-    override val sessionActive
-        get() = store.data.map { session ->
-            (session.anilistToken != null && session.sessionActive).right() as Either<Failure, Boolean>
-        }.catch { error ->
-            Logger.e(LOG_TAG, error) { "Error observing the session, setting the as inactive" }
-            emit(SessionFailure.CheckingActiveSession.left())
-        }
+    override val sessionActive = store.data.map { session ->
+        @Suppress("USELESS_CAST")
+        (session.anilistToken != null && session.sessionActive).right() as Either<Failure, Boolean>
+    }.catch { error ->
+        Logger.e(LogTag, error) { "Error observing the session, setting the as inactive" }
+        emit(SessionFailure.CheckingActiveSession.left())
+    }
 
     override suspend fun clearActiveSession() = Either.catch {
         store.updateData { p -> p.copy(sessionActive = false) }
-        Logger.d(LOG_TAG) { "Session cleared" }
+        Logger.d(LogTag) { "Session cleared" }
     }.mapLeft { error ->
-        Logger.e(LOG_TAG, error) { "Error clearing session" }
+        Logger.e(LogTag, error) { "Error clearing session" }
         SessionFailure.ClearingSession
     }
 
     override suspend fun deleteAnilistToken() = Either.catch {
         store.updateData { p -> p.copy(anilistToken = null) }
-        Logger.d(LOG_TAG) { "Anilist token deleted" }
+        Logger.d(LogTag) { "Anilist token deleted" }
     }.mapLeft { error ->
-        Logger.e(LOG_TAG, error) { "Was not possible to delete the token" }
+        Logger.e(LogTag, error) { "Was not possible to delete the token" }
         SessionFailure.DeletingToken
     }
 
     override suspend fun getAnilistToken() = store.data
         .map { session -> session.anilistToken.toOption() }
         .catch { error ->
-            Logger.e(LOG_TAG, error) { "There was an error reading the token from the preferences" }
+            Logger.e(LogTag, error) { "There was an error reading the token from the preferences" }
             emit(None)
         }.first()
 
     override suspend fun logout() = Either.catch {
         store.updateData { p -> p.copy(anilistToken = null, sessionActive = false) }
-        Logger.d(LOG_TAG) { "Logged out" }
+        Logger.d(LogTag) { "Logged out" }
     }.mapLeft { error ->
-        Logger.e(LOG_TAG, error) { "Was not possible to logout" }
+        Logger.e(LogTag, error) { "Was not possible to logout" }
         SessionFailure.LoggingOut
     }
 
     override suspend fun saveSession(anilistToken: AnilistToken) = Either.catch {
         store.updateData { p -> p.copy(anilistToken = anilistToken, sessionActive = true) }
-        Logger.d(LOG_TAG) { "Token saved: ${anilistToken.token}" }
+        Logger.d(LogTag) { "Token saved: ${anilistToken.token}" }
     }.mapLeft { error ->
-        Logger.e(LOG_TAG, error) { "Was not possible to save the token" }
+        Logger.e(LogTag, error) { "Was not possible to save the token" }
         SessionFailure.SavingSession
     }
 }
 
-private const val LOG_TAG = "SessionLocalSource"
+private const val LogTag = "SessionLocalSource"

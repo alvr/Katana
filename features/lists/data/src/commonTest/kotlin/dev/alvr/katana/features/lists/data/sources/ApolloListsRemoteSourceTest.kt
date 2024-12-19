@@ -28,10 +28,6 @@ import dev.alvr.katana.core.remote.type.buildUser
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.alvr.katana.features.lists.data.MediaListCollectionQuery
-import dev.alvr.katana.features.lists.data.sources.anime.AnimeListsRemoteSource
-import dev.alvr.katana.features.lists.data.sources.anime.AnimeListsRemoteSourceImpl
-import dev.alvr.katana.features.lists.data.sources.manga.MangaListsRemoteSource
-import dev.alvr.katana.features.lists.data.sources.manga.MangaListsRemoteSourceImpl
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
 import dev.alvr.katana.features.lists.domain.models.entries.CommonMediaEntry
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
@@ -40,6 +36,7 @@ import dev.mokkery.everySuspend
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -63,9 +60,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
     private val userId = 37_384.right()
     private val userIdOpt = userId.getOrNull().optional
 
-    private val source: CommonListsRemoteSource = CommonListsRemoteSourceImpl(client, userIdManager, reloadInterceptor)
-    private val animeSource: AnimeListsRemoteSource = AnimeListsRemoteSourceImpl(source)
-    private val mangaSource: MangaListsRemoteSource = MangaListsRemoteSourceImpl(source)
+    private lateinit var source: ListsRemoteSource
 
     init {
         beforeEach {
@@ -85,7 +80,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeRight().lists.shouldBeEmpty()
                     awaitComplete()
                 }
@@ -124,7 +119,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeRight().lists
                         .shouldHaveSize(3)
                         .also { lists ->
@@ -176,7 +171,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeRight().lists.also { lists ->
                         val entry = lists.first().entries.shouldHaveSize(1).first()
 
@@ -264,7 +259,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeRight().lists.also { lists ->
                         val entry = lists.first().entries.shouldHaveSize(1).first()
 
@@ -308,7 +303,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     null,
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
                     awaitComplete()
                 }
@@ -324,7 +319,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     ),
                 )
 
-                animeSource.animeCollection.test {
+                source.animeCollection.test {
                     awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
                     awaitComplete()
                 }
@@ -346,7 +341,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeRight().lists.shouldBeEmpty()
                     awaitComplete()
                 }
@@ -386,7 +381,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeRight().lists
                         .shouldHaveSize(3)
                         .also { lists ->
@@ -439,7 +434,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeRight().lists.also { lists ->
                         val entry = lists.first().entries.shouldHaveSize(1).first()
 
@@ -525,7 +520,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     query,
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeRight().lists.also { lists ->
                         val entry = lists.first().entries.shouldHaveSize(1).first()
 
@@ -566,7 +561,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     null,
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
                     awaitComplete()
                 }
@@ -582,7 +577,7 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                     ),
                 )
 
-                mangaSource.mangaCollection.test {
+                source.mangaCollection.test {
                     awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
                     awaitComplete()
                 }
@@ -590,5 +585,9 @@ internal class ApolloListsRemoteSourceTest : FreeSpec() {
                 verifySuspend { userIdManager.getId() }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        source = ListsRemoteSourceImpl(client, userIdManager, reloadInterceptor)
     }
 }

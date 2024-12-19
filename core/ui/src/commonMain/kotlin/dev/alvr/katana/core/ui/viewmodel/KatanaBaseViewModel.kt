@@ -3,8 +3,10 @@ package dev.alvr.katana.core.ui.viewmodel
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.common.annotations.KatanaInternalApi
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
+import dev.alvr.katana.core.common.onSubscribe
 import dev.alvr.katana.core.domain.failures.Failure
 import dev.alvr.katana.core.domain.usecases.EitherUseCase
 import dev.alvr.katana.core.domain.usecases.FlowEitherUseCase
@@ -14,7 +16,6 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,9 +23,10 @@ import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -39,12 +41,16 @@ internal annotation class KatanaViewModelExecuteDsl
 abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
     initialState: S,
 ) : ViewModel(), KoinComponent {
-    private val dispatcher by inject<KatanaDispatcher>()
+    internal val dispatcher by inject<KatanaDispatcher>()
 
     private val initialized = atomic(false)
+    private val mutex = Mutex()
+
     private val _uiState = MutableStateFlow(initialState)
     private val _effects = Channel<E>()
     private val _intents = Channel<I>()
+
+    private val viewModelLogTag get() = this::class.simpleName ?: LogTag
 
     @KatanaInternalApi
     val uiState: StateFlow<S> = _uiState
@@ -74,7 +80,22 @@ abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
     @KatanaViewModelDsl
     protected fun state(state: S.() -> S) {
         viewModelScope.launch(dispatcher.main) {
-            _uiState.update(state)
+            mutex.withLock {
+                val prevState = currentState
+                val newState = state(prevState)
+
+                if (prevState != newState) {
+                    _uiState.value = newState
+
+                    Logger.d(viewModelLogTag) {
+                        """
+                            |UiState changed:
+                            |  Previous: $prevState
+                            |  New       $newState
+                        """.trimMargin()
+                    }
+                }
+            }
         }
     }
 
@@ -165,7 +186,7 @@ abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
         onEmpty: () -> Unit,
     ) {
         viewModelScope.launch(dispatcher.io) {
-            useCase(params, Unit)
+            useCase(params)
             useCase.flow.collect { result ->
                 withContext(dispatcher.main) {
                     result.fold(onEmpty, onSome)
@@ -181,11 +202,5 @@ abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
     }
 }
 
-private fun <T> Flow<T>.onSubscribe(block: () -> Unit) = object : Flow<T> by this {
-    override suspend fun collect(collector: FlowCollector<T>) {
-        block()
-        this@onSubscribe.collect(collector)
-    }
-}
-
-private const val SubscriptionDuration = 5_000L
+private const val LogTag = "KatanaBaseViewModel"
+private const val SubscriptionDuration = 2_500L

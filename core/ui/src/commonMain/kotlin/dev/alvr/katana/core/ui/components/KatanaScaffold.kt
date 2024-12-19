@@ -37,8 +37,8 @@ fun KatanaScaffold(
     blurBottomBar: Boolean = false,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val rememberedTopBar = remember { movableContentOf(topBar) }
-    val rememberedBottomBar = remember { movableContentOf(bottomBar) }
+    val rememberedTopBar = remember(topBar) { movableContentOf(topBar) }
+    val rememberedBottomBar = remember(bottomBar) { movableContentOf(bottomBar) }
 
     WrappedScaffold(
         modifier = modifier,

@@ -39,6 +39,7 @@ private typealias AnimeState = ListsState<MediaListItem.AnimeListItem>
 internal class AnimeListsViewModelTest : FreeSpec() {
     private val observeAnime = mockk<ObserveAnimeListUseCase>()
     private val updateList = mockk<UpdateListUseCase>()
+
     private lateinit var viewModel: AnimeListsViewModel
 
     init {
@@ -61,7 +62,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    verify(exactly = 1) { observeAnime() }
+                    coVerify(exactly = 1) { observeAnime() }
                     verify(exactly = 1) { observeAnime.flow }
                 }
             }
@@ -74,7 +75,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     currentState.empty.shouldBeFalse()
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -93,7 +94,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                         )
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -110,7 +111,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
         }
@@ -125,7 +126,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.AddPlusOne(animeListItem1.entryId))
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
 
                 coVerify(exactly = 1) {
@@ -156,7 +157,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.AddPlusOne(234))
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
                 coVerify(exactly = 0) { updateList(any()) }
             }
@@ -178,7 +179,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     }
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -199,7 +200,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     }
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -222,7 +223,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    verify(exactly = 1) { observeAnime() }
+                    coVerify(exactly = 1) { observeAnime() }
                     verify(exactly = 1) { observeAnime.flow }
                 }
             }
@@ -239,7 +240,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.Refresh)
                 }
 
-                verify(exactly = 2) { observeAnime() }
+                coVerify(exactly = 2) { observeAnime() }
                 verify(exactly = 2) { observeAnime.flow }
             }
 
@@ -282,7 +283,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 2) { observeAnime() }
+                coVerify(exactly = 2) { observeAnime() }
                 verify(exactly = 2) { observeAnime.flow }
             }
         }

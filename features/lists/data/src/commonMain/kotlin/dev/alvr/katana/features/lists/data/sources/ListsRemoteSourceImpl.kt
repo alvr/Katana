@@ -27,11 +27,14 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-internal class CommonListsRemoteSourceImpl(
+internal class ListsRemoteSourceImpl(
     private val client: ApolloClient,
     private val userId: UserIdManager,
     private val reloadInterceptor: ApolloInterceptor,
-) : CommonListsRemoteSource {
+) : ListsRemoteSource {
+    override val animeCollection = getMediaCollection<MediaEntry.Anime>(MediaType.ANIME)
+    override val mangaCollection = getMediaCollection<MediaEntry.Manga>(MediaType.MANGA)
+
     override suspend fun updateList(entry: MediaList) = Either.catchUnit {
         client.mutation(entry.toMutation()).executeOrThrow()
     }.mapLeft { error ->
@@ -43,7 +46,7 @@ internal class CommonListsRemoteSourceImpl(
         )
     }
 
-    override fun <T : MediaEntry> getMediaCollection(type: MediaType) = flow {
+    private fun <T : MediaEntry> getMediaCollection(type: MediaType) = flow {
         val response = client
             .query(MediaListCollectionQuery(userId.getId().optional, type))
             .fetchPolicyInterceptor(reloadInterceptor)

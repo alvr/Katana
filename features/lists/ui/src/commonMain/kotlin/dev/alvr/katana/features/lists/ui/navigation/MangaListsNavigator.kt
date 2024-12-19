@@ -17,11 +17,11 @@ private class KatanaMangaListsNavigator : MangaListsNavigator {
     }
 
     override fun mangaEntryDetails(id: Int) {
-        Logger.d(LOG_TAG) { "Entry details $id" }
+        Logger.d(LogTag) { "Entry details $id" }
     }
 
     override fun editMangaEntry(id: Int) {
-        Logger.d(LOG_TAG) { "Edit entry $id" }
+        Logger.d(LogTag) { "Edit entry $id" }
     }
 }
 
@@ -30,4 +30,4 @@ fun rememberKatanaMangaListsNavigator(): MangaListsNavigator = rememberKatanaNav
     KatanaMangaListsNavigator()
 }
 
-private const val LOG_TAG = "MangaListsNavigator"
+private const val LogTag = "MangaListsNavigator"

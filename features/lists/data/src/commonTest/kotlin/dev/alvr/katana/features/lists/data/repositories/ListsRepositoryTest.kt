@@ -7,9 +7,7 @@ import dev.alvr.katana.core.domain.failures.Failure
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.alvr.katana.features.lists.data.mediaListMock
-import dev.alvr.katana.features.lists.data.sources.CommonListsRemoteSource
-import dev.alvr.katana.features.lists.data.sources.anime.AnimeListsRemoteSource
-import dev.alvr.katana.features.lists.data.sources.manga.MangaListsRemoteSource
+import dev.alvr.katana.features.lists.data.sources.ListsRemoteSource
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
@@ -22,44 +20,44 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
 import kotlinx.coroutines.flow.flowOf
 
 internal class ListsRepositoryTest : FreeSpec() {
-    private val commonSource = mock<CommonListsRemoteSource>()
-    private val animeSource = mock<AnimeListsRemoteSource>()
-    private val mangaSource = mock<MangaListsRemoteSource>()
+    private val remoteSource = mock<ListsRemoteSource>()
 
-    private val repo: ListsRepository = ListsRepositoryImpl(commonSource, animeSource, mangaSource)
+    private lateinit var repo: ListsRepository
 
     init {
-        "collecting anime collection flow" {
-            val collection = MediaCollection<MediaEntry.Anime>(emptyList())
-            every { animeSource.animeCollection } returns flowOf(collection.right())
+        "collections" - {
+            val animeCollection = MediaCollection<MediaEntry.Anime>(emptyList())
+            val mangaCollection = MediaCollection<MediaEntry.Manga>(emptyList())
+            every { remoteSource.animeCollection } returns flowOf(animeCollection.right())
+            every { remoteSource.mangaCollection } returns flowOf(mangaCollection.right())
 
-            repo.animeCollection.test {
-                awaitItem().shouldBeRight(collection)
-                awaitComplete()
+            "collecting anime collection flow" {
+                repo.animeCollection.test {
+                    awaitItem().shouldBeRight(animeCollection)
+                    awaitComplete()
+                }
+
+                verify { remoteSource.animeCollection }
             }
 
-            verify { animeSource.animeCollection }
-        }
+            "collecting manga collection flow" {
+                repo.mangaCollection.test {
+                    awaitItem().shouldBeRight(mangaCollection)
+                    awaitComplete()
+                }
 
-        "collecting manga collection flow" {
-            val collection = MediaCollection<MediaEntry.Manga>(emptyList())
-            every { mangaSource.mangaCollection } returns flowOf(collection.right())
-
-            repo.mangaCollection.test {
-                awaitItem().shouldBeRight(collection)
-                awaitComplete()
+                verify { remoteSource.mangaCollection }
             }
-
-            verify { mangaSource.mangaCollection }
         }
 
         "successfully updating list" {
-            everySuspend { commonSource.updateList(any()) } returns Unit.right()
+            everySuspend { remoteSource.updateList(any()) } returns Unit.right()
             repo.updateList(mediaListMock).shouldBeRight(Unit)
-            verifySuspend { commonSource.updateList(any()) }
+            verifySuspend { remoteSource.updateList(any()) }
         }
 
         listOf(
@@ -67,10 +65,14 @@ internal class ListsRepositoryTest : FreeSpec() {
             Failure.Unknown to Failure.Unknown.left(),
         ).forEach { (expected, failure) ->
             "failure updating the list ($expected)" {
-                everySuspend { commonSource.updateList(any()) } returns failure
+                everySuspend { remoteSource.updateList(any()) } returns failure
                 repo.updateList(mediaListMock).shouldBeLeft(expected)
-                verifySuspend { commonSource.updateList(mediaListMock) }
+                verifySuspend { remoteSource.updateList(mediaListMock) }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        repo = ListsRepositoryImpl(remoteSource)
     }
 }

@@ -29,7 +29,7 @@ fun <T> dataStoreFactory(
     storage = OkioStorage(
         fileSystem = fileSystem,
         serializer = serializer,
-        producePath = { dataStorePath("${name}.pb") },
+        producePath = { dataStorePath("$name.pb") },
     ),
     corruptionHandler = replaceFile(create),
     migrations = migrations,
