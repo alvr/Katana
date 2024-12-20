@@ -38,7 +38,7 @@ orbit = "9.0.0"
 sentry = "7.19.0"
 sentry-multiplatform = "0.10.0"
 sentry-plugin = "4.14.1"
-tink = "1.15.0"
+tink = "1.16.0"
 turbine = "1.2.0"
 
 [plugins]
