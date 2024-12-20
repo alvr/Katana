@@ -18,7 +18,7 @@ internal class AndroidPreferencesEncryptTest : FreeSpec() {
             val input = "Test".encodeToByteArray()
             encrypt.decrypt(input) shouldBe "tseT".encodeToByteArray()
 
-            verify(exactly = 1) { aead.decrypt(input, null) }
+            verify(exactly = 1) { aead.decrypt(input, byteArrayOf()) }
         }
 
         "encrypt using Aead" {
@@ -27,7 +27,7 @@ internal class AndroidPreferencesEncryptTest : FreeSpec() {
             val input = "Test".encodeToByteArray()
             encrypt.encrypt(input) shouldBe "tseT".encodeToByteArray()
 
-            verify(exactly = 1) { aead.encrypt(input, null) }
+            verify(exactly = 1) { aead.encrypt(input, byteArrayOf()) }
         }
     }
 }
