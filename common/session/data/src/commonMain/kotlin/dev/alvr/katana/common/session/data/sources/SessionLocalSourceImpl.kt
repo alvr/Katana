@@ -12,6 +12,7 @@ import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.common.session.domain.models.AnilistToken
 import dev.alvr.katana.core.domain.failures.Failure
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
@@ -24,7 +25,7 @@ internal class SessionLocalSourceImpl(
     }.catch { error ->
         Logger.e(LogTag, error) { "There was an error observing the session" }
         emit(SessionFailure.CheckingActiveSession.left())
-    }
+    }.distinctUntilChanged()
 
     override suspend fun clearActiveSession() = Either.catch {
         store.updateData { p -> p.copy(sessionActive = false) }

@@ -16,8 +16,8 @@ import kotlin.reflect.KClass
 val WindowInsets.Companion.noInsets: WindowInsets
     get() = WindowInsets(0)
 
-val WindowInsets.Companion.scaffoldContent: WindowInsets
-    get() = WindowInsets(left = 8.dp, top = 8.dp, right = 8.dp, bottom = 8.dp)
+val WindowInsets.Companion.contentPadding: WindowInsets
+    get() = WindowInsets(left = 12.dp, top = 12.dp, right = 12.dp, bottom = 12.dp)
 
 @Composable
 fun isLandscape() = calculateWindowSizeClass().widthSizeClass > WindowWidthSizeClass.Medium
@@ -33,6 +33,7 @@ fun <T : KatanaDestination> NavBackStackEntry?.hasParentRoute(route: KClass<T>) 
 
 @Composable
 internal expect fun calculateWindowSizeClass(): WindowSizeClass
+
 @Composable
 fun imageRequest(builder: ImageRequest.Builder.() -> Unit) =
     ImageRequest.Builder(LocalPlatformContext.current)

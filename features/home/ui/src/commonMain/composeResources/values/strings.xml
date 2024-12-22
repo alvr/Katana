@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="home_tab_for_you">For You</string>
-    <string name="home_tab_activity">Activity</string>
+    <string name="katana_logo_a11y">Katana logo</string>
 
-    <string name="a11y_katana_logo">Katana logo</string>
+    <string name="tab_for_you">For You</string>
+    <string name="tab_activity">Activity</string>
+
+    <string name="error_fetch_user_id">There was an error obtaining the user. Please try again.</string>
+    <string name="error_save_token">There was an error logging in. Please try again.</string>
+    <string name="error_observe_session">There was an error checking if the session is active. Please, log in again.</string>
+
+    <string name="welcome_card_title">Welcome to Katana!</string>
+    <string name="welcome_card_close_card_a11y">Close welcome card</string>
+    <string name="welcome_card_message">You can use Katana without logging in with your AniList account, but you will not be able to enjoy all the features. Register or log in now or do it later.</string>
+    <string name="welcome_card_register_button">Register</string>
+    <string name="welcome_card_login_button">Log in</string>
+
+    <string name="watching_title">Currently watching</string>
+    <string name="watching_icon_button_a11y">Go to anime lists</string>
+
+    <string name="reading_title">Currently reading</string>
+    <string name="reading_icon_button_a11y">Go to manga lists</string>
+
+    <string name="trending_title">Trending</string>
+    <string name="trending_icon_button_a11y">Go to trending</string>
+
+    <string name="popular_title">Popular</string>
+    <string name="popular_icon_button_a11y">Go to popular</string>
+
+    <string name="upcoming_title">Upcoming</string>
+    <string name="upcoming_icon_button_a11y">Go to upcoming</string>
 </resources>

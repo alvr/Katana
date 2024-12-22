@@ -9,6 +9,7 @@ import dev.alvr.katana.core.domain.failures.Failure
 import dev.alvr.katana.features.home.data.entities.HomePreferences
 import dev.alvr.katana.features.home.domain.failures.HomeFailure
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 internal class HomeLocalSourceImpl(
@@ -20,7 +21,7 @@ internal class HomeLocalSourceImpl(
     }.catch { error ->
         Logger.e(LogTag, error) { "There was an error getting the visibility of the welcome card" }
         emit(HomeFailure.GettingWelcomeCardVisibility.left())
-    }
+    }.distinctUntilChanged()
 
     override suspend fun hideWelcomeCard() = Either.catch {
         store.updateData { homePreferences -> homePreferences.copy(welcomeCardVisible = false) }

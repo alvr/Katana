@@ -11,6 +11,9 @@ interface HomeNavigator : BaseNavigator {
 
     fun navigateToAnimeLists()
     fun navigateToMangaLists()
+    fun navigateToTrending()
+    fun navigateToPopular()
+    fun navigateToUpcoming()
 }
 
 private class KatanaHomeNavigator(
@@ -25,6 +28,18 @@ private class KatanaHomeNavigator(
     }
 
     override fun navigateToMangaLists() {
+        overridden()
+    }
+
+    override fun navigateToUpcoming() {
+        overridden()
+    }
+
+    override fun navigateToPopular() {
+        overridden()
+    }
+
+    override fun navigateToTrending() {
         overridden()
     }
 }

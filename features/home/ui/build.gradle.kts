@@ -6,6 +6,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.common.session.domain)
+            implementation(projects.common.user.domain)
 
             implementation(projects.core.common)
             implementation(projects.core.ui)
