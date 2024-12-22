@@ -1,5 +1,8 @@
 package dev.alvr.katana.features.home.data.di
 
+import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.interceptor.ApolloInterceptor
+import dev.alvr.katana.common.user.domain.managers.UserIdManager
 import io.kotest.core.spec.style.FreeSpec
 import io.mockk.mockkClass
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -13,6 +16,12 @@ internal class FeaturesHomeDataModuleTest : FreeSpec({
     }
 
     "verify featuresHomeDataModule" - {
-        featuresHomeDataModule.verify()
+        featuresHomeDataModule.verify(
+            extraTypes = listOf(
+                ApolloClient::class,
+                ApolloInterceptor::class,
+                UserIdManager::class,
+            ),
+        )
     }
 })

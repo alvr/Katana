@@ -1,5 +1,7 @@
 package dev.alvr.katana.features.home.domain.di
 
+import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
+import dev.alvr.katana.features.home.domain.repositories.HomeRepository
 import io.kotest.core.spec.style.FreeSpec
 import io.mockk.mockkClass
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -13,6 +15,11 @@ internal class FeaturesHomeDomainModuleTest : FreeSpec({
     }
 
     "verify featuresHomeDomainModule" - {
-        featuresHomeDomainModule.verify()
+        featuresHomeDomainModule.verify(
+            extraTypes = listOf(
+                KatanaDispatcher::class,
+                HomeRepository::class,
+            ),
+        )
     }
 })

@@ -4,8 +4,9 @@ import dev.alvr.katana.common.user.data.sources.UserLocalSource
 import dev.alvr.katana.common.user.data.sources.UserRemoteSource
 import dev.alvr.katana.common.user.domain.repositories.UserRepository
 
+@Suppress("UnusedPrivateProperty")
 internal class UserRepositoryImpl(
-    private val localSource: UserLocalSource,
+    @Suppress("Unused") private val localSource: UserLocalSource,
     private val remoteSource: UserRemoteSource,
 ) : UserRepository {
     override val userInfo = remoteSource.userInfo

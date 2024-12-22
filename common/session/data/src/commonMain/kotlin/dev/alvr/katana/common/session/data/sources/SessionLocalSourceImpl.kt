@@ -22,7 +22,7 @@ internal class SessionLocalSourceImpl(
         @Suppress("USELESS_CAST")
         (session.anilistToken != null && session.sessionActive).right() as Either<Failure, Boolean>
     }.catch { error ->
-        Logger.e(LogTag, error) { "Error observing the session, setting the as inactive" }
+        Logger.e(LogTag, error) { "There was an error observing the session" }
         emit(SessionFailure.CheckingActiveSession.left())
     }
 
@@ -30,7 +30,7 @@ internal class SessionLocalSourceImpl(
         store.updateData { p -> p.copy(sessionActive = false) }
         Logger.d(LogTag) { "Session cleared" }
     }.mapLeft { error ->
-        Logger.e(LogTag, error) { "Error clearing session" }
+        Logger.e(LogTag, error) { "There was an error clearing session" }
         SessionFailure.ClearingSession
     }
 
@@ -38,7 +38,7 @@ internal class SessionLocalSourceImpl(
         store.updateData { p -> p.copy(anilistToken = null) }
         Logger.d(LogTag) { "Anilist token deleted" }
     }.mapLeft { error ->
-        Logger.e(LogTag, error) { "Was not possible to delete the token" }
+        Logger.e(LogTag, error) { "There was an error deleting the token" }
         SessionFailure.DeletingToken
     }
 
@@ -53,7 +53,7 @@ internal class SessionLocalSourceImpl(
         store.updateData { p -> p.copy(anilistToken = null, sessionActive = false) }
         Logger.d(LogTag) { "Logged out" }
     }.mapLeft { error ->
-        Logger.e(LogTag, error) { "Was not possible to logout" }
+        Logger.e(LogTag, error) { "There was an error logging out" }
         SessionFailure.LoggingOut
     }
 
@@ -61,7 +61,7 @@ internal class SessionLocalSourceImpl(
         store.updateData { p -> p.copy(anilistToken = anilistToken, sessionActive = true) }
         Logger.d(LogTag) { "Token saved: ${anilistToken.token}" }
     }.mapLeft { error ->
-        Logger.e(LogTag, error) { "Was not possible to save the token" }
+        Logger.e(LogTag, error) { "There was an error saving the token" }
         SessionFailure.SavingSession
     }
 }
