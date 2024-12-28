@@ -23,7 +23,7 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
         "initial session should equal to the Session class" {
             dataStore.data.test {
                 awaitItem() shouldBeEqual Session()
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
         }
 
@@ -41,7 +41,7 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
                         anilistToken = AnilistToken("token"),
                         sessionActive = true,
                     )
-                    cancelAndConsumeRemainingEvents()
+                    ensureAllEventsConsumed()
                 }
             }
         }
@@ -49,7 +49,7 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
         "corrupted dataStore should recreate again the file with initial values" {
             corruptedDataStore.data.test {
                 awaitItem() shouldBeEqual Session(anilistToken = AnilistToken("recreated"))
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
         }
     }

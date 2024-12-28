@@ -44,7 +44,7 @@ internal class ObserveActiveSessionUseCaseTest : FreeSpec(), KoinTest {
                 awaitItem().shouldBeRight(false)
                 awaitItem().shouldBeRight(true)
                 awaitItem().shouldBeRight(false)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.sessionActive }
@@ -57,7 +57,7 @@ internal class ObserveActiveSessionUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(SessionFailure.CheckingActiveSession)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.sessionActive }

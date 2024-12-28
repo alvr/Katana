@@ -37,7 +37,7 @@ internal class ObserveMangaListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeRight(MediaCollection(emptyList()))
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.mangaCollection }
@@ -52,7 +52,7 @@ internal class ObserveMangaListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.mangaCollection }

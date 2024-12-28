@@ -34,7 +34,7 @@ internal class ObserveUserInfoUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeRight(userInfoMock)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.userInfo }
@@ -47,7 +47,7 @@ internal class ObserveUserInfoUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(UserFailure.GettingUserInfo)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.userInfo }

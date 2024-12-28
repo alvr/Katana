@@ -37,7 +37,7 @@ internal class ObserveAnimeListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeRight(MediaCollection(emptyList()))
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.animeCollection }
@@ -52,7 +52,7 @@ internal class ObserveAnimeListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.animeCollection }

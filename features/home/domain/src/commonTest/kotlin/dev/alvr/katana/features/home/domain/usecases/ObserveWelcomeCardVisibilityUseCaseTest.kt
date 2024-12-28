@@ -34,7 +34,7 @@ internal class ObserveWelcomeCardVisibilityUseCaseTest : FreeSpec(), KoinTest {
             useCase.flow.test {
                 awaitItem().shouldBeRight(false)
                 awaitItem().shouldBeRight(true)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.welcomeCardVisible }
@@ -49,7 +49,7 @@ internal class ObserveWelcomeCardVisibilityUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(HomeFailure.GettingWelcomeCardVisibility)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.welcomeCardVisible }

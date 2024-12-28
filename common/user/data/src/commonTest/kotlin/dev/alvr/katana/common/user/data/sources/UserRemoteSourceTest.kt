@@ -69,7 +69,7 @@ internal class UserRemoteSourceTest : FreeSpec() {
                     client.registerTestResponse(UserInfoQuery())
                     source.userInfo.test {
                         awaitItem().shouldBeLeft(UserFailure.GettingUserInfo)
-                        cancelAndIgnoreRemainingEvents()
+                        awaitComplete()
                     }
                 }
 
@@ -78,7 +78,7 @@ internal class UserRemoteSourceTest : FreeSpec() {
                         client.registerTestResponse(UserInfoQuery(), query)
                         source.userInfo.test {
                             awaitItem().shouldBeRight(userInfo)
-                            cancelAndIgnoreRemainingEvents()
+                            awaitComplete()
                         }
                     }
                 }
@@ -87,7 +87,7 @@ internal class UserRemoteSourceTest : FreeSpec() {
                     client.registerTestNetworkError(UserInfoQuery())
                     source.userInfo.test {
                         awaitItem().shouldBeLeft(UserFailure.GettingUserInfo)
-                        cancelAndIgnoreRemainingEvents()
+                        awaitComplete()
                     }
                 }
             }

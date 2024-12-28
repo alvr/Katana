@@ -31,6 +31,8 @@ internal class HomeLocalSourceTest : FreeSpec() {
         "successful" - {
             every { store.data } returns flowOf(
                 HomePreferences(welcomeCardVisible = false),
+                HomePreferences(welcomeCardVisible = false),
+                HomePreferences(welcomeCardVisible = true),
                 HomePreferences(welcomeCardVisible = true),
             )
 

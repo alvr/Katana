@@ -87,7 +87,7 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 "checking session active for ${session.anilistToken} and ${session.sessionActive}" {
                     source.sessionActive.test {
                         awaitItem().shouldBeRight(expected)
-                        cancelAndIgnoreRemainingEvents()
+                        awaitComplete()
                     }
 
                     verify { store.data }

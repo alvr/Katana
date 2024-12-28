@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
+import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.ui.components.KatanaScaffold
 import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBar
 import dev.alvr.katana.core.ui.components.navigation.KatanaNavigationBarType
@@ -39,6 +40,8 @@ internal fun Katana(
 ) {
     val currentNav by navigator.navController.currentBackStackEntryAsState()
     val uiState by viewModel.collectAsState()
+
+    Logger.d { MaterialTheme.typography.displayLarge.toString() }
 
     val navigationBar = @Composable { type: KatanaNavigationBarType ->
         KatanaNavigationBar(

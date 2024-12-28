@@ -66,7 +66,7 @@ internal class ListsRemoteSourceTest : FreeSpec() {
                             awaitItem().shouldBeRight(MediaCollection(emptyList()))
                         }
 
-                        cancelAndIgnoreRemainingEvents()
+                        awaitComplete()
                     }
 
                     verifySuspend { userIdManager.getId() }
@@ -85,7 +85,7 @@ internal class ListsRemoteSourceTest : FreeSpec() {
 
                     flow.test {
                         awaitItem().shouldBeLeft(Failure.Unknown)
-                        cancelAndIgnoreRemainingEvents()
+                        awaitComplete()
                     }
                     verifySuspend { userIdManager.getId() }
                 }
@@ -109,7 +109,7 @@ internal class ListsRemoteSourceTest : FreeSpec() {
 
                         flow.test {
                             awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
-                            cancelAndIgnoreRemainingEvents()
+                            awaitComplete()
                         }
                         verifySuspend { userIdManager.getId() }
                     }
