@@ -5,6 +5,7 @@ import kotlinx.coroutines.IO
 
 internal class AppKatanaDispatcher : KatanaDispatcher {
     override val main = Dispatchers.Main
+    override val immediate = Dispatchers.Main.immediate
     override val io = Dispatchers.IO
     override val default = Dispatchers.Default
 }

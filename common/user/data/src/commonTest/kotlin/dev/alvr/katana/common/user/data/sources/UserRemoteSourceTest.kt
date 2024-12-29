@@ -24,6 +24,7 @@ import io.kotest.core.test.TestCase
 @OptIn(ApolloExperimental::class)
 internal class UserRemoteSourceTest : FreeSpec() {
     private val client = ApolloClient.Builder().networkTransport(MapTestNetworkTransport()).build()
+
     private lateinit var source: UserRemoteSource
 
     init {

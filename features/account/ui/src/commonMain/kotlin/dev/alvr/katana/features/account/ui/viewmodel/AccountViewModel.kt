@@ -3,14 +3,14 @@ package dev.alvr.katana.features.account.ui.viewmodel
 import androidx.compose.runtime.Stable
 import dev.alvr.katana.common.session.domain.usecases.LogOutUseCase
 import dev.alvr.katana.common.user.domain.usecases.ObserveUserInfoUseCase
-import dev.alvr.katana.core.ui.viewmodel.KatanaBaseViewModel
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.features.account.ui.entities.mappers.toEntity
 
 @Stable
 internal class AccountViewModel(
     private val observeUserInfoUseCase: ObserveUserInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
-) : KatanaBaseViewModel<AccountState, AccountEffect, AccountIntent>(AccountState()) {
+) : KatanaViewModel<AccountState, AccountEffect, AccountIntent>(AccountState()) {
 
     override fun init() {
         observeUserInfo()

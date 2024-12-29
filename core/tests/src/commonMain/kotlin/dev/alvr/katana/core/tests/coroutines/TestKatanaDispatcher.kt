@@ -7,6 +7,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class TestKatanaDispatcher : KatanaDispatcher {
     override val main = UnconfinedTestDispatcher(name = "main")
+    override val immediate = UnconfinedTestDispatcher(name = "immediate")
     override val io = UnconfinedTestDispatcher(name = "io")
     override val default = UnconfinedTestDispatcher(name = "default")
 }

@@ -10,4 +10,4 @@ fun <T> KSerializer<T>.default(defaultValue: T): OkioSerializer<T> =
     PreferencesSerializer(this, defaultValue)
 
 fun <T> KSerializer<T>.encrypted(defaultValue: T, securer: PreferencesEncrypt): OkioSerializer<T> =
-    EncryptedPreferencesSerializer(securer, this, defaultValue)
+    EncryptedPreferencesSerializer(this, defaultValue, securer)

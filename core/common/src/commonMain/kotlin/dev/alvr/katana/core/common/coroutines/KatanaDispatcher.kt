@@ -7,6 +7,7 @@ import kotlinx.coroutines.SupervisorJob
 
 interface KatanaDispatcher : CoroutineScope {
     val main: CoroutineDispatcher
+    val immediate: CoroutineDispatcher
     val io: CoroutineDispatcher
     val default: CoroutineDispatcher
 

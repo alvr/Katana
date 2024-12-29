@@ -8,7 +8,7 @@ import dev.alvr.katana.features.lists.ui.screens.MangaScreen
 
 fun NavGraphBuilder.lists(
     animeListsNavigator: AnimeListsNavigator,
-    mangaListsNavigator: MangaListsNavigator
+    mangaListsNavigator: MangaListsNavigator,
 ) {
     animeLists(animeListsNavigator)
     mangaLists(mangaListsNavigator)

@@ -38,7 +38,7 @@ internal annotation class KatanaViewModelDsl
 internal annotation class KatanaViewModelExecuteDsl
 
 @Stable
-abstract class KatanaBaseViewModel<S : UiState, E : UiEffect, I : UiIntent>(
+abstract class KatanaViewModel<S : UiState, E : UiEffect, I : UiIntent>(
     initialState: S,
 ) : ViewModel(), KoinComponent {
     internal val dispatcher by inject<KatanaDispatcher>()

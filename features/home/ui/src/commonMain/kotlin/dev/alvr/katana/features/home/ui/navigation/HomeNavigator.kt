@@ -2,11 +2,11 @@ package dev.alvr.katana.features.home.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import dev.alvr.katana.core.ui.navigation.BaseNavigator
+import dev.alvr.katana.core.ui.navigation.KatanaNavigator
 import dev.alvr.katana.core.ui.navigation.overridden
 import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
-interface HomeNavigator : BaseNavigator {
+interface HomeNavigator : KatanaNavigator {
     val homeNavController: NavHostController
 
     fun navigateToAnimeLists()

@@ -7,7 +7,7 @@ import dev.alvr.katana.common.session.domain.models.AnilistToken
 import dev.alvr.katana.common.session.domain.usecases.ObserveActiveSessionUseCase
 import dev.alvr.katana.common.session.domain.usecases.SaveSessionUseCase
 import dev.alvr.katana.common.user.domain.usecases.SaveUserIdUseCase
-import dev.alvr.katana.core.ui.viewmodel.KatanaBaseViewModel
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.features.home.domain.usecases.HideWelcomeCardUseCase
 import dev.alvr.katana.features.home.domain.usecases.ObserveWelcomeCardVisibilityUseCase
 import dev.alvr.katana.features.home.ui.LOGIN_DEEP_LINK_TOKEN
@@ -20,7 +20,7 @@ internal class HomeViewModel(
     private val observeWelcomeCardVisibilityUseCase: ObserveWelcomeCardVisibilityUseCase,
     private val saveSessionUseCase: SaveSessionUseCase,
     private val saveUserIdUseCase: SaveUserIdUseCase,
-) : KatanaBaseViewModel<HomeState, HomeEffect, HomeIntent>(HomeState()) {
+) : KatanaViewModel<HomeState, HomeEffect, HomeIntent>(HomeState()) {
 
     override fun init() {
         observeSession()
@@ -60,7 +60,7 @@ internal class HomeViewModel(
 
         execute(
             useCase = saveSessionUseCase,
-            params = AnilistToken(token.substringBefore(TOKEN_SEPARATOR)),
+            params = AnilistToken(token.substringBefore(TokenSeparator)),
             onFailure = { effect(HomeEffect.SaveTokenFailure) },
             onSuccess = { saveUserId() },
         )
@@ -146,10 +146,7 @@ internal class HomeViewModel(
     }
     // endregion [ForYou events]
     // endregion [ForYoy Tab]
-
-    companion object {
-        private const val TOKEN_SEPARATOR = '&'
-    }
 }
 
 private const val LogTag = "HomeViewModel"
+private const val TokenSeparator = '&'

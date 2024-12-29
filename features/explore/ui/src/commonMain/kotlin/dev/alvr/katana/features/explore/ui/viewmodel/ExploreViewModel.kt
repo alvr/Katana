@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import dev.alvr.katana.core.ui.viewmodel.EmptyEffect
 import dev.alvr.katana.core.ui.viewmodel.EmptyIntent
 import dev.alvr.katana.core.ui.viewmodel.EmptyState
-import dev.alvr.katana.core.ui.viewmodel.KatanaBaseViewModel
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 
 @Stable
-internal class ExploreViewModel : KatanaBaseViewModel<EmptyState, EmptyEffect, EmptyIntent>(EmptyState)
+internal class ExploreViewModel : KatanaViewModel<EmptyState, EmptyEffect, EmptyIntent>(EmptyState)

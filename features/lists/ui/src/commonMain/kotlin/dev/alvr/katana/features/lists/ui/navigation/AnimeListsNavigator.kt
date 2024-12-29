@@ -2,11 +2,11 @@ package dev.alvr.katana.features.lists.ui.navigation
 
 import androidx.compose.runtime.Composable
 import co.touchlab.kermit.Logger
-import dev.alvr.katana.core.ui.navigation.BaseNavigator
+import dev.alvr.katana.core.ui.navigation.KatanaNavigator
 import dev.alvr.katana.core.ui.navigation.overridden
 import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
-interface AnimeListsNavigator : BaseNavigator {
+interface AnimeListsNavigator : KatanaNavigator {
     fun animeEntryDetails(id: Int)
     fun editAnimeEntry(id: Int)
 }

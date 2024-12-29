@@ -3,7 +3,7 @@ package dev.alvr.katana.core.tests.ui
 import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import dev.alvr.katana.core.common.annotations.KatanaInternalApi
-import dev.alvr.katana.core.ui.viewmodel.KatanaBaseViewModel
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.core.ui.viewmodel.UiEffect
 import dev.alvr.katana.core.ui.viewmodel.UiIntent
 import dev.alvr.katana.core.ui.viewmodel.UiState
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 
 @OptIn(KatanaInternalApi::class)
-suspend fun <S : UiState, E : UiEffect, I : UiIntent> KatanaBaseViewModel<S, E, I>.test(
+suspend fun <S : UiState, E : UiEffect, I : UiIntent> KatanaViewModel<S, E, I>.test(
     initialState: S? = null,
     verifyInitialState: VerifyInitialState<*> = VerifyInitialState.Skip,
     finalizationType: FinalizationType = FinalizationType.Ensure,
@@ -49,16 +49,14 @@ sealed interface TestKatanaBaseViewModelScope<S : UiState, E : UiEffect, I : UiI
     val currentState: S
 
     fun intent(intent: I)
-
     suspend fun expectState(state: S.() -> S)
-
     suspend fun expectEffect(effect: E)
 }
 
 @OptIn(KatanaInternalApi::class)
 private class TestKatanaBaseViewModelScopeImpl<S : UiState, E : UiEffect, I : UiIntent>(
     private val turbine: ReceiveTurbine<Item<S, E>>,
-    private val viewModel: KatanaBaseViewModel<S, E, I>,
+    private val viewModel: KatanaViewModel<S, E, I>,
 ) : TestKatanaBaseViewModelScope<S, E, I>, ReceiveTurbine<Item<S, E>> by turbine {
     override val currentState: S get() = viewModel.uiState.value
 

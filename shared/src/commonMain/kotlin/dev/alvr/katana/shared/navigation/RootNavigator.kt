@@ -32,8 +32,6 @@ internal sealed interface RootNavigator :
     fun navigateToHome()
 
     fun onNavigationBarItemClicked(item: MainNavigationBarItem)
-
-    fun onSessionExpired()
 }
 
 private class KatanaRootNavigator(
@@ -50,7 +48,7 @@ private class KatanaRootNavigator(
     ExploreNavigator by exploreNavigator,
     AccountNavigator by accountNavigator {
 
-    // region [KatanaNavigator]
+    // region [RootNavigator]
     override fun navigateBack() {
         navController.navigateUp()
     }
@@ -62,11 +60,7 @@ private class KatanaRootNavigator(
     override fun onNavigationBarItemClicked(item: MainNavigationBarItem) {
         onNavigationBarItemClicked(item.screen)
     }
-
-    override fun onSessionExpired() {
-        navController.navigate(RootDestination.ExpiredSessionDialog)
-    }
-    // endregion [KatanaNavigator]
+    // endregion [RootNavigator]
 
     // region [HomeNavigator]
     override fun navigateToAnimeLists() {
@@ -88,7 +82,6 @@ private class KatanaRootNavigator(
     override fun navigateToUpcoming() {
         onNavigationBarItemClicked(ExploreDestination.Root)
     }
-
     // endregion [HomeNavigator]
 
     private fun onNavigationBarItemClicked(screen: KatanaDestination) {

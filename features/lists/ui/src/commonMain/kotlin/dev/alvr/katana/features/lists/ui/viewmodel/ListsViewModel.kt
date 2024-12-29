@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.common.empty
 import dev.alvr.katana.core.domain.usecases.FlowEitherUseCase
-import dev.alvr.katana.core.ui.viewmodel.KatanaBaseViewModel
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListGroup
@@ -21,7 +21,7 @@ import kotlinx.collections.immutable.toImmutableMap
 internal sealed class ListsViewModel<E : MediaEntry, I : MediaListItem>(
     type: ListsState.ListType,
     private val updateListUseCase: UpdateListUseCase,
-) : KatanaBaseViewModel<ListsState<I>, ListsEffect, ListsIntent>(ListsState(type)) {
+) : KatanaViewModel<ListsState<I>, ListsEffect, ListsIntent>(ListsState(type)) {
     protected abstract val observeListUseCase: FlowEitherUseCase<Unit, MediaCollection<E>>
 
     protected abstract fun List<MediaListGroup<E>>.entryMap(): ImmutableList<I>

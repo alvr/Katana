@@ -17,10 +17,10 @@ internal open class PreferencesSerializer<T>(
     override val defaultValue: T,
 ) : OkioSerializer<T> {
     override suspend fun readFrom(source: BufferedSource): T =
-        operation("secured read") {
+        operation("reading preferences") {
             val input = source.use { buffered ->
                 buffered.readByteArray()
-                    .let { encrypted -> Base64.decode(encrypted) }
+                    .let { value -> Base64.decode(value) }
                     .readFrom()
             }
 
@@ -28,10 +28,10 @@ internal open class PreferencesSerializer<T>(
         }
 
     override suspend fun writeTo(t: T, sink: BufferedSink) {
-        operation("secured write") {
+        operation("writing preferences") {
             val output = ProtoBuf.encodeToByteArray(serializer, t)
                 .writeTo()
-                .let { encrypted -> Base64.encodeToByteArray(encrypted) }
+                .let { value -> Base64.encodeToByteArray(value) }
 
             sink.use { buffered -> buffered.write(output) }
         }

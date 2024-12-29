@@ -17,11 +17,8 @@ internal data class ListsState<T : MediaListItem>(
     val error: Boolean = false,
     val loading: Boolean = true,
 ) : UiState {
-
     val empty get() = items.isEmpty()
-
     val entries get() = collection.getOrElse(selectedList) { persistentListOf() }
-
     val lists get() = collection.toUserList()
 
     enum class ListType {

@@ -12,19 +12,19 @@ import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.common.KatanaBuildConfig
 
 @Stable
-interface BaseNavigator {
+interface KatanaNavigator {
     fun navigateBack()
 }
 
 @Suppress("UnusedReceiverParameter")
-fun BaseNavigator.overridden(
+fun KatanaNavigator.overridden(
     navigator: String = "KatanaRootNavigator",
 ) {
     Logger.i(LogTag) { "Implementation overridden in $navigator" }
 }
 
 @Composable
-fun <T : BaseNavigator> rememberKatanaNavigator(factory: (NavHostController) -> T): T {
+fun <T : KatanaNavigator> rememberKatanaNavigator(factory: (NavHostController) -> T): T {
     val navigator = rememberNavController().sentryObserver().loggerObserver()
     return remember(navigator) { factory(navigator) }
 }
