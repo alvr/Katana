@@ -6,7 +6,7 @@ import dev.alvr.katana.common.session.data.di.corruptedDataStoreNamed
 import dev.alvr.katana.common.session.data.di.dataStoreNamed
 import dev.alvr.katana.common.session.data.di.deleteDataStoreFiles
 import dev.alvr.katana.common.session.data.di.testDataStoreModule
-import dev.alvr.katana.common.session.data.models.Session
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.domain.models.AnilistToken
 import dev.alvr.katana.core.tests.koinExtension
 import io.kotest.core.spec.style.FreeSpec
@@ -23,7 +23,7 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
         "initial session should equal to the Session class" {
             dataStore.data.test {
                 awaitItem() shouldBeEqual Session()
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
         }
 
@@ -32,16 +32,16 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
                 updateData { p ->
                     p.copy(
                         anilistToken = AnilistToken("token"),
-                        isSessionActive = true,
+                        sessionActive = true,
                     )
                 }
 
                 data.test {
                     awaitItem() shouldBeEqual Session(
                         anilistToken = AnilistToken("token"),
-                        isSessionActive = true,
+                        sessionActive = true,
                     )
-                    cancelAndConsumeRemainingEvents()
+                    ensureAllEventsConsumed()
                 }
             }
         }
@@ -49,7 +49,7 @@ internal class SessionDataStoreTest : FreeSpec(), KoinTest {
         "corrupted dataStore should recreate again the file with initial values" {
             corruptedDataStore.data.test {
                 awaitItem() shouldBeEqual Session(anilistToken = AnilistToken("recreated"))
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
         }
     }

@@ -16,7 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.alvr.katana.core.ui.resources.value
-import dev.alvr.katana.core.ui.utils.doNavigation
 import dev.alvr.katana.core.ui.utils.imageRequest
 import dev.alvr.katana.features.account.ui.entities.UserInfoUi
 import dev.alvr.katana.features.account.ui.resources.Res
@@ -39,7 +38,7 @@ internal fun UserInfo(
         )
 
         Button(
-            onClick = doNavigation(onLogoutClick),
+            onClick = onLogoutClick,
         ) {
             Text(text = Res.string.logout_button.value)
         }

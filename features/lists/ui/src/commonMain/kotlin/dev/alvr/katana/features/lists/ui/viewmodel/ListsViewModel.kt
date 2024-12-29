@@ -1,127 +1,113 @@
 package dev.alvr.katana.features.lists.ui.viewmodel
 
-import androidx.lifecycle.viewModelScope
-import arrow.core.Either
-import dev.alvr.katana.core.common.orEmpty
-import dev.alvr.katana.core.domain.failures.Failure
-import dev.alvr.katana.core.ui.viewmodel.BaseViewModel
-import dev.alvr.katana.core.ui.viewmodel.EmptyEffect
+import androidx.compose.runtime.Stable
+import co.touchlab.kermit.Logger
+import dev.alvr.katana.core.common.empty
+import dev.alvr.katana.core.domain.usecases.FlowEitherUseCase
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListGroup
 import dev.alvr.katana.features.lists.domain.usecases.UpdateListUseCase
-import dev.alvr.katana.features.lists.ui.entities.ListsCollection
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
-import dev.alvr.katana.features.lists.ui.entities.UserList
 import dev.alvr.katana.features.lists.ui.entities.mappers.toMediaList
-import dev.alvr.katana.features.lists.ui.entities.mappers.toUserList
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.flow.Flow
-import org.orbitmvi.orbit.container
+import kotlinx.collections.immutable.toImmutableMap
 
+@Stable
 internal sealed class ListsViewModel<E : MediaEntry, I : MediaListItem>(
+    type: ListsState.ListType,
     private val updateListUseCase: UpdateListUseCase,
-) : BaseViewModel<ListState<I>, EmptyEffect>() {
-    protected abstract val collectionFlow: Flow<Either<Failure, MediaCollection<E>>>
+) : KatanaViewModel<ListsState<I>, ListsEffect, ListsIntent>(ListsState(type)) {
+    protected abstract val observeListUseCase: FlowEitherUseCase<Unit, MediaCollection<E>>
 
-    override val container = viewModelScope.container<ListState<I>, EmptyEffect>(ListState()) {
+    protected abstract fun List<MediaListGroup<E>>.entryMap(): ImmutableList<I>
+
+    override fun init() {
         observeLists()
     }
 
-    private var currentList: List<I> = emptyList()
-    private var collection: ListsCollection<I> = emptyMap()
-
-    var userLists: Array<UserList> = emptyArray()
-        private set
-
-    protected abstract fun List<MediaListGroup<E>>.entryMap(): List<I>
-
-    protected abstract fun observeListUseCase()
-
-    fun refreshList() {
-        updateState { copy(isLoading = true) }
-        observeListUseCase()
-    }
-
-    fun addPlusOne(id: Int) {
-        val entry = currentList.first { it.entryId == id }.toMediaList().run {
-            copy(progress = progress.inc())
-        }
-        intent { updateListUseCase(entry) }
-    }
-
-    fun selectList(name: String) {
-        val list = getListByName(name) ?: return
-        currentList = list
-
-        updateState {
-            copy(
-                items = list,
-                name = name,
-                isEmpty = list.isEmpty(),
-            )
-        }
-    }
-
-    fun search(search: String) {
-        updateState {
-            val filtered = currentList.filter { item ->
-                item.title.contains(search, ignoreCase = true)
-            }.toImmutableList()
-
-            copy(
-                items = filtered,
-                isEmpty = filtered.isEmpty(),
-            )
+    override fun handleIntent(intent: ListsIntent) {
+        when (intent) {
+            is ListsIntent.Refresh -> observeLists()
+            is ListsIntent.AddPlusOne -> addPlusOne(intent.id)
+            is ListsIntent.SelectList -> selectList(intent.name)
+            is ListsIntent.Search -> search(intent.search)
         }
     }
 
     private fun observeLists() {
-        refreshList()
-        collectCollectionFlow()
+        state {
+            Logger.d("Loading lists")
+            copy(loading = true)
+        }
+        execute(
+            useCase = observeListUseCase,
+            params = Unit,
+            onFailure = {
+                state {
+                    copy(
+                        collection = persistentMapOf(),
+                        items = persistentListOf(),
+                        selectedList = String.empty,
+                        error = true,
+                        loading = false,
+                    )
+                }
+                effect(ListsEffect.LoadingListsFailure)
+            },
+            onSuccess = { media ->
+                val collection = media.lists
+                    .groupBy { it.name }
+                    .mapValues { it.value.entryMap() }
+                    .toImmutableMap()
+
+                state {
+                    val selectedList = selectedList.ifEmpty { collection.keys.firstOrNull().orEmpty() }
+
+                    copy(
+                        collection = collection,
+                        items = collection.getOrElse(selectedList) { persistentListOf() },
+                        selectedList = selectedList,
+                        error = false,
+                        loading = false,
+                    )
+                }
+            },
+        )
     }
 
-    private fun collectCollectionFlow() {
-        intent {
-            collectionFlow.collect { collection ->
-                collection.fold(
-                    ifLeft = { onCollectCollectionError() },
-                    ifRight = { media ->
-                        val items = media.lists
-                            .groupBy { it.name }
-                            .mapValues { it.value.entryMap() }
-                            .also { collection -> setCollection(collection) }
+    private fun addPlusOne(id: Int) {
+        val listItem = currentState.items.firstOrNull { it.entryId == id } ?: return
+        val entry = listItem.toMediaList().copy(progress = listItem.progress.inc())
 
-                        val selectedListName = state.name ?: items.keys.firstOrNull()
-                        val selectedList = getListByName(selectedListName).orEmpty()
-                        currentList = selectedList
+        execute(
+            useCase = updateListUseCase,
+            params = entry,
+            onSuccess = { /* no-op */ },
+            onFailure = { effect(ListsEffect.AddPlusOneFailure) },
+        )
+    }
 
-                        reduce {
-                            state.copy(
-                                items = selectedList,
-                                name = selectedListName,
-                                isEmpty = selectedList.isEmpty(),
-                                isLoading = false,
-                                isError = false,
-                            )
-                        }
-                    },
-                )
-            }
+    private fun selectList(name: String) {
+        state {
+            copy(
+                items = collection.getOrElse(name) { persistentListOf() },
+                selectedList = name,
+            )
         }
     }
 
-    private fun onCollectCollectionError() {
-        updateState { copy(isError = true, isLoading = false, isEmpty = true) }
+    private fun search(search: String) {
+        state {
+            val filtered = entries.filter { item ->
+                item.title.contains(search, ignoreCase = true)
+            }.toImmutableList()
+
+            copy(items = filtered)
+        }
     }
-
-    private fun setCollection(items: ListsCollection<I>) {
-        collection = items
-        userLists = items.toUserList()
-    }
-
-    private fun <T : MediaListItem> ListsCollection<T>.getListByName(name: String?) =
-        get(name)?.toImmutableList()
-
-    private fun getListByName(listName: String?) = collection.getListByName(listName)
 }

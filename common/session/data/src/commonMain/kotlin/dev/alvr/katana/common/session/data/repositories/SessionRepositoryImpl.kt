@@ -7,7 +7,7 @@ import dev.alvr.katana.common.session.domain.repositories.SessionRepository
 internal class SessionRepositoryImpl(
     private val source: SessionLocalSource,
 ) : SessionRepository {
-    override val sessionActive get() = source.sessionActive
+    override val sessionActive = source.sessionActive
 
     override suspend fun clearActiveSession() = source.clearActiveSession()
     override suspend fun deleteAnilistToken() = source.deleteAnilistToken()

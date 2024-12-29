@@ -7,8 +7,6 @@ import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.common.session.domain.repositories.SessionRepository
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
 import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.tests.di.coreTestsModule
-import dev.alvr.katana.core.tests.koinExtension
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.mokkery.answering.returns
@@ -46,7 +44,7 @@ internal class ObserveActiveSessionUseCaseTest : FreeSpec(), KoinTest {
                 awaitItem().shouldBeRight(false)
                 awaitItem().shouldBeRight(true)
                 awaitItem().shouldBeRight(false)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.sessionActive }
@@ -59,7 +57,7 @@ internal class ObserveActiveSessionUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(SessionFailure.CheckingActiveSession)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.sessionActive }
@@ -69,6 +67,4 @@ internal class ObserveActiveSessionUseCaseTest : FreeSpec(), KoinTest {
     override suspend fun beforeEach(testCase: TestCase) {
         useCase = ObserveActiveSessionUseCase(dispatcher, repo)
     }
-
-    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }

@@ -5,8 +5,6 @@ import arrow.core.left
 import arrow.core.right
 import dev.alvr.katana.core.common.coroutines.KatanaDispatcher
 import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.tests.di.coreTestsModule
-import dev.alvr.katana.core.tests.koinExtension
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeRight
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
@@ -39,7 +37,7 @@ internal class ObserveMangaListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeRight(MediaCollection(emptyList()))
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.mangaCollection }
@@ -54,7 +52,7 @@ internal class ObserveMangaListUseCaseTest : FreeSpec(), KoinTest {
 
             useCase.flow.test {
                 awaitItem().shouldBeLeft(ListsFailure.GetMediaCollection)
-                cancelAndConsumeRemainingEvents()
+                ensureAllEventsConsumed()
             }
 
             verify { repo.mangaCollection }
@@ -64,6 +62,4 @@ internal class ObserveMangaListUseCaseTest : FreeSpec(), KoinTest {
     override suspend fun beforeEach(testCase: TestCase) {
         useCase = ObserveMangaListUseCase(dispatcher, repo)
     }
-
-    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }

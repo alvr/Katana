@@ -6,7 +6,6 @@ dependencyResolutionManagement {
     repositories {
         mavenCentral()
         google()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -16,7 +15,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -43,9 +41,9 @@ buildCache {
 }
 
 include(":app-android", ":shared")
-includes("common", "core", "features", maxDepth = 2)
+includes("common", "core", "features")
 
-fun includes(vararg directories: String, maxDepth: Int = 1) {
+fun includes(vararg directories: String, maxDepth: Int = 2) {
     directories.forEach { topDir ->
         rootDir.resolve(topDir)
             .walkTopDown()

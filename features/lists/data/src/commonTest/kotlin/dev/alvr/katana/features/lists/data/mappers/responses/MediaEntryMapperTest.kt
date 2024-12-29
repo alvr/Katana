@@ -3,6 +3,7 @@ package dev.alvr.katana.features.lists.data.mappers.responses
 import dev.alvr.katana.core.common.empty
 import dev.alvr.katana.core.common.zero
 import dev.alvr.katana.core.remote.type.MediaFormat
+import dev.alvr.katana.core.tests.random
 import dev.alvr.katana.features.lists.data.fragment.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.entries.CommonMediaEntry
 import io.kotest.core.spec.style.FreeSpec
@@ -15,6 +16,7 @@ internal class MediaEntryMapperTest : FreeSpec({
         .forEach { format ->
             "MediaFormat $format should not be ${CommonMediaEntry.Format.UNKNOWN}" {
                 MediaEntryFragment(
+                    __typename = String.random,
                     id = Int.zero,
                     title = MediaEntry.Title(String.empty),
                     episodes = null,
@@ -31,6 +33,7 @@ internal class MediaEntryMapperTest : FreeSpec({
         .forEach { format ->
             "MediaFormat $format should be ${CommonMediaEntry.Format.UNKNOWN}" {
                 MediaEntryFragment(
+                    __typename = String.random,
                     id = Int.zero,
                     title = MediaEntry.Title(String.empty),
                     episodes = null,

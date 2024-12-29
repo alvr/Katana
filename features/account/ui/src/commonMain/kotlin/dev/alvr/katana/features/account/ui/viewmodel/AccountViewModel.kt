@@ -1,51 +1,56 @@
 package dev.alvr.katana.features.account.ui.viewmodel
 
-import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.Stable
 import dev.alvr.katana.common.session.domain.usecases.LogOutUseCase
 import dev.alvr.katana.common.user.domain.usecases.ObserveUserInfoUseCase
-import dev.alvr.katana.core.domain.usecases.invoke
-import dev.alvr.katana.core.ui.viewmodel.BaseViewModel
-import dev.alvr.katana.core.ui.viewmodel.EmptyEffect
+import dev.alvr.katana.core.ui.viewmodel.KatanaViewModel
 import dev.alvr.katana.features.account.ui.entities.mappers.toEntity
-import org.orbitmvi.orbit.container
 
+@Stable
 internal class AccountViewModel(
     private val observeUserInfoUseCase: ObserveUserInfoUseCase,
     private val logOutUseCase: LogOutUseCase,
-) : BaseViewModel<AccountState, EmptyEffect>() {
-    override val container = viewModelScope.container<AccountState, EmptyEffect>(AccountState()) {
-        collectUserInfo()
-    }
+) : KatanaViewModel<AccountState, AccountEffect, AccountIntent>(AccountState()) {
 
-    fun clearSession() {
-        intent {
-            logOutUseCase()
-        }
-    }
-
-    private fun collectUserInfo() {
-        observeUserInfoUseCase()
+    override fun init() {
         observeUserInfo()
     }
 
-    private fun observeUserInfo() {
-        intent {
-            observeUserInfoUseCase.flow.collect { res ->
-                res.fold(
-                    ifLeft = {
-                        updateState { copy(isLoading = false, isError = true) }
-                    },
-                    ifRight = { userInfo ->
-                        updateState {
-                            copy(
-                                isLoading = false,
-                                isError = false,
-                                userInfo = userInfo.toEntity(),
-                            )
-                        }
-                    },
-                )
-            }
+    override fun handleIntent(intent: AccountIntent) {
+        when (intent) {
+            AccountIntent.Logout -> logOut()
         }
+    }
+
+    private fun observeUserInfo() {
+        execute(
+            useCase = observeUserInfoUseCase,
+            params = Unit,
+            onFailure = { state { copy(error = true, loading = false) } },
+            onSuccess = { userInfo ->
+                state {
+                    copy(
+                        error = false,
+                        loading = false,
+                        userInfo = userInfo.toEntity(),
+                    )
+                }
+            },
+        )
+    }
+
+    private fun logOut() {
+        execute(
+            useCase = logOutUseCase,
+            params = Unit,
+            onFailure = {
+                state { copy(userInfo = null) }
+                effect(AccountEffect.LoggingOutFailure)
+            },
+            onSuccess = {
+                state { copy(userInfo = null) }
+                effect(AccountEffect.LoggingOutSuccess)
+            },
+        )
     }
 }

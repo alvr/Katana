@@ -2,9 +2,12 @@ package dev.alvr.katana.features.lists.ui.viewmodel
 
 import arrow.core.left
 import arrow.core.right
+import dev.alvr.katana.core.common.empty
 import dev.alvr.katana.core.domain.usecases.invoke
 import dev.alvr.katana.core.tests.coEitherJustRun
-import dev.alvr.katana.core.tests.orbitTestScope
+import dev.alvr.katana.core.tests.ui.FinalizationType
+import dev.alvr.katana.core.tests.ui.TestKatanaBaseViewModelScope
+import dev.alvr.katana.core.tests.ui.test
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
@@ -14,28 +17,29 @@ import dev.alvr.katana.features.lists.domain.usecases.UpdateListUseCase
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
 import dev.alvr.katana.features.lists.ui.entities.UserList
 import dev.alvr.katana.features.lists.ui.entities.mappers.toMediaList
-import io.kotest.assertions.throwables.shouldThrowExactlyUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.flowOf
-import org.orbitmvi.orbit.test.OrbitTestContext
-import org.orbitmvi.orbit.test.test
 
-private typealias MangaState = ListState<MediaListItem.MangaListItem>
+private typealias MangaState = ListsState<MediaListItem.MangaListItem>
 
 internal class MangaListsViewModelTest : FreeSpec() {
     private val observeManga = mockk<ObserveMangaListUseCase>()
     private val updateList = mockk<UpdateListUseCase>()
+
     private lateinit var viewModel: MangaListsViewModel
 
     init {
@@ -47,21 +51,18 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     )
                     coJustRun { observeManga() }
 
-                    viewModel.test(orbitTestScope) {
-                        runOnCreate()
-                        expectInitialState()
-                        expectState { copy(isLoading = true) }
+                    viewModel.test {
                         expectState {
+                            empty.shouldBeTrue()
+
                             copy(
-                                isLoading = false,
-                                isEmpty = true,
+                                loading = false,
                                 items = persistentListOf(),
                             )
                         }
-                        cancelAndIgnoreRemainingItems()
                     }
 
-                    verify(exactly = 1) { observeManga() }
+                    coVerify(exactly = 1) { observeManga() }
                     verify(exactly = 1) { observeManga.flow }
                 }
             }
@@ -69,25 +70,23 @@ internal class MangaListsViewModelTest : FreeSpec() {
             "the manga collection has entries" {
                 mockMangaFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
+                    currentState.empty.shouldBeFalse()
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
             "the manga collection has entries AND getting the userLists" {
                 mockMangaFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
+                    currentState.empty.shouldBeFalse()
 
-                    containerHost.userLists
+                    currentState.lists
                         .shouldHaveSize(2)
                         .shouldContainInOrder(
                             UserList("MyCustomMangaList" to 1),
@@ -95,7 +94,7 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         )
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -103,14 +102,16 @@ internal class MangaListsViewModelTest : FreeSpec() {
                 every { observeManga.flow } returns flowOf(ListsFailure.GetMediaCollection.left())
                 coJustRun { observeManga() }
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    expectState { copy(isError = true, isLoading = false, isEmpty = true) }
+                viewModel.test {
+                    expectState {
+                        empty.shouldBeTrue()
+                        copy(error = true, loading = false)
+                    }
+
+                    expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
         }
@@ -120,16 +121,28 @@ internal class MangaListsViewModelTest : FreeSpec() {
                 mockMangaFlow()
                 coEitherJustRun { updateList(any()) }
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    containerHost.addPlusOne(mangaListItem1.entryId)
-                    cancelAndIgnoreRemainingItems()
+                viewModel.test {
+                    expectState { currentState }
+                    intent(ListsIntent.AddPlusOne(mangaListItem1.entryId))
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
+
+                coVerify(exactly = 1) {
+                    updateList(mangaListItem1.copy(progress = mangaListItem1.progress.inc()).toMediaList())
+                }
+            }
+
+            "is failure" {
+                mockMangaFlow()
+                coEvery { updateList(any()) } returns ListsFailure.UpdatingList.left()
+
+                viewModel.test {
+                    expectState { currentState }
+                    intent(ListsIntent.AddPlusOne(mangaListItem1.entryId))
+                    expectEffect(ListsEffect.AddPlusOneFailure)
+                }
 
                 coVerify(exactly = 1) {
                     updateList(mangaListItem1.copy(progress = mangaListItem1.progress.inc()).toMediaList())
@@ -139,16 +152,14 @@ internal class MangaListsViewModelTest : FreeSpec() {
             "the element is not found" {
                 mockMangaFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    shouldThrowExactlyUnit<NoSuchElementException> { containerHost.addPlusOne(234) }
-                    cancelAndIgnoreRemainingItems()
+                viewModel.test {
+                    expectState { currentState }
+                    intent(ListsIntent.AddPlusOne(234))
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 0) { updateList(any()) }
             }
         }
 
@@ -156,34 +167,40 @@ internal class MangaListsViewModelTest : FreeSpec() {
             "the manga collection has entries" {
                 mockMangaFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
-                    containerHost.selectList("MyCustomMangaList2")
+                    currentState.empty.shouldBeFalse()
+                    intent(ListsIntent.SelectList("MyCustomMangaList2"))
                     expectState {
                         copy(
-                            name = "MyCustomMangaList2",
+                            selectedList = "MyCustomMangaList2",
                             items = persistentListOf(mangaListItem2),
                         )
                     }
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
             "try to select a non-existent manga list" {
                 mockMangaFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    containerHost.selectList("NonExistent Manga List")
+                viewModel.test {
                     expectStateWithLists()
+                    intent(ListsIntent.SelectList("NonExistent Manga List"))
+
+                    expectState {
+                        empty.shouldBeTrue()
+                        copy(
+                            loading = false,
+                            selectedList = "NonExistent Manga List",
+                            items = persistentListOf(),
+                        )
+                    }
                 }
 
-                verify(exactly = 1) { observeManga() }
+                coVerify(exactly = 1) { observeManga() }
                 verify(exactly = 1) { observeManga.flow }
             }
 
@@ -193,33 +210,88 @@ internal class MangaListsViewModelTest : FreeSpec() {
                 "searching $text an entry should return $result" {
                     mockMangaFlow()
 
-                    viewModel.test(orbitTestScope) {
-                        runOnCreate()
-                        expectInitialState()
+                    viewModel.test {
                         expectStateWithLists()
-                        containerHost.search(text)
+                        intent(ListsIntent.Search(text))
                         expectState {
+                            empty.shouldBeTrue()
+
                             copy(
-                                isLoading = false,
-                                isEmpty = empty,
+                                loading = false,
                                 items = result,
                             )
                         }
                     }
 
-                    verify(exactly = 1) { observeManga() }
+                    coVerify(exactly = 1) { observeManga() }
                     verify(exactly = 1) { observeManga.flow }
                 }
             }
         }
+
+        "refreshing" - {
+            "is successful" {
+                mockMangaFlow()
+
+                viewModel.test(
+                    finalizationType = FinalizationType.Drop,
+                ) {
+                    expectStateWithLists()
+                    intent(ListsIntent.Refresh)
+                }
+
+                coVerify(exactly = 2) { observeManga() }
+                verify(exactly = 2) { observeManga.flow }
+            }
+
+            "is failure" {
+                coJustRun { observeManga() }
+                every { observeManga.flow } returnsMany listOf(
+                    flowOf(
+                        MediaCollection(
+                            lists = listOf(
+                                MediaListGroup(
+                                    name = "MyCustomMangaList",
+                                    entries = listOf(mangaMediaEntry1),
+                                ),
+                                MediaListGroup(
+                                    name = "MyCustomMangaList2",
+                                    entries = listOf(mangaMediaEntry2),
+                                ),
+                            ),
+                        ).right(),
+                    ),
+                    flowOf(ListsFailure.GetMediaCollection.left()),
+                )
+
+                viewModel.test {
+                    expectStateWithLists()
+
+                    intent(ListsIntent.Refresh)
+
+                    expectState { copy(loading = true) }
+                    expectState {
+
+                        copy(
+                            collection = persistentMapOf(),
+                            items = persistentListOf(),
+                            selectedList = String.empty,
+                            error = true,
+                            loading = false,
+                        )
+                    }
+                    expectEffect(ListsEffect.LoadingListsFailure)
+                }
+
+                coVerify(exactly = 2) { observeManga() }
+                verify(exactly = 2) { observeManga.flow }
+            }
+        }
     }
 
-    override suspend fun beforeTest(testCase: TestCase) {
-        viewModel = MangaListsViewModel(updateList, observeManga)
-    }
-
-    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+    override suspend fun beforeEach(testCase: TestCase) {
         clearAllMocks()
+        viewModel = MangaListsViewModel(updateList, observeManga)
     }
 
     private fun mockMangaFlow() {
@@ -241,15 +313,13 @@ internal class MangaListsViewModelTest : FreeSpec() {
         coJustRun { observeManga() }
     }
 
-    private suspend fun OrbitTestContext<MangaState, *, *>.expectStateWithLists() {
-        expectState { copy(isLoading = true) }
+    private suspend fun TestKatanaBaseViewModelScope<MangaState, *, *>.expectStateWithLists() {
         expectState {
             copy(
-                isLoading = false,
-                isEmpty = false,
-                name = "MyCustomMangaList",
+                loading = false,
+                selectedList = "MyCustomMangaList",
                 items = persistentListOf(mangaListItem1),
-                isError = false,
+                error = false,
             )
         }
     }

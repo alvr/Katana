@@ -6,13 +6,14 @@ apollo = "4.1.0"
 apollo-mockserver = "0.1.0"
 arrow = "2.0.0"
 coil = "3.0.4"
-compose = "1.7.1"
+compose = "1.7.3"
 compose-placeholder = "1.0.8"
 datastore = "1.1.1"
 desugaring = "2.1.4"
 detekt = "1.23.7"
 detekt-compose = "0.4.22"
 detekt-compose2 = "1.4.0"
+haze = "1.1.1"
 kermit = "2.0.5"
 kaml = { strictly = "0.67.0" }
 koin = "4.0.1"
@@ -20,6 +21,7 @@ kotest = "5.9.1"
 kotest-property-datetime = "2.0.0"
 kotlin = "2.1.0"
 kotlinpoet = "2.0.0"
+kotlinx-atomicfu = "0.26.1"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.6.1"
 kotlinx-immutable = "0.3.8"
@@ -30,11 +32,10 @@ ktor = "3.0.3"
 lifecycle = "2.8.4"
 materialkolor = "2.0.0"
 mockk = "1.13.14"
-mokkery = "2.6.0"
+mokkery = "2.6.1"
 navigation = "2.8.0-alpha11"
 navigation-material = "1.7.0-beta02"
 okio = "3.9.1"
-orbit = "9.0.0"
 sentry = "7.19.0"
 sentry-multiplatform = "0.10.0"
 sentry-plugin = "4.14.1"
@@ -105,6 +106,10 @@ gradle-mokkery = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery
 gradle-sentry = { module = "io.sentry:sentry-android-gradle-plugin", version.ref = "sentry-plugin" }
 gradle-sentry-multiplatform = { module = "io.sentry.kotlin.multiplatform.gradle:io.sentry.kotlin.multiplatform.gradle.gradle.plugin", version.ref = "sentry-multiplatform" }
 
+# Haze
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
+
 # Kermit
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
@@ -121,6 +126,7 @@ koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 # Kotlin
 kotlin = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlinx-atomicfu = { module = "org.jetbrains.kotlinx:atomicfu", version.ref = "kotlinx-atomicfu" }
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
@@ -148,10 +154,6 @@ navigation-material = { module = "org.jetbrains.compose.material:material-naviga
 
 # Okio
 okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
-
-# Orbit
-orbit = { module = "org.orbit-mvi:orbit-core", version.ref = "orbit" }
-orbit-test = { module = "org.orbit-mvi:orbit-test", version.ref = "orbit" }
 
 # Sentry
 sentry = { module = "io.sentry:sentry-android-core", version.ref = "sentry" }
@@ -305,6 +307,7 @@ data-remote-ios-test-ksp = []
 # Deps for UI
 ui-common = [
     "coil",
+    "haze",
     "lifecycle-runtime",
     "lifecycle-viewmodel",
     "koin-compose",
@@ -313,7 +316,6 @@ ui-common = [
     "kotlinx-serialization-json",
     "navigation",
     "navigation-material",
-    "orbit",
 ]
 ui-android = []
 ui-ios = []
@@ -322,9 +324,7 @@ ui-common-ksp = []
 ui-android-ksp = []
 ui-ios-ksp = []
 
-ui-common-test = [
-    "orbit-test",
-]
+ui-common-test = []
 ui-android-test = []
 ui-ios-test = []
 

@@ -24,21 +24,20 @@ kotlin {
             implementation(projects.features.explore.domain)
             implementation(projects.features.explore.ui)
 
+            implementation(projects.features.home.data)
+            implementation(projects.features.home.domain)
             implementation(projects.features.home.ui)
 
             implementation(projects.features.lists.data)
             implementation(projects.features.lists.domain)
             implementation(projects.features.lists.ui)
 
-            implementation(projects.features.login.ui)
-
-            implementation(projects.features.social.data)
-            implementation(projects.features.social.domain)
-            implementation(projects.features.social.ui)
-
             implementation(libs.sentry.multiplatform)
         }
 
-        commonTest.dependencies { implementation(projects.core.tests) }
+        commonTest.dependencies {
+            implementation(projects.core.tests)
+            implementation(projects.core.tests.ui)
+        }
     }
 }

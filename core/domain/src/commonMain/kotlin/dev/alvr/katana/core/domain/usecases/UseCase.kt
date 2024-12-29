@@ -15,7 +15,7 @@ abstract class UseCase<in P, out R> internal constructor(private val dispatcher:
         run(params)
     }
 
-    fun sync(params: P): R = runBlocking {
+    fun execute(params: P): R = runBlocking(dispatcher.io) {
         invoke(params)
     }
 }
@@ -27,4 +27,4 @@ abstract class OptionUseCase<in P, out R>(dispatcher: KatanaDispatcher) :
     UseCase<P, Option<R>>(dispatcher)
 
 suspend operator fun <R> UseCase<Unit, R>.invoke(): R = invoke(Unit)
-fun <R> UseCase<Unit, R>.sync(): R = sync(Unit)
+fun <R> UseCase<Unit, R>.execute(): R = execute(Unit)

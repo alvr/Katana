@@ -3,8 +3,8 @@ package dev.alvr.katana.common.user.data.repositories
 import app.cash.turbine.test
 import arrow.core.left
 import arrow.core.right
-import dev.alvr.katana.common.user.data.sources.id.UserIdRemoteSource
-import dev.alvr.katana.common.user.data.sources.info.UserInfoRemoteSource
+import dev.alvr.katana.common.user.data.sources.UserLocalSource
+import dev.alvr.katana.common.user.data.sources.UserRemoteSource
 import dev.alvr.katana.common.user.data.userIdMock
 import dev.alvr.katana.common.user.domain.failures.UserFailure
 import dev.alvr.katana.common.user.domain.repositories.UserRepository
@@ -18,35 +18,38 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
 import kotlinx.coroutines.flow.emptyFlow
 
 internal class UserRepositoryTest : FreeSpec() {
-    private val userIdSource = mock<UserIdRemoteSource>()
-    private val userInfoSource = mock<UserInfoRemoteSource>()
+    private val userLocalSource = mock<UserLocalSource>()
+    private val userRemoteSource = mock<UserRemoteSource> {
+        every { userInfo } returns emptyFlow()
+    }
 
-    private val repo: UserRepository = UserRepositoryImpl(userIdSource, userInfoSource)
+    private lateinit var repo: UserRepository
 
     init {
         "userId" - {
             "getting the user id" - {
                 "the server returns no data" {
-                    everySuspend { userIdSource.getUserId() } returns userIdMock.right()
+                    everySuspend { userRemoteSource.getUserId() } returns userIdMock.right()
                     repo.getUserId().shouldBeRight(userIdMock)
-                    verifySuspend { userIdSource.getUserId() }
+                    verifySuspend { userRemoteSource.getUserId() }
                 }
 
                 "the server returns an empty userId" {
-                    everySuspend { userIdSource.getUserId() } returns UserFailure.GettingUserId.left()
+                    everySuspend { userRemoteSource.getUserId() } returns UserFailure.GettingUserId.left()
                     repo.getUserId().shouldBeLeft(UserFailure.GettingUserId)
-                    verifySuspend { userIdSource.getUserId() }
+                    verifySuspend { userRemoteSource.getUserId() }
                 }
             }
 
             "saving the user id" - {
                 "is successful" {
-                    everySuspend { userIdSource.saveUserId() } returns Unit.right()
+                    everySuspend { userRemoteSource.saveUserId() } returns Unit.right()
                     repo.saveUserId().shouldBeRight()
-                    verifySuspend { userIdSource.saveUserId() }
+                    verifySuspend { userRemoteSource.saveUserId() }
                 }
 
                 listOf(
@@ -55,9 +58,9 @@ internal class UserRepositoryTest : FreeSpec() {
                     Failure.Unknown to Failure.Unknown.left(),
                 ).forEach { (expected, failure) ->
                     "failure getting the user id ($expected)" {
-                        everySuspend { userIdSource.saveUserId() } returns failure
+                        everySuspend { userRemoteSource.saveUserId() } returns failure
                         repo.saveUserId().shouldBeLeft(expected)
-                        verifySuspend { userIdSource.saveUserId() }
+                        verifySuspend { userRemoteSource.saveUserId() }
                     }
                 }
             }
@@ -66,11 +69,15 @@ internal class UserRepositoryTest : FreeSpec() {
         "userInfo" - {
             "observing userInfo" - {
                 "the server returns no data" {
-                    every { userInfoSource.userInfo } returns emptyFlow()
+                    every { userRemoteSource.userInfo } returns emptyFlow()
                     repo.userInfo.test { awaitComplete() }
-                    verify { userInfoSource.userInfo }
+                    verify { userRemoteSource.userInfo }
                 }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        repo = UserRepositoryImpl(userLocalSource, userRemoteSource)
     }
 }

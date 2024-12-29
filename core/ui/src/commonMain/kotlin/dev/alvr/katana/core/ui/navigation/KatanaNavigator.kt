@@ -2,7 +2,7 @@ package dev.alvr.katana.core.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
@@ -11,9 +11,16 @@ import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
 import dev.alvr.katana.core.common.KatanaBuildConfig
 
-@Immutable
+@Stable
 interface KatanaNavigator {
     fun navigateBack()
+}
+
+@Suppress("UnusedReceiverParameter")
+fun KatanaNavigator.overridden(
+    navigator: String = "KatanaRootNavigator",
+) {
+    Logger.i(LogTag) { "Implementation overridden in $navigator" }
 }
 
 @Composable
@@ -29,8 +36,16 @@ internal expect fun NavHostController.sentryObserver(): NavHostController
 private fun NavHostController.loggerObserver() = apply {
     if (KatanaBuildConfig.DEBUG) {
         DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
-            val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-                Logger.d { "Navigating to route ${destination.route}" }
+            val listener = NavController.OnDestinationChangedListener { navController, destination, args ->
+                Logger.d(LogTag) {
+                    buildString {
+                        append("Navigating to route ${destination.route}")
+
+                        navController.previousBackStackEntry?.destination?.route?.let { previousRoute ->
+                            append(" from $previousRoute")
+                        }
+                    }
+                }
             }
 
             addOnDestinationChangedListener(listener)
@@ -38,3 +53,5 @@ private fun NavHostController.loggerObserver() = apply {
         }
     }
 }
+
+private const val LogTag = "KatanaNavigator"

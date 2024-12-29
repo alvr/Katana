@@ -61,12 +61,12 @@ import dev.alvr.katana.features.lists.ui.resources.entry_next_episode
 import dev.alvr.katana.features.lists.ui.resources.entry_next_episode_separator
 import dev.alvr.katana.features.lists.ui.resources.entry_plus_one
 import dev.alvr.katana.features.lists.ui.resources.entry_progress
-import dev.alvr.katana.features.lists.ui.viewmodel.ListState
+import dev.alvr.katana.features.lists.ui.viewmodel.ListsState
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun MediaList(
-    listState: ListState<out MediaListItem>,
+    listsState: ListsState<out MediaListItem>,
     onRefresh: () -> Unit,
     onAddPlusOne: (Int) -> Unit,
     onEditEntry: (Int) -> Unit,
@@ -76,13 +76,13 @@ internal fun MediaList(
 ) {
     KatanaPullRefresh(
         modifier = modifier,
-        loading = listState.isLoading,
+        loading = listsState.loading,
         onRefresh = onRefresh,
     ) {
         MediaList(
             lazyGridState = lazyGridState,
-            items = listState.items,
-            itemLoading = listState.isLoading,
+            items = listsState.items,
+            itemLoading = listsState.loading,
             modifier = Modifier.fillMaxSize(),
             onAddPlusOne = onAddPlusOne,
             onEditEntry = onEditEntry,

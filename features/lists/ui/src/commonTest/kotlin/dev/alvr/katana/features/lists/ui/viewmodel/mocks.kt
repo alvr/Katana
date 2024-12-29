@@ -7,7 +7,6 @@ import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaList
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListEntry
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
-import io.kotest.property.kotlinx.datetime.date
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime

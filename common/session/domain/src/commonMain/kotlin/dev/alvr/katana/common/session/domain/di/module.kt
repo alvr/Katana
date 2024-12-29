@@ -7,6 +7,7 @@ import dev.alvr.katana.common.session.domain.usecases.LogOutUseCase
 import dev.alvr.katana.common.session.domain.usecases.ObserveActiveSessionUseCase
 import dev.alvr.katana.common.session.domain.usecases.SaveSessionUseCase
 import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 private val useCasesModule = module {
@@ -14,8 +15,9 @@ private val useCasesModule = module {
     factoryOf(::DeleteAnilistTokenUseCase)
     factoryOf(::GetAnilistTokenUseCase)
     factoryOf(::LogOutUseCase)
-    factoryOf(::ObserveActiveSessionUseCase)
     factoryOf(::SaveSessionUseCase)
+
+    singleOf(::ObserveActiveSessionUseCase)
 }
 
 val commonSessionDomainModule = module {

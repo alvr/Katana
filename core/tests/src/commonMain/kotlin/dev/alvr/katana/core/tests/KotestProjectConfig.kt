@@ -1,5 +1,6 @@
 package dev.alvr.katana.core.tests
 
+import dev.alvr.katana.core.tests.di.coreTestsModule
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
@@ -19,4 +20,6 @@ object KotestProjectConfig : AbstractProjectConfig() {
     override val parallelism = NUM_THREADS
     override val testNameAppendTags = true
     override val testNameRemoveWhitespace = true
+
+    override fun extensions() = listOf(koinExtension(coreTestsModule))
 }

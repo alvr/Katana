@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="navigation_bar_anime">Anime</string>
-    <string name="navigation_bar_manga">Manga</string>
-    <string name="navigation_bar_explore">Explorar</string>
-    <string name="navigation_bar_social">Social</string>
-    <string name="navigation_bar_account">Cuenta</string>
+    <string name="katana_logo_a11y">Logo de Katana</string>
 
-    <string name="session_expired_error_title">Sesión expirada</string>
-    <string name="session_expired_error_message">La sesión de Anilist ha expirado. Para continuar usando Katana tienes que volver a iniciar sesión.</string>
-    <string name="session_expired_error_confirm_button">Iniciar sesión</string>
+    <string name="tab_for_you">Para ti</string>
+    <string name="tab_activity">Actividad</string>
+
+    <string name="error_fetch_user_id">Ha habido un error al obtener el usuario. Por favor, inténtalo de nuevo.</string>
+    <string name="error_save_token">Ha habido un error al iniciar sesión. Por favor, inténtalo de nuevo.</string>
+    <string name="error_observe_session">Ha habido un error al comprobar si hay una sesión activa. Por favor, inicia sesión de nuevo.</string>
+
+    <string name="welcome_card_title">¡Bienvenido a Katana!</string>
+    <string name="welcome_card_close_card_a11y">Cerrar tarjeta de bienvenida</string>
+    <string name="welcome_card_message">Puedes usar Katana sin necesidad de iniciar sesión con tu cuenta de AniList, pero no podrás disfrutar de todas las funcionalidades. Regístrate o inicia sesión ahora o hazlo más adelante.</string>
+    <string name="welcome_card_register_button">Registrarse</string>
+    <string name="welcome_card_login_button">Iniciar sesión</string>
+
+    <string name="watching_title">Viendo actualmente</string>
+    <string name="watching_icon_button_a11y">Navega a las listas de anime</string>
+
+    <string name="reading_title">Leyendo actualmente</string>
+    <string name="reading_icon_button_a11y">Navega a las listas de manga</string>
+
+    <string name="trending_title">Tendencia</string>
+    <string name="trending_icon_button_a11y">Navega a tendencia</string>
+
+    <string name="popular_title">Popular</string>
+    <string name="popular_icon_button_a11y">Navega a popular</string>
+
+    <string name="upcoming_title">Próximamente</string>
+    <string name="upcoming_icon_button_a11y">Navega a próximamente</string>
 </resources>

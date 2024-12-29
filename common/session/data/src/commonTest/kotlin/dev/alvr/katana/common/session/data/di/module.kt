@@ -3,7 +3,7 @@ package dev.alvr.katana.common.session.data.di
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.core.okio.OkioStorage
-import dev.alvr.katana.common.session.data.models.Session
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.core.preferences.encrypt.PreferencesEncrypt
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -44,7 +44,7 @@ internal fun testDataStoreModule() = module {
             storage = OkioStorage(
                 fileSystem = fileSystem,
                 producePath = { dataStoreFile },
-                serializer = Session.serializer(get()),
+                serializer = Session.preferencesSerializer(get()),
             ),
             scope = TestScope(UnconfinedTestDispatcher()),
         )
@@ -62,7 +62,7 @@ internal fun testDataStoreModule() = module {
             storage = OkioStorage(
                 fileSystem = fileSystem,
                 producePath = { createFile },
-                serializer = Session.serializer(get()),
+                serializer = Session.preferencesSerializer(get()),
             ),
             scope = TestScope(UnconfinedTestDispatcher()),
             corruptionHandler = corruptionHandler(createFile),

@@ -53,7 +53,7 @@ internal class EncryptedPreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "secured read"
+            }.message shouldBe "reading preferences"
 
             verify { encrypt.decrypt(any()) }
         }
@@ -67,7 +67,7 @@ internal class EncryptedPreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "secured read"
+            }.message shouldBe "reading preferences"
 
             verify { encrypt.decrypt(any()) }
         }
@@ -80,7 +80,7 @@ internal class EncryptedPreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.writeTo(Color(0x123456), source)
-            }.message shouldBe "secured write"
+            }.message shouldBe "writing preferences"
 
             verify { encrypt.encrypt(any()) }
         }
@@ -93,7 +93,7 @@ internal class EncryptedPreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "secured read"
+            }.message shouldBe "reading preferences"
 
             verify { encrypt.decrypt(any()) }
         }

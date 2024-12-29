@@ -2,9 +2,12 @@ package dev.alvr.katana.features.lists.ui.viewmodel
 
 import arrow.core.left
 import arrow.core.right
+import dev.alvr.katana.core.common.empty
 import dev.alvr.katana.core.domain.usecases.invoke
 import dev.alvr.katana.core.tests.coEitherJustRun
-import dev.alvr.katana.core.tests.orbitTestScope
+import dev.alvr.katana.core.tests.ui.FinalizationType
+import dev.alvr.katana.core.tests.ui.TestKatanaBaseViewModelScope
+import dev.alvr.katana.core.tests.ui.test
 import dev.alvr.katana.features.lists.domain.failures.ListsFailure
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
@@ -14,28 +17,29 @@ import dev.alvr.katana.features.lists.domain.usecases.UpdateListUseCase
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
 import dev.alvr.katana.features.lists.ui.entities.UserList
 import dev.alvr.katana.features.lists.ui.entities.mappers.toMediaList
-import io.kotest.assertions.throwables.shouldThrowExactlyUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldHaveSize
 import io.mockk.clearAllMocks
+import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.flowOf
-import org.orbitmvi.orbit.test.OrbitTestContext
-import org.orbitmvi.orbit.test.test
 
-private typealias AnimeState = ListState<MediaListItem.AnimeListItem>
+private typealias AnimeState = ListsState<MediaListItem.AnimeListItem>
 
 internal class AnimeListsViewModelTest : FreeSpec() {
     private val observeAnime = mockk<ObserveAnimeListUseCase>()
     private val updateList = mockk<UpdateListUseCase>()
+
     private lateinit var viewModel: AnimeListsViewModel
 
     init {
@@ -47,21 +51,18 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                     )
                     coJustRun { observeAnime() }
 
-                    viewModel.test(orbitTestScope) {
-                        runOnCreate()
-                        expectInitialState()
-                        expectState { copy(isLoading = true) }
+                    viewModel.test {
                         expectState {
+                            empty.shouldBeTrue()
+
                             copy(
-                                isLoading = false,
-                                isEmpty = true,
+                                loading = false,
                                 items = persistentListOf(),
                             )
                         }
-                        cancelAndIgnoreRemainingItems()
                     }
 
-                    verify(exactly = 1) { observeAnime() }
+                    coVerify(exactly = 1) { observeAnime() }
                     verify(exactly = 1) { observeAnime.flow }
                 }
             }
@@ -69,25 +70,23 @@ internal class AnimeListsViewModelTest : FreeSpec() {
             "the anime collection has entries" {
                 mockAnimeFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
+                    currentState.empty.shouldBeFalse()
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
             "the anime collection has entries AND getting the userLists" {
                 mockAnimeFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
+                    currentState.empty.shouldBeFalse()
 
-                    containerHost.userLists
+                    currentState.lists
                         .shouldHaveSize(2)
                         .shouldContainInOrder(
                             UserList("MyCustomAnimeList" to 1),
@@ -95,7 +94,7 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                         )
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -103,14 +102,16 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                 every { observeAnime.flow } returns flowOf(ListsFailure.GetMediaCollection.left())
                 coJustRun { observeAnime() }
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    expectState { copy(isError = true, isLoading = false, isEmpty = true) }
+                viewModel.test {
+                    expectState {
+                        empty.shouldBeTrue()
+                        copy(error = true, loading = false)
+                    }
+
+                    expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
         }
@@ -120,16 +121,28 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                 mockAnimeFlow()
                 coEitherJustRun { updateList(any()) }
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    containerHost.addPlusOne(animeListItem1.entryId)
-                    cancelAndIgnoreRemainingItems()
+                viewModel.test {
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(animeListItem1.entryId))
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
+
+                coVerify(exactly = 1) {
+                    updateList(animeListItem1.copy(progress = animeListItem1.progress.inc()).toMediaList())
+                }
+            }
+
+            "is failure" {
+                mockAnimeFlow()
+                coEvery { updateList(any()) } returns ListsFailure.UpdatingList.left()
+
+                viewModel.test {
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(animeListItem1.entryId))
+                    expectEffect(ListsEffect.AddPlusOneFailure)
+                }
 
                 coVerify(exactly = 1) {
                     updateList(animeListItem1.copy(progress = animeListItem1.progress.inc()).toMediaList())
@@ -139,16 +152,14 @@ internal class AnimeListsViewModelTest : FreeSpec() {
             "the element is not found" {
                 mockAnimeFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    expectState { copy(isLoading = true) }
-                    shouldThrowExactlyUnit<NoSuchElementException> { containerHost.addPlusOne(234) }
-                    cancelAndIgnoreRemainingItems()
+                viewModel.test {
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(234))
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
+                coVerify(exactly = 0) { updateList(any()) }
             }
         }
 
@@ -156,34 +167,40 @@ internal class AnimeListsViewModelTest : FreeSpec() {
             "the anime collection has entries" {
                 mockAnimeFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
+                viewModel.test {
                     expectStateWithLists()
-                    containerHost.selectList("MyCustomAnimeList2")
+                    currentState.empty.shouldBeFalse()
+                    intent(ListsIntent.SelectList("MyCustomAnimeList2"))
                     expectState {
                         copy(
-                            name = "MyCustomAnimeList2",
+                            selectedList = "MyCustomAnimeList2",
                             items = persistentListOf(animeListItem2),
                         )
                     }
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
             "try to select a non-existent anime list" {
                 mockAnimeFlow()
 
-                viewModel.test(orbitTestScope) {
-                    runOnCreate()
-                    expectInitialState()
-                    containerHost.selectList("NonExistent Anime List")
+                viewModel.test {
                     expectStateWithLists()
+                    intent(ListsIntent.SelectList("NonExistent Anime List"))
+
+                    expectState {
+                        empty.shouldBeTrue()
+                        copy(
+                            loading = false,
+                            selectedList = "NonExistent Anime List",
+                            items = persistentListOf(),
+                        )
+                    }
                 }
 
-                verify(exactly = 1) { observeAnime() }
+                coVerify(exactly = 1) { observeAnime() }
                 verify(exactly = 1) { observeAnime.flow }
             }
 
@@ -193,33 +210,88 @@ internal class AnimeListsViewModelTest : FreeSpec() {
                 "searching $text an entry should return $result" {
                     mockAnimeFlow()
 
-                    viewModel.test(orbitTestScope) {
-                        runOnCreate()
-                        expectInitialState()
+                    viewModel.test {
                         expectStateWithLists()
-                        containerHost.search(text)
+                        intent(ListsIntent.Search(text))
                         expectState {
+                            empty.shouldBeTrue()
+
                             copy(
-                                isLoading = false,
-                                isEmpty = empty,
+                                loading = false,
                                 items = result,
                             )
                         }
                     }
 
-                    verify(exactly = 1) { observeAnime() }
+                    coVerify(exactly = 1) { observeAnime() }
                     verify(exactly = 1) { observeAnime.flow }
                 }
             }
         }
+
+        "refreshing" - {
+            "is successful" {
+                mockAnimeFlow()
+
+                viewModel.test(
+                    finalizationType = FinalizationType.Drop,
+                ) {
+                    expectStateWithLists()
+                    intent(ListsIntent.Refresh)
+                }
+
+                coVerify(exactly = 2) { observeAnime() }
+                verify(exactly = 2) { observeAnime.flow }
+            }
+
+            "is failure" {
+                coJustRun { observeAnime() }
+                every { observeAnime.flow } returnsMany listOf(
+                    flowOf(
+                        MediaCollection(
+                            lists = listOf(
+                                MediaListGroup(
+                                    name = "MyCustomAnimeList",
+                                    entries = listOf(animeMediaEntry1),
+                                ),
+                                MediaListGroup(
+                                    name = "MyCustomAnimeList2",
+                                    entries = listOf(animeMediaEntry2),
+                                ),
+                            ),
+                        ).right(),
+                    ),
+                    flowOf(ListsFailure.GetMediaCollection.left()),
+                )
+
+                viewModel.test {
+                    expectStateWithLists()
+
+                    intent(ListsIntent.Refresh)
+
+                    expectState { copy(loading = true) }
+                    expectState {
+
+                        copy(
+                            collection = persistentMapOf(),
+                            items = persistentListOf(),
+                            selectedList = String.empty,
+                            error = true,
+                            loading = false,
+                        )
+                    }
+                    expectEffect(ListsEffect.LoadingListsFailure)
+                }
+
+                coVerify(exactly = 2) { observeAnime() }
+                verify(exactly = 2) { observeAnime.flow }
+            }
+        }
     }
 
-    override suspend fun beforeTest(testCase: TestCase) {
-        viewModel = AnimeListsViewModel(updateList, observeAnime)
-    }
-
-    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
+    override suspend fun beforeEach(testCase: TestCase) {
         clearAllMocks()
+        viewModel = AnimeListsViewModel(updateList, observeAnime)
     }
 
     private fun mockAnimeFlow() {
@@ -241,15 +313,13 @@ internal class AnimeListsViewModelTest : FreeSpec() {
         coJustRun { observeAnime() }
     }
 
-    private suspend fun OrbitTestContext<AnimeState, *, *>.expectStateWithLists() {
-        expectState { copy(isLoading = true) }
+    private suspend fun TestKatanaBaseViewModelScope<AnimeState, *, *>.expectStateWithLists() {
         expectState {
             copy(
-                isLoading = false,
-                isEmpty = false,
-                name = "MyCustomAnimeList",
+                loading = false,
+                selectedList = "MyCustomAnimeList",
                 items = persistentListOf(animeListItem1),
-                isError = false,
+                error = false,
             )
         }
     }

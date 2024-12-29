@@ -3,9 +3,9 @@ package dev.alvr.katana.common.session.data.sources
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import app.cash.turbine.test
+import dev.alvr.katana.common.session.data.entities.Session
 import dev.alvr.katana.common.session.data.mocks.anilistTokenMock
 import dev.alvr.katana.common.session.data.mocks.sessionMock
-import dev.alvr.katana.common.session.data.models.Session
 import dev.alvr.katana.common.session.domain.failures.SessionFailure
 import dev.alvr.katana.core.tests.shouldBeLeft
 import dev.alvr.katana.core.tests.shouldBeNone
@@ -20,17 +20,22 @@ import dev.mokkery.mock
 import dev.mokkery.verify
 import dev.mokkery.verifySuspend
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 
 internal class SessionLocalSourceTest : FreeSpec() {
-    private val store = mock<DataStore<Session>>()
+    private val store = mock<DataStore<Session>> {
+        every { data } returns emptyFlow()
+    }
 
-    private val source: SessionLocalSource = SessionLocalSourceImpl(store)
+    private lateinit var source: SessionLocalSource
 
     init {
         "successful" - {
+            every { store.data } returns flowOf(Session(anilistToken = null))
+
             "getting a token from datastore for the first time" {
-                every { store.data } returns flowOf(Session(anilistToken = null))
                 source.getAnilistToken().shouldBeNone()
                 verify { store.data }
             }
@@ -45,9 +50,10 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 every { store.data } returns flowOf(
                     Session(
                         anilistToken = anilistTokenMock,
-                        isSessionActive = true,
+                        sessionActive = true,
                     ),
                 )
+
                 source.getAnilistToken().shouldBeSome(anilistTokenMock)
                 verify { store.data }
             }
@@ -71,17 +77,17 @@ internal class SessionLocalSourceTest : FreeSpec() {
             }
 
             listOf(
-                Session(anilistToken = null, isSessionActive = false),
-                Session(anilistToken = null, isSessionActive = true),
-                Session(anilistToken = anilistTokenMock, isSessionActive = false),
-                Session(anilistToken = anilistTokenMock, isSessionActive = true),
-            ).forEach { session ->
-                "checking session active for ${session.anilistToken} and ${session.isSessionActive}" {
-                    every { store.data } returns flowOf(session)
+                Session(anilistToken = null, sessionActive = false) to false,
+                Session(anilistToken = null, sessionActive = true) to false,
+                Session(anilistToken = anilistTokenMock, sessionActive = false) to false,
+                Session(anilistToken = anilistTokenMock, sessionActive = true) to true,
+            ).forEach { (session, expected) ->
+                every { store.data } returns flowOf(session)
 
+                "checking session active for ${session.anilistToken} and ${session.sessionActive}" {
                     source.sessionActive.test {
-                        awaitItem().shouldBeRight((session.anilistToken == null && session.isSessionActive).not())
-                        cancelAndIgnoreRemainingEvents()
+                        awaitItem().shouldBeRight(expected)
+                        awaitComplete()
                     }
 
                     verify { store.data }
@@ -138,5 +144,9 @@ internal class SessionLocalSourceTest : FreeSpec() {
                 verifySuspend { store.updateData(any()) }
             }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        source = SessionLocalSourceImpl(store)
     }
 }

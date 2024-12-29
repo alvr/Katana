@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="navigation_bar_home">Home</string>
+    <string name="navigation_bar_anime">Anime</string>
+    <string name="navigation_bar_manga">Manga</string>
+    <string name="navigation_bar_explore">Explore</string>
+    <string name="navigation_bar_account">Account</string>
+</resources>

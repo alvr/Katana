@@ -10,5 +10,6 @@ class ObserveAnimeListUseCase(
     dispatcher: KatanaDispatcher,
     private val repository: ListsRepository,
 ) : FlowEitherUseCase<Unit, MediaCollection<MediaEntry.Anime>>(dispatcher) {
+    override val isShared: Boolean = false
     override fun createFlow(params: Unit) = repository.animeCollection
 }

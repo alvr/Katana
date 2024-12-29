@@ -13,20 +13,18 @@ import dev.alvr.katana.features.account.ui.di.featuresAccountUiModule
 import dev.alvr.katana.features.explore.data.di.featuresExploreDataModule
 import dev.alvr.katana.features.explore.domain.di.featuresExploreDomainModule
 import dev.alvr.katana.features.explore.ui.di.featuresExploreUiModule
+import dev.alvr.katana.features.home.data.di.featuresHomeDataModule
+import dev.alvr.katana.features.home.domain.di.featuresHomeDomainModule
 import dev.alvr.katana.features.home.ui.di.featuresHomeUiModule
 import dev.alvr.katana.features.lists.data.di.featuresListsDataModule
 import dev.alvr.katana.features.lists.domain.di.featuresListsDomainModule
 import dev.alvr.katana.features.lists.ui.di.featuresListsUiModule
-import dev.alvr.katana.features.login.ui.di.featuresLoginUiModule
-import dev.alvr.katana.features.social.data.di.featuresSocialDataModule
-import dev.alvr.katana.features.social.domain.di.featuresSocialDomainModule
-import dev.alvr.katana.features.social.ui.di.featuresSocialUiModule
-import dev.alvr.katana.shared.viewmodel.MainViewModel
+import dev.alvr.katana.shared.viewmodel.KatanaViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 private val viewModelsModule = module {
-    viewModelOf(::MainViewModel)
+    viewModelOf(::KatanaViewModel)
 }
 
 val katanaModule = module {
@@ -55,20 +53,14 @@ val katanaModule = module {
         featuresExploreUiModule,
 
         // Feature Home
+        featuresHomeDataModule,
+        featuresHomeDomainModule,
         featuresHomeUiModule,
 
         // Feature Lists
         featuresListsDataModule,
         featuresListsDomainModule,
         featuresListsUiModule,
-
-        // Feature Login
-        featuresLoginUiModule,
-
-        // Feature Social
-        featuresSocialDataModule,
-        featuresSocialDomainModule,
-        featuresSocialUiModule,
 
         // Shared
         viewModelsModule,
