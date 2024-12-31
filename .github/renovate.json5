@@ -64,6 +64,8 @@
             "matchManagers": [
                 "github-actions",
             ],
+            "updateTypes": ["pin", "digest"],
+            "pinDigests": true,
         },
         {
             "automerge": false,

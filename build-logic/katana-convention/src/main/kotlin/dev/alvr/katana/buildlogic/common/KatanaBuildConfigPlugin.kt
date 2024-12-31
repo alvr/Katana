@@ -10,10 +10,12 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import dev.alvr.katana.buildlogic.common.Config.Environment.BuildConfig
 import dev.alvr.katana.buildlogic.fullPackageName
+import dev.alvr.katana.buildlogic.mp.desktopMain
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.gradle.api.DefaultTask
 import org.gradle.api.NamedDomainObjectContainer
+import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
@@ -41,12 +43,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal class KatanaBuildConfigPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
-        val sourceOutputDirs = extensions.getByType<KotlinMultiplatformExtension>().sourceSets.run {
-            mapOf(
-                outputDir(project, OutputDir.COMMON),
-                outputDir(project, OutputDir.JVM),
-                outputDir(project, OutputDir.IOS),
-            )
+        val sourceSets = extensions.getByType<KotlinMultiplatformExtension>().sourceSets
+        val sourceOutputDirs = OutputDir.values().associateWith { output ->
+            project.outputDir(output.sourceSet).get()
         }
 
         val generateBuildConfig by tasks.registering(GenerateBuildConfigTask::class) {
@@ -60,19 +59,12 @@ internal class KatanaBuildConfigPlugin : Plugin<Project> {
 
         configure<KotlinMultiplatformExtension> {
             sourceSets {
-                commonMain.configure { kotlin.srcDirs(sourceOutputDirs[OutputDir.COMMON]) }
-                jvmMain.configure { kotlin.srcDirs(sourceOutputDirs[OutputDir.JVM]) }
-                iosMain.configure { kotlin.srcDirs(sourceOutputDirs[OutputDir.IOS]) }
+                sourceOutputDirs.forEach { (output, dir) ->
+                    val sourceSet = getByName(output.sourceSet)
+                    sourceSet.kotlin.srcDir(dir)
+                }
             }
         }
-    }
-
-    private fun NamedDomainObjectContainer<KotlinSourceSet>.outputDir(
-        project: Project,
-        outputDir: OutputDir
-    ): Pair<OutputDir, Directory> {
-        val sourceSet = getByName("${outputDir.name.lowercase()}Main").name
-        return outputDir to project.outputDir(sourceSet).get()
     }
 
     private fun Project.outputDir(name: String) = layout.buildDirectory.dir("$GENERATED_DIR/$name")
@@ -99,18 +91,21 @@ internal abstract class GenerateBuildConfigTask : DefaultTask() {
 
         val android = config.android.fromFlavor(flavor.get())
         val ios = config.ios.fromFlavor(flavor.get())
-        val common = (android + ios).distinctBy { it.name }.toSet()
+        val desktop = config.desktop.fromFlavor(flavor.get())
+        val common = (android + ios + desktop).distinctBy { it.name }.toSet()
 
         require(android.size == common.size) { "Android build config is missing some values: ${common - android}" }
         require(ios.size == common.size) { "iOS build config is missing some values: ${common - ios}" }
+        require(desktop.size == common.size) { "Desktop build config is missing some values: ${common - desktop}" }
 
         common.generateExpect()
-        android.generateActual(OutputDir.JVM)
-        ios.generateActual(OutputDir.IOS)
+        android.generateActual(OutputDir.android)
+        ios.generateActual(OutputDir.ios)
+        desktop.generateActual(OutputDir.desktop)
     }
 
     private fun Set<BuildConfig>.generateExpect() {
-        generateBuildConfig(KModifier.EXPECT, OutputDir.COMMON)
+        generateBuildConfig(KModifier.EXPECT, OutputDir.common)
     }
 
     private fun Set<BuildConfig>.generateActual(outputDir: OutputDir) {
@@ -147,6 +142,7 @@ internal abstract class GenerateBuildConfigTask : DefaultTask() {
 private data class Config(
     @SerialName("android") val android: Environment,
     @SerialName("ios") val ios: Environment,
+    @SerialName("desktop") val desktop: Environment,
 ) {
     @Serializable
     data class Environment(
@@ -170,10 +166,15 @@ private data class Config(
     }
 }
 
-internal enum class OutputDir(internal val suffix: String) {
-    COMMON(""),
-    JVM(".jvm"),
-    IOS(".ios"),
+@Suppress("EnumEntryName", "EnumNaming")
+internal enum class OutputDir(
+    internal val suffix: String,
+    internal val sourceSet: String,
+) {
+    common("", "commonMain"),
+    android(".android", "androidMain"),
+    ios(".ios", "iosMain"),
+    desktop(".desktop", "desktopMain"),
 }
 
 private const val FILENAME = "KatanaBuildConfig"

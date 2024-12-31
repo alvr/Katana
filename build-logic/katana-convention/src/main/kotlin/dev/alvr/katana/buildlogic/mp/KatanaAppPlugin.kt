@@ -1,60 +1,113 @@
 @file:Suppress("NoUnusedImports", "UnusedImports")
 
-package dev.alvr.katana.buildlogic.app
+package dev.alvr.katana.buildlogic.mp
 
 import com.android.build.api.dsl.ApplicationBuildType
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import dev.alvr.katana.buildlogic.KatanaConfiguration
 import dev.alvr.katana.buildlogic.catalogBundle
-import dev.alvr.katana.buildlogic.commonTasks
 import dev.alvr.katana.buildlogic.configureAndroid
-import dev.alvr.katana.buildlogic.configureKotlinCompiler
-import dev.alvr.katana.buildlogic.implementation
-import dev.alvr.katana.buildlogic.testImplementation
 import io.sentry.android.gradle.extensions.SentryPluginExtension
 import java.io.FileInputStream
+import java.time.Year
 import java.util.Properties
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.invoke
+import org.jetbrains.compose.ComposeExtension
+import org.jetbrains.compose.ComposePlugin
+import org.jetbrains.compose.desktop.DesktopExtension
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
-internal class KatanaAppAndroidPlugin : Plugin<Project> {
+internal class KatanaAppPlugin : Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
         apply(plugin = "com.android.application")
-        apply(plugin = "org.jetbrains.kotlin.android")
-        apply(plugin = "org.jetbrains.compose")
-        apply(plugin = "org.jetbrains.kotlin.plugin.compose")
+        commonConfiguration()
+        apply(plugin = "katana.multiplatform.compose")
         apply(plugin = "io.sentry.android.gradle")
 
         with(extensions) {
-            configure<BaseAppModuleExtension> { configureApp(project) }
+            configure<ComposeExtension> {
+                (this as ExtensionAware).extensions
+                    .getByType<DesktopExtension>()
+                    .configureDesktop(project)
+            }
+            configure<KotlinMultiplatformExtension> { configureMultiplatform() }
             configure<SentryPluginExtension> { configureSentry() }
-            configure<KotlinAndroidProjectExtension> { configureKotlin() }
+
+            configure<BaseAppModuleExtension> { configureAndroid(project) }
         }
-
-        dependencies {
-            implementation(catalogBundle("app-android"))
-            implementation(catalogBundle("mobile-common"))
-            implementation(catalogBundle("mobile-android"))
-
-            testImplementation(catalogBundle("mobile-common-test"))
-            testImplementation(catalogBundle("mobile-android-test"))
-        }
-
-        tasks.commonTasks()
     }
 
-    private fun KotlinAndroidProjectExtension.configureKotlin() {
-        compilerOptions.configureKotlinCompiler()
+    private fun KotlinMultiplatformExtension.configureMultiplatform() {
+        configureSourceSets()
+    }
+
+    private fun KotlinMultiplatformExtension.configureSourceSets() {
+        val compose = (this as ExtensionAware).extensions.getByType<ComposePlugin.Dependencies>()
+
+        sourceSets {
+            androidMain.dependencies {
+                implementation(catalogBundle("app-android"))
+            }
+
+            desktopMain.dependencies {
+                implementation(compose.desktop.currentOs)
+                implementation(catalogBundle("app-desktop"))
+            }
+        }
+    }
+
+    private fun DesktopExtension.configureDesktop(project: Project) {
+        application {
+            mainClass = "dev.alvr.katana.KatanaKt"
+
+            buildTypes {
+                release {
+                    proguard {
+                        isEnabled = true
+                        obfuscate = true
+                    }
+                }
+            }
+
+            nativeDistributions {
+                linux {
+                }
+
+                macOS {
+                    dmgPackageVersion = "1"
+                }
+
+                windows {
+                }
+
+                targetFormats(
+                    TargetFormat.Deb,
+                    TargetFormat.Rpm,
+                    TargetFormat.Dmg,
+                    TargetFormat.Exe,
+                )
+
+                packageName = "Katana"
+                packageVersion = KatanaConfiguration.VersionName
+                copyright = "2022 - ${Year.now()} Alvaro Salcedo Garcia (alvr). Licensed under the Apache License."
+                vendor = "Alvaro Salcedo Garcia (alvr)"
+                licenseFile.set(project.rootProject.file("LICENSE"))
+            }
+        }
     }
 
     @Suppress("StringLiteralDuplication")
-    private fun BaseAppModuleExtension.configureApp(project: Project) {
+    private fun BaseAppModuleExtension.configureAndroid(project: Project) {
         configureAndroid(KatanaConfiguration.PackageName)
 
         compileOptions.isCoreLibraryDesugaringEnabled = true
@@ -94,6 +147,7 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
                 versionNameSuffix = "-dev"
 
                 configure(isDebug = true)
+                resValue("string", "app_name", "Katana Dev")
             }
 
             release {
@@ -101,10 +155,11 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
 
                 proguardFiles(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro",
+                    "$AndroidDir/proguard-rules.pro",
                 )
 
                 signingConfig = signingConfigs.getByName("release")
+                resValue("string", "app_name", "Katana")
             }
 
             register("beta") {
@@ -113,8 +168,12 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
 
                 applicationIdSuffix = ".beta"
                 versionNameSuffix = "-beta"
+                resValue("string", "app_name", "Katana Beta")
             }
         }
+
+        sourceSets["main"].manifest.srcFile("$AndroidDir/AndroidManifest.xml")
+        sourceSets["main"].res.srcDirs("$AndroidDir/res")
     }
 
     private fun SentryPluginExtension.configureSentry() {
@@ -139,3 +198,5 @@ internal class KatanaAppAndroidPlugin : Plugin<Project> {
     private operator fun Properties.get(key: String, env: String) =
         getOrElse(key) { System.getenv(env) } as? String
 }
+
+private const val AndroidDir = "src/androidMain"

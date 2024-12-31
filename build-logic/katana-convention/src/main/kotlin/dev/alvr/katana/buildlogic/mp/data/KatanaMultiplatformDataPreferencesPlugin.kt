@@ -1,7 +1,11 @@
-package dev.alvr.katana.buildlogic.mp.mobile.data
+package dev.alvr.katana.buildlogic.mp.data
 
 import dev.alvr.katana.buildlogic.catalogBundle
 import dev.alvr.katana.buildlogic.kspDependencies
+import dev.alvr.katana.buildlogic.mp.desktopMain
+import dev.alvr.katana.buildlogic.mp.desktopTest
+import dev.alvr.katana.buildlogic.mp.jvmBasedMain
+import dev.alvr.katana.buildlogic.mp.jvmBasedTest
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -12,7 +16,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 internal class KatanaMultiplatformDataPreferencesPlugin : Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
-        apply(plugin = "katana.multiplatform.mobile")
+        apply(plugin = "katana.multiplatform.core")
         apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
         with(extensions) {
@@ -22,7 +26,7 @@ internal class KatanaMultiplatformDataPreferencesPlugin : Plugin<Project> {
 
     private fun KotlinMultiplatformExtension.configureMultiplatform(project: Project) {
         configureSourceSets()
-        kspDependencies(project, "mobile")
+        kspDependencies(project, "data-preferences")
     }
 
     private fun KotlinMultiplatformExtension.configureSourceSets() {
@@ -36,6 +40,12 @@ internal class KatanaMultiplatformDataPreferencesPlugin : Plugin<Project> {
             iosMain.dependencies {
                 implementation(catalogBundle("data-preferences-ios"))
             }
+            desktopMain.dependencies {
+                implementation(catalogBundle("data-preferences-desktop"))
+            }
+            jvmBasedMain.dependencies {
+                implementation(catalogBundle("data-preferences-jvm"))
+            }
 
             commonTest.dependencies {
                 implementation(catalogBundle("data-preferences-common-test"))
@@ -45,6 +55,12 @@ internal class KatanaMultiplatformDataPreferencesPlugin : Plugin<Project> {
             }
             iosTest.dependencies {
                 implementation(catalogBundle("data-preferences-ios-test"))
+            }
+            desktopTest.dependencies {
+                implementation(catalogBundle("data-preferences-desktop-test"))
+            }
+            jvmBasedTest.dependencies {
+                implementation(catalogBundle("data-preferences-jvm-test"))
             }
         }
     }

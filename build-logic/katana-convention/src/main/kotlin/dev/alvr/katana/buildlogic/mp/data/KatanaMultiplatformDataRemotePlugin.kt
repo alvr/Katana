@@ -1,12 +1,16 @@
 @file:Suppress("NoUnusedImports", "UnusedImports")
 
-package dev.alvr.katana.buildlogic.mp.mobile.data
+package dev.alvr.katana.buildlogic.mp.data
 
 import com.apollographql.apollo.annotations.ApolloExperimental
 import com.apollographql.apollo.gradle.api.ApolloExtension
 import dev.alvr.katana.buildlogic.catalogBundle
 import dev.alvr.katana.buildlogic.fullPackageName
 import dev.alvr.katana.buildlogic.kspDependencies
+import dev.alvr.katana.buildlogic.mp.desktopMain
+import dev.alvr.katana.buildlogic.mp.desktopTest
+import dev.alvr.katana.buildlogic.mp.jvmBasedMain
+import dev.alvr.katana.buildlogic.mp.jvmBasedTest
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -18,7 +22,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 internal class KatanaMultiplatformDataRemotePlugin : Plugin<Project> {
 
     override fun apply(target: Project) = with(target) {
-        apply(plugin = "katana.multiplatform.mobile")
+        apply(plugin = "katana.multiplatform.core")
         apply(plugin = "com.apollographql.apollo")
 
         with(extensions) {
@@ -29,7 +33,7 @@ internal class KatanaMultiplatformDataRemotePlugin : Plugin<Project> {
 
     private fun KotlinMultiplatformExtension.configureMultiplatform(project: Project) {
         configureSourceSets()
-        kspDependencies(project, "mobile")
+        kspDependencies(project, "data-remote")
     }
 
     private fun KotlinMultiplatformExtension.configureSourceSets() {
@@ -43,6 +47,12 @@ internal class KatanaMultiplatformDataRemotePlugin : Plugin<Project> {
             iosMain.dependencies {
                 implementation(catalogBundle("data-remote-ios"))
             }
+            desktopMain.dependencies {
+                implementation(catalogBundle("data-remote-desktop"))
+            }
+            jvmBasedMain.dependencies {
+                implementation(catalogBundle("data-remote-jvm"))
+            }
 
             commonTest.dependencies {
                 implementation(catalogBundle("data-remote-common-test"))
@@ -52,6 +62,12 @@ internal class KatanaMultiplatformDataRemotePlugin : Plugin<Project> {
             }
             iosTest.dependencies {
                 implementation(catalogBundle("data-remote-ios-test"))
+            }
+            desktopTest.dependencies {
+                implementation(catalogBundle("data-remote-desktop-test"))
+            }
+            jvmBasedTest.dependencies {
+                implementation(catalogBundle("data-remote-jvm-test"))
             }
         }
     }

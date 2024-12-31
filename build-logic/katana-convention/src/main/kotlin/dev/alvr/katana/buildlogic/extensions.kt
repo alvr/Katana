@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.androidJvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.common
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.jvm
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType.native
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -160,7 +161,10 @@ private fun KotlinMultiplatformExtension.kspDependencies(
             val groupName = "${target.groupName}${configurationNameSuffix.suffix}"
             val catalogAlias = "$catalogPrefix-$groupName-ksp".lowercase()
 
-            add(configurationName, project.catalogBundle(catalogAlias))
+            val bundle = project.catalogBundle(catalogAlias).orNull
+            if (bundle != null) {
+                add(configurationName, project.catalogBundle(catalogAlias))
+            }
         }
     }
 }
@@ -175,10 +179,12 @@ private fun KotlinTarget.configurationName(suffix: String) =
 private val String.suffix get() = if (isNotEmpty()) "-$this" else ""
 
 private val KotlinTarget.groupName get() = when {
-    platformType == native && targetName.contains(IOS_TARGET) -> IOS_TARGET
-    platformType == androidJvm -> ANDROID_TARGET
+    platformType == native && targetName.contains(IosTarget) -> IosTarget
+    platformType == androidJvm -> AndroidTarget
+    platformType == jvm -> DesktopTarget
     else -> platformType.visibleName
 }
 
-private const val ANDROID_TARGET = "android"
-private const val IOS_TARGET = "ios"
+private const val AndroidTarget = "android"
+private const val IosTarget = "ios"
+private const val DesktopTarget = "desktop"

@@ -40,7 +40,7 @@ buildCache {
     }
 }
 
-include(":app-android", ":shared")
+include(":app", ":shared")
 includes("common", "core", "features")
 
 fun includes(vararg directories: String, maxDepth: Int = 2) {

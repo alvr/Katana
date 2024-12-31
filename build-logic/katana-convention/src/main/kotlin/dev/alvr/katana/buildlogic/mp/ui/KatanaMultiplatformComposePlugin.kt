@@ -1,10 +1,15 @@
 @file:Suppress("NoUnusedImports", "UnusedImports")
 
-package dev.alvr.katana.buildlogic.mp.mobile.ui
+package dev.alvr.katana.buildlogic.mp.ui
 
 import dev.alvr.katana.buildlogic.catalogBundle
 import dev.alvr.katana.buildlogic.fullPackageName
 import dev.alvr.katana.buildlogic.kspDependencies
+import dev.alvr.katana.buildlogic.mp.desktopMain
+import dev.alvr.katana.buildlogic.mp.desktopTest
+import dev.alvr.katana.buildlogic.mp.hierarchy
+import dev.alvr.katana.buildlogic.mp.jvmBasedMain
+import dev.alvr.katana.buildlogic.mp.jvmBasedTest
 import java.io.File
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,6 +42,7 @@ internal class KatanaMultiplatformComposePlugin : Plugin<Project> {
 
     private fun KotlinMultiplatformExtension.configureMultiplatform(project: Project) {
         configureSourceSets()
+
         kspDependencies(project, "ui")
     }
 
@@ -64,6 +70,12 @@ internal class KatanaMultiplatformComposePlugin : Plugin<Project> {
             iosMain.dependencies {
                 implementation(catalogBundle("ui-ios"))
             }
+            desktopMain.dependencies {
+                implementation(catalogBundle("ui-desktop"))
+            }
+            jvmBasedMain.dependencies {
+                implementation(catalogBundle("ui-jvm"))
+            }
 
             commonTest.dependencies {
                 implementation(catalogBundle("ui-common-test"))
@@ -73,6 +85,12 @@ internal class KatanaMultiplatformComposePlugin : Plugin<Project> {
             }
             iosTest.dependencies {
                 implementation(catalogBundle("ui-ios-test"))
+            }
+            desktopTest.dependencies {
+                implementation(catalogBundle("ui-desktop-test"))
+            }
+            jvmBasedTest.dependencies {
+                implementation(catalogBundle("ui-jvm-test"))
             }
         }
     }
