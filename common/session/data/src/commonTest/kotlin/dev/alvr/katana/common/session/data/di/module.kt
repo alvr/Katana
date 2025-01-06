@@ -31,9 +31,9 @@ internal val dataStoreNamed = named(DATASTORE)
 internal val corruptedDataStoreNamed = named(CORRUPTED_DATASTORE)
 
 private val dataStoreFile
-    get() = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(DATASTORE_FILE)
+    get() = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / DATASTORE_FILE
 private val corruptedDataStoreFile
-    get() = FileSystem.SYSTEM_TEMPORARY_DIRECTORY.resolve(CORRUPTED_DATASTORE_FILE)
+    get() = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / CORRUPTED_DATASTORE_FILE
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalEncodingApi::class)
 internal fun testDataStoreModule() = module {

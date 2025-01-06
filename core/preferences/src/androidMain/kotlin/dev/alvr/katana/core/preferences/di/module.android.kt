@@ -9,14 +9,10 @@ import com.google.crypto.tink.RegistryConfiguration
 import com.google.crypto.tink.aead.AeadConfig
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 import com.google.crypto.tink.integration.android.AndroidKeystore
-import dev.alvr.katana.core.preferences.encrypt.AndroidPreferencesEncrypt
-import dev.alvr.katana.core.preferences.encrypt.PreferencesEncrypt
 import org.koin.android.ext.koin.androidApplication
-import org.koin.core.module.dsl.factoryOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
-private val aeadModule = module {
+internal actual fun cipherModule() = module {
     single<Aead> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             android23Aead()
@@ -24,14 +20,6 @@ private val aeadModule = module {
             androidCompatAead(androidApplication())
         }
     }
-}
-
-private val securerModule = module {
-    factoryOf(::AndroidPreferencesEncrypt) bind PreferencesEncrypt::class
-}
-
-internal actual fun encryptionModule() = module {
-    includes(aeadModule, securerModule)
 }
 
 private fun androidCompatAead(context: Context): Aead {
