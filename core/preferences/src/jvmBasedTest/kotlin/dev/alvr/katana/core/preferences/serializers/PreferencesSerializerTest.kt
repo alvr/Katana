@@ -1,102 +1,86 @@
 package dev.alvr.katana.core.preferences.serializers
 
 import androidx.datastore.core.CorruptionException
-import dev.alvr.katana.core.preferences.encrypt.PreferencesEncrypt
-import dev.mokkery.answering.calls
-import dev.mokkery.answering.returns
-import dev.mokkery.every
-import dev.mokkery.matcher.any
-import dev.mokkery.mock
-import dev.mokkery.verify
+import androidx.datastore.core.okio.OkioSerializer
 import io.kotest.assertions.throwables.shouldThrowExactlyUnit
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockkObject
+import io.mockk.spyk
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.protobuf.ProtoBuf
 import okio.Buffer
 
-internal class EncryptedPreferencesSerializerTest : FreeSpec() {
-    private val encrypt = mock<PreferencesEncrypt>()
-
-    private val serializer = EncryptedPreferencesSerializer(
-        encrypt = encrypt,
-        serializer = ColorSerializer,
-        defaultValue = Color(),
-    )
+@OptIn(ExperimentalSerializationApi::class)
+internal class PreferencesSerializerTest : FreeSpec() {
+    private val serializer = PreferencesSerializer(
+            serializer = ColorSerializer,
+            defaultValue = { Color() },
+        )
 
     init {
         "writing and reading from the buffer" {
             val source = Buffer()
 
-            every { encrypt.encrypt(any()) } calls { it.arg(0) as ByteArray }
-            every { encrypt.decrypt(any()) } calls { it.arg(0) as ByteArray }
-
             serializer.writeTo(Color(0x123456), source)
             serializer.readFrom(source) shouldBe Color(0x123456)
-
-            verify {
-                encrypt.encrypt(any())
-                encrypt.decrypt(any())
-            }
         }
 
         "reading from an empty buffer" {
             val source = Buffer()
 
-            every { encrypt.encrypt(any()) } returns byteArrayOf()
-            every { encrypt.decrypt(any()) } returns byteArrayOf()
+            every { ProtoBuf.decodeFromByteArray<Any>(any(), any()) } throws SerializationException()
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
             }.message shouldBe "reading preferences"
-
-            verify { encrypt.decrypt(any()) }
         }
 
         "reading an invalid data" {
             val source = Buffer()
             source.write(byteArrayOf())
 
-            every { encrypt.encrypt(any()) } returns byteArrayOf()
-            every { encrypt.decrypt(any()) } returns byteArrayOf()
+            every { ProtoBuf.decodeFromByteArray<Any>(any(), any()) } throws SerializationException()
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
             }.message shouldBe "reading preferences"
-
-            verify { encrypt.decrypt(any()) }
         }
 
         "error when writing secure data" {
             val source = Buffer()
 
-            every { encrypt.encrypt(any()) } calls { error("oops") }
-            every { encrypt.decrypt(any()) } returns byteArrayOf()
+            every { ProtoBuf.encodeToByteArray<Any>(any(), any()) } throws SerializationException()
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.writeTo(Color(0x123456), source)
             }.message shouldBe "writing preferences"
-
-            verify { encrypt.encrypt(any()) }
         }
 
         "error when reading secure data" {
             val source = Buffer()
 
-            every { encrypt.encrypt(any()) } returns byteArrayOf()
-            every { encrypt.decrypt(any()) } calls { error("oops") }
+            every { ProtoBuf.encodeToByteArray<Any>(any(), any()) } throws SerializationException()
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
             }.message shouldBe "reading preferences"
-
-            verify { encrypt.decrypt(any()) }
         }
+    }
+
+    override suspend fun beforeEach(testCase: TestCase) {
+        mockkObject(ProtoBuf.Default)
     }
 
     @Serializable(with = ColorSerializer::class)

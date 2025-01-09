@@ -12,34 +12,24 @@ import okio.BufferedSource
 import okio.use
 
 @OptIn(ExperimentalEncodingApi::class, ExperimentalSerializationApi::class)
-internal open class PreferencesSerializer<T>(
+internal class PreferencesSerializer<T>(
     private val serializer: KSerializer<T>,
-    override val defaultValue: T,
+    defaultValue: () -> T,
 ) : OkioSerializer<T> {
+    override val defaultValue: T by lazy { defaultValue() }
+
     override suspend fun readFrom(source: BufferedSource): T =
         operation("reading preferences") {
-            val input = source.use { buffered ->
-                buffered.readByteArray()
-                    .let { value -> Base64.decode(value) }
-                    .readFrom()
-            }
-
+            val input = source.use { buffered -> Base64.decode(buffered.readByteArray()) }
             ProtoBuf.decodeFromByteArray(serializer, input)
         }
 
     override suspend fun writeTo(t: T, sink: BufferedSink) {
         operation("writing preferences") {
-            val output = ProtoBuf.encodeToByteArray(serializer, t)
-                .writeTo()
-                .let { value -> Base64.encodeToByteArray(value) }
-
+            val output = Base64.encodeToByteArray(ProtoBuf.encodeToByteArray(serializer, t))
             sink.use { buffered -> buffered.write(output) }
         }
     }
-
-    protected open fun ByteArray.readFrom(): ByteArray = this
-
-    protected open fun ByteArray.writeTo(): ByteArray = this
 
     @Suppress("TooGenericExceptionCaught")
     private inline fun <R> operation(message: String, block: () -> R): R = try {

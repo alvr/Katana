@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.core.okio.OkioStorage
 import dev.alvr.katana.common.session.data.entities.Session
-import dev.alvr.katana.core.preferences.encrypt.PreferencesEncrypt
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.random.Random
@@ -13,9 +12,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import okio.FileSystem
 import okio.Path
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal expect val fileSystem: FileSystem
@@ -37,14 +34,12 @@ private val corruptedDataStoreFile
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalEncodingApi::class)
 internal fun testDataStoreModule() = module {
-    singleOf(::FakePreferencesEncrypt) bind PreferencesEncrypt::class
-
     single(dataStoreNamed) {
         DataStoreFactory.create(
             storage = OkioStorage(
                 fileSystem = fileSystem,
                 producePath = { dataStoreFile },
-                serializer = Session.preferencesSerializer(get()),
+                serializer = Session.preferencesSerializer(),
             ),
             scope = TestScope(UnconfinedTestDispatcher()),
         )
@@ -62,7 +57,7 @@ internal fun testDataStoreModule() = module {
             storage = OkioStorage(
                 fileSystem = fileSystem,
                 producePath = { createFile },
-                serializer = Session.preferencesSerializer(get()),
+                serializer = Session.preferencesSerializer(),
             ),
             scope = TestScope(UnconfinedTestDispatcher()),
             corruptionHandler = corruptionHandler(createFile),

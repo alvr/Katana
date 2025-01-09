@@ -15,7 +15,7 @@ private val dataStoreModule = module {
     single(sessionDataStore) {
         dataStoreFactory(
             name = "session",
-            serializer = Session.preferencesSerializer(get()),
+            serializer = Session.preferencesSerializer(),
             create = { Session() },
         )
     }

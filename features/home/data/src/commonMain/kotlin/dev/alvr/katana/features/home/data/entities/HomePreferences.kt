@@ -10,6 +10,6 @@ internal data class HomePreferences(
     val welcomeCardVisible: Boolean = true,
 ) {
     internal companion object {
-        fun preferencesSerializer() = serializer().default(HomePreferences())
+        fun preferencesSerializer() = serializer().default { HomePreferences() }
     }
 }

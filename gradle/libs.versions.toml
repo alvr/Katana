@@ -15,7 +15,7 @@ detekt-compose = "0.4.22"
 detekt-compose2 = "1.4.0"
 haze = "1.2.0"
 kermit = "2.0.5"
-kaml = { strictly = "0.67.0" }
+kaml = "0.67.0"
 koin = "4.0.1"
 kotest = "5.9.1"
 kotest-property-datetime = "2.0.0"
@@ -39,7 +39,6 @@ okio = "3.10.2"
 sentry = "7.20.0"
 sentry-multiplatform = "0.10.0"
 sentry-plugin = "4.14.1"
-tink = "1.16.0"
 turbine = "1.2.0"
 
 [plugins]
@@ -110,11 +109,11 @@ gradle-sentry-multiplatform = { module = "io.sentry.kotlin.multiplatform.gradle:
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 
+# Kaml
+kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
+
 # Kermit
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
-
-# Kmal
-kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 
 # Koin
 koin = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -163,10 +162,6 @@ sentry = { module = "io.sentry:sentry-android-core", version.ref = "sentry" }
 sentry-apollo = { module = "io.sentry:sentry-apollo-3", version.ref = "sentry" }
 sentry-compose = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
 sentry-multiplatform = { module = "io.sentry:sentry-kotlin-multiplatform", version.ref = "sentry-multiplatform" }
-
-# Tink
-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
-tink-jvm = { module = "com.google.crypto.tink:tink", version.ref = "tink" }
 
 # Tests
 ## Kotest
@@ -234,14 +229,10 @@ data-preferences-common = [
     "datastore-okio",
     "kotlinx-serialization-protobuf",
 ]
-data-preferences-android = [
-    "tink-android",
-]
+data-preferences-android = []
 data-preferences-ios = []
 data-preferences-desktop = []
-data-preferences-jvm = [
-    "tink-jvm",
-]
+data-preferences-jvm = []
 
 data-preferences-common-ksp = []
 data-preferences-android-ksp = []
