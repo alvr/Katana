@@ -75,8 +75,8 @@ internal fun DependencyHandlerScope.detekt(provider: Provider<*>) {
 }
 
 internal fun KotlinMultiplatformExtension.kspDependencies(project: Project, catalogPrefix: String) {
-    kspDependencies(project, "", catalogPrefix)
-    kspDependencies(project, "Test", catalogPrefix)
+//    kspDependencies(project, "", catalogPrefix)
+//    kspDependencies(project, "Test", catalogPrefix)
 }
 
 internal fun BaseExtension.configureAndroid(packageName: String) {

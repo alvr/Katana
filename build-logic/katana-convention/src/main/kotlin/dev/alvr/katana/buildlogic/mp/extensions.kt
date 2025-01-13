@@ -10,11 +10,14 @@ import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.invoke
 import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinSourceSetConvention
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinWasmJsTargetDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
@@ -23,6 +26,7 @@ internal fun KotlinMultiplatformExtension.hierarchy(
     configureAndroid: KotlinAndroidTarget.() -> Unit = { },
     configureApple: KotlinNativeTarget.() -> Unit = { },
     configureDesktop: KotlinJvmTarget.() -> Unit = { },
+    configureWasmJs: KotlinWasmJsTargetDsl.() -> Unit = { },
 ) {
     applyDefaultHierarchyTemplate {
         common {
@@ -33,13 +37,10 @@ internal fun KotlinMultiplatformExtension.hierarchy(
 
             group("wasmBased") {
                 withWasmJs()
-                withWasmWasi()
             }
 
             group("webBased") {
-                withJs()
                 withWasmJs()
-                withWasmWasi()
             }
 
             group("mobile") {
@@ -52,9 +53,7 @@ internal fun KotlinMultiplatformExtension.hierarchy(
 
             group("nonMobile") {
                 withJvm()
-                withJs()
                 withWasmJs()
-                withWasmWasi()
             }
         }
     }
@@ -62,6 +61,7 @@ internal fun KotlinMultiplatformExtension.hierarchy(
     configureAndroid(configureAndroid)
     configureApple(configureApple)
     configureDesktop(configureDesktop)
+    configureWasmJs(configureWasmJs)
 
     configureKotlin()
 }
@@ -97,6 +97,31 @@ private fun KotlinMultiplatformExtension.configureDesktop(
     jvm("desktop") {
         configure()
         testRuns["test"].executionTask.configure { useJUnitPlatform() }
+    }
+}
+
+@OptIn(ExperimentalWasmDsl::class)
+private fun KotlinMultiplatformExtension.configureWasmJs(
+    configure: KotlinWasmJsTargetDsl.() -> Unit,
+) {
+    wasmJs {
+        configure()
+        moduleName = project.frameworkIdentifier
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                outputFileName = "${project.frameworkIdentifier}.js"
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        // Serve sources to debug inside browser
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
+        binaries.executable()
     }
 }
 
