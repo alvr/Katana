@@ -110,12 +110,14 @@ internal class KatanaKoverPlugin : Plugin<Project> {
 
     private fun KoverReportFiltersConfig.configure() {
         excludes {
+            androidGeneratedClasses()
             annotatedBy(
                 "androidx.compose.runtime.Composable",
                 "androidx.compose.ui.tooling.preview.Preview",
             )
             classes(classesExcludes)
             packages(packagesExcludes)
+            projects = setOf(":app")
         }
     }
 

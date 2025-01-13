@@ -2,7 +2,10 @@ package dev.alvr.katana.features.home.ui.viewmodel
 
 import dev.alvr.katana.core.ui.viewmodel.UiIntent
 
-internal sealed interface HomeIntent : UiIntent {
+internal expect sealed interface PlatformHomeIntent : HomeIntent
+
+internal interface HomeIntent : UiIntent {
+    data class SaveToken(val token: String) : HomeIntent
 
     sealed interface ForYouIntent : HomeIntent {
         data object CloseWelcomeCard : ForYouIntent

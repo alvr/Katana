@@ -12,8 +12,17 @@ import dev.alvr.katana.features.home.domain.usecases.HideWelcomeCardUseCase
 import dev.alvr.katana.features.home.domain.usecases.ObserveWelcomeCardVisibilityUseCase
 import dev.alvr.katana.features.home.ui.LOGIN_DEEP_LINK_TOKEN
 
+internal expect class PlatformHomeViewModel(
+    savedStateHandle: SavedStateHandle,
+    hideWelcomeCardUseCase: HideWelcomeCardUseCase,
+    observeActiveSessionUseCase: ObserveActiveSessionUseCase,
+    observeWelcomeCardVisibilityUseCase: ObserveWelcomeCardVisibilityUseCase,
+    saveSessionUseCase: SaveSessionUseCase,
+    saveUserIdUseCase: SaveUserIdUseCase,
+) : HomeViewModel
+
 @Stable
-internal class HomeViewModel(
+internal abstract class HomeViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val hideWelcomeCardUseCase: HideWelcomeCardUseCase,
     private val observeActiveSessionUseCase: ObserveActiveSessionUseCase,
@@ -21,6 +30,8 @@ internal class HomeViewModel(
     private val saveSessionUseCase: SaveSessionUseCase,
     private val saveUserIdUseCase: SaveUserIdUseCase,
 ) : KatanaViewModel<HomeState, HomeEffect, HomeIntent>(HomeState()) {
+
+    protected abstract fun platformHandleIntent(intent: PlatformHomeIntent)
 
     override fun init() {
         observeSession()
@@ -31,8 +42,10 @@ internal class HomeViewModel(
 
     override fun handleIntent(intent: HomeIntent) {
         when (intent) {
+            is HomeIntent.SaveToken -> handleSaveAnilistToken(intent.token)
             is HomeIntent.ForYouIntent -> handleForYouIntent(intent)
             is HomeIntent.ActivityIntent -> handleActivityIntent(intent)
+            is PlatformHomeIntent -> platformHandleIntent(intent)
         }
     }
 
@@ -58,6 +71,10 @@ internal class HomeViewModel(
         val token = savedStateHandle.remove<String>(LOGIN_DEEP_LINK_TOKEN) ?: return
         if (token.isBlank()) return
 
+        intent(HomeIntent.SaveToken(token))
+    }
+
+    private fun handleSaveAnilistToken(token: String) {
         execute(
             useCase = saveSessionUseCase,
             params = AnilistToken(token.substringBefore(TokenSeparator)),
@@ -98,8 +115,7 @@ internal class HomeViewModel(
     }
     // endregion [Initialization]
 
-    // region [ForYoy Tab]
-
+    // region [ForYou Tab]
     private fun observeWelcomeCardVisibility() {
         execute(
             useCase = observeWelcomeCardVisibilityUseCase,
@@ -145,7 +161,7 @@ internal class HomeViewModel(
         effect(HomeEffect.ForYouEffect.NavigateToUpcoming)
     }
     // endregion [ForYou events]
-    // endregion [ForYoy Tab]
+    // endregion [ForYou Tab]
 }
 
 private const val LogTag = "HomeViewModel"

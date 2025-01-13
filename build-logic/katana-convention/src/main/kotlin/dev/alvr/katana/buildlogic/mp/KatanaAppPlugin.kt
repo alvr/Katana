@@ -185,6 +185,7 @@ internal class KatanaAppPlugin : Plugin<Project> {
         tracingInstrumentation.enabled = false
         autoInstallation.enabled = false
         ignoredBuildTypes = setOf("debug")
+        telemetry = false
     }
 
     private fun ApplicationBuildType.configure(isDebug: Boolean) {

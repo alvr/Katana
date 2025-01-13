@@ -270,7 +270,7 @@ internal class HomeViewModelTest : BehaviorSpec() {
     }
 
     override suspend fun beforeEach(testCase: TestCase) {
-        viewModel = HomeViewModel(
+        viewModel = PlatformHomeViewModel(
             savedStateHandle = savedStateHandle,
             hideWelcomeCardUseCase = hideWelcomeCard,
             observeActiveSessionUseCase = observeActiveSession,
