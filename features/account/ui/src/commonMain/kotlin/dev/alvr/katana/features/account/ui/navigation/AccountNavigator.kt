@@ -1,19 +1,18 @@
 package dev.alvr.katana.features.account.ui.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import dev.alvr.katana.core.ui.navigation.KatanaNavigator
 import dev.alvr.katana.core.ui.navigation.overridden
-import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
 interface AccountNavigator : KatanaNavigator
 
-private class KatanaAccountNavigator : AccountNavigator {
+private class KatanaAccountNavigator(
+    override val navController: NavHostController,
+) : AccountNavigator {
     override fun navigateBack() {
         overridden()
     }
 }
 
-@Composable
-fun rememberKatanaAccountNavigator(): AccountNavigator = rememberKatanaNavigator { _ ->
-    KatanaAccountNavigator()
-}
+fun katanaAccountNavigator(navController: NavHostController): AccountNavigator =
+    KatanaAccountNavigator(navController)

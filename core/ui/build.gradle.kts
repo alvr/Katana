@@ -11,7 +11,6 @@ kotlin {
             implementation(libs.coil.ktor)
             implementation(libs.compose.placeholder)
             implementation(libs.compose.windowsize)
-            implementation(libs.haze.materials)
             implementation(libs.koin)
             implementation(libs.kotlinx.atomicfu)
             implementation(libs.materialkolor)

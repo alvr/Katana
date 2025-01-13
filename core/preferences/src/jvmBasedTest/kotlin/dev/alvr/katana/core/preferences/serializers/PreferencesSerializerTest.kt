@@ -1,15 +1,12 @@
 package dev.alvr.katana.core.preferences.serializers
 
 import androidx.datastore.core.CorruptionException
-import androidx.datastore.core.okio.OkioSerializer
 import io.kotest.assertions.throwables.shouldThrowExactlyUnit
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockkObject
-import io.mockk.spyk
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -25,16 +22,16 @@ import okio.Buffer
 @OptIn(ExperimentalSerializationApi::class)
 internal class PreferencesSerializerTest : FreeSpec() {
     private val serializer = PreferencesSerializer(
-            serializer = ColorSerializer,
-            defaultValue = { Color() },
-        )
+        serializer = ColorSerializer,
+        defaultValue = { Color() },
+    )
 
     init {
         "writing and reading from the buffer" {
             val source = Buffer()
 
-            serializer.writeTo(Color(0x123456), source)
-            serializer.readFrom(source) shouldBe Color(0x123456)
+            serializer.writeTo(Color(ColorValue), source)
+            serializer.readFrom(source) shouldBe Color(ColorValue)
         }
 
         "reading from an empty buffer" {
@@ -44,7 +41,7 @@ internal class PreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "reading preferences"
+            }.message shouldBe ReadingError
         }
 
         "reading an invalid data" {
@@ -55,7 +52,7 @@ internal class PreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "reading preferences"
+            }.message shouldBe ReadingError
         }
 
         "error when writing secure data" {
@@ -64,8 +61,8 @@ internal class PreferencesSerializerTest : FreeSpec() {
             every { ProtoBuf.encodeToByteArray<Any>(any(), any()) } throws SerializationException()
 
             shouldThrowExactlyUnit<CorruptionException> {
-                serializer.writeTo(Color(0x123456), source)
-            }.message shouldBe "writing preferences"
+                serializer.writeTo(Color(ColorValue), source)
+            }.message shouldBe WritingError
         }
 
         "error when reading secure data" {
@@ -75,7 +72,7 @@ internal class PreferencesSerializerTest : FreeSpec() {
 
             shouldThrowExactlyUnit<CorruptionException> {
                 serializer.readFrom(source)
-            }.message shouldBe "reading preferences"
+            }.message shouldBe ReadingError
         }
     }
 
@@ -86,6 +83,7 @@ internal class PreferencesSerializerTest : FreeSpec() {
     @Serializable(with = ColorSerializer::class)
     private data class Color(val rgb: Int = 0x000000)
 
+    @Suppress("MagicNumber")
     private object ColorSerializer : KSerializer<Color> {
         override val descriptor: SerialDescriptor =
             PrimitiveSerialDescriptor("Color", PrimitiveKind.STRING)
@@ -101,3 +99,7 @@ internal class PreferencesSerializerTest : FreeSpec() {
         }
     }
 }
+
+private const val ColorValue = 0x123456
+private const val ReadingError = "reading preferences"
+private const val WritingError = "writing preferences"
