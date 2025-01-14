@@ -12,7 +12,7 @@ import dev.alvr.katana.features.lists.domain.failures.ListsFailure
 import dev.alvr.katana.features.lists.domain.models.MediaCollection
 import dev.alvr.katana.features.lists.domain.models.entries.MediaEntry
 import dev.alvr.katana.features.lists.domain.models.lists.MediaListGroup
-import dev.alvr.katana.features.lists.domain.usecases.ObserveMangaListUseCase
+import dev.alvr.katana.features.lists.domain.usecases.ObserveAnimeListUseCase
 import dev.alvr.katana.features.lists.domain.usecases.UpdateListUseCase
 import dev.alvr.katana.features.lists.ui.entities.MediaListItem
 import dev.alvr.katana.features.lists.ui.entities.UserList
@@ -34,22 +34,22 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.coroutines.flow.flowOf
 
-private typealias MangaState = ListsState<MediaListItem.MangaListItem>
+private typealias AnimeState = ListsState<MediaListItem.AnimeListItem>
 
-internal class MangaListsViewModelTest : FreeSpec() {
-    private val observeManga = mockk<ObserveMangaListUseCase>()
+internal class AnimeListsViewModelTest : FreeSpec() {
+    private val observeAnime = mockk<ObserveAnimeListUseCase>()
     private val updateList = mockk<UpdateListUseCase>()
 
-    private lateinit var viewModel: MangaListsViewModel
+    private lateinit var viewModel: AnimeListsViewModel
 
     init {
         "initializing viewModel" - {
             "the collections are empty" - {
                 "the collections observed should are empty" {
-                    every { observeManga.flow } returns flowOf(
-                        MediaCollection<MediaEntry.Manga>(lists = emptyList()).right(),
+                    every { observeAnime.flow } returns flowOf(
+                        MediaCollection<MediaEntry.Anime>(lists = emptyList()).right(),
                     )
-                    coJustRun { observeManga() }
+                    coJustRun { observeAnime() }
 
                     viewModel.test {
                         expectState {
@@ -62,25 +62,25 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    coVerify(exactly = 1) { observeManga() }
-                    verify(exactly = 1) { observeManga.flow }
+                    coVerify(exactly = 1) { observeAnime() }
+                    verify(exactly = 1) { observeAnime.flow }
                 }
             }
 
-            "the manga collection has entries" {
-                mockMangaFlow()
+            "the anime collection has entries" {
+                mockAnimeFlow()
 
                 viewModel.test {
                     expectStateWithLists()
                     currentState.empty.shouldBeFalse()
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
             }
 
-            "the manga collection has entries AND getting the userLists" {
-                mockMangaFlow()
+            "the anime collection has entries AND getting the userLists" {
+                mockAnimeFlow()
 
                 viewModel.test {
                     expectStateWithLists()
@@ -89,18 +89,18 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     currentState.lists
                         .shouldHaveSize(2)
                         .shouldContainInOrder(
-                            UserList("MyCustomMangaList" to 1),
-                            UserList("MyCustomMangaList2" to 1),
+                            UserList("MyCustomAnimeList" to 1),
+                            UserList("MyCustomAnimeList2" to 1),
                         )
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
             }
 
             "something went wrong collecting" {
-                every { observeManga.flow } returns flowOf(ListsFailure.GetMediaCollection.left())
-                coJustRun { observeManga() }
+                every { observeAnime.flow } returns flowOf(ListsFailure.GetMediaCollection.left())
+                coJustRun { observeAnime() }
 
                 viewModel.test {
                     expectState {
@@ -111,104 +111,104 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
             }
         }
 
         "plus one" - {
             "is successful" {
-                mockMangaFlow()
+                mockAnimeFlow()
                 coEitherJustRun { updateList(any()) }
 
                 viewModel.test {
-                    expectState { currentState }
-                    intent(ListsIntent.AddPlusOne(mangaListItem1.entryId))
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(animeListItem1.entryId))
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
 
                 coVerify(exactly = 1) {
-                    updateList(mangaListItem1.copy(progress = mangaListItem1.progress.inc()).toMediaList())
+                    updateList(animeListItem1.copy(progress = animeListItem1.progress.inc()).toMediaList())
                 }
             }
 
             "is failure" {
-                mockMangaFlow()
+                mockAnimeFlow()
                 coEvery { updateList(any()) } returns ListsFailure.UpdatingList.left()
 
                 viewModel.test {
-                    expectState { currentState }
-                    intent(ListsIntent.AddPlusOne(mangaListItem1.entryId))
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(animeListItem1.entryId))
                     expectEffect(ListsEffect.AddPlusOneFailure)
                 }
 
                 coVerify(exactly = 1) {
-                    updateList(mangaListItem1.copy(progress = mangaListItem1.progress.inc()).toMediaList())
+                    updateList(animeListItem1.copy(progress = animeListItem1.progress.inc()).toMediaList())
                 }
             }
 
             "the element is not found" {
-                mockMangaFlow()
+                mockAnimeFlow()
 
                 viewModel.test {
-                    expectState { currentState }
-                    intent(ListsIntent.AddPlusOne(234))
+                    skipItems(1)
+                    intent(ListsIntent.AddPlusOne(1))
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
                 coVerify(exactly = 0) { updateList(any()) }
             }
         }
 
         "searching" - {
-            "the manga collection has entries" {
-                mockMangaFlow()
+            "the anime collection has entries" {
+                mockAnimeFlow()
 
                 viewModel.test {
                     expectStateWithLists()
                     currentState.empty.shouldBeFalse()
-                    intent(ListsIntent.SelectList("MyCustomMangaList2"))
+                    intent(ListsIntent.SelectList("MyCustomAnimeList2"))
                     expectState {
                         copy(
-                            selectedList = "MyCustomMangaList2",
-                            items = persistentListOf(mangaListItem2),
+                            selectedList = "MyCustomAnimeList2",
+                            items = persistentListOf(animeListItem2),
                         )
                     }
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
             }
 
-            "try to select a non-existent manga list" {
-                mockMangaFlow()
+            "try to select a non-existent anime list" {
+                mockAnimeFlow()
 
                 viewModel.test {
                     expectStateWithLists()
-                    intent(ListsIntent.SelectList("NonExistent Manga List"))
+                    intent(ListsIntent.SelectList("NonExistent Anime List"))
 
                     expectState {
                         empty.shouldBeTrue()
                         copy(
                             loading = false,
-                            selectedList = "NonExistent Manga List",
+                            selectedList = "NonExistent Anime List",
                             items = persistentListOf(),
                         )
                     }
                 }
 
-                coVerify(exactly = 1) { observeManga() }
-                verify(exactly = 1) { observeManga.flow }
+                coVerify(exactly = 1) { observeAnime() }
+                verify(exactly = 1) { observeAnime.flow }
             }
 
             listOf(
-                Triple("non-existent entry", true, persistentListOf<MediaListItem.MangaListItem>()),
+                Triple("non-existent entry", true, persistentListOf<MediaListItem.AnimeListItem>()),
             ).forEach { (text, empty, result) ->
                 "searching $text an entry should return $result" {
-                    mockMangaFlow()
+                    mockAnimeFlow()
 
                     viewModel.test {
                         expectStateWithLists()
@@ -223,15 +223,15 @@ internal class MangaListsViewModelTest : FreeSpec() {
                         }
                     }
 
-                    coVerify(exactly = 1) { observeManga() }
-                    verify(exactly = 1) { observeManga.flow }
+                    coVerify(exactly = 1) { observeAnime() }
+                    verify(exactly = 1) { observeAnime.flow }
                 }
             }
         }
 
         "refreshing" - {
             "is successful" {
-                mockMangaFlow()
+                mockAnimeFlow()
 
                 viewModel.test(
                     finalizationType = FinalizationType.Drop,
@@ -240,23 +240,23 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     intent(ListsIntent.Refresh)
                 }
 
-                coVerify(exactly = 2) { observeManga() }
-                verify(exactly = 2) { observeManga.flow }
+                coVerify(exactly = 2) { observeAnime() }
+                verify(exactly = 2) { observeAnime.flow }
             }
 
             "is failure" {
-                coJustRun { observeManga() }
-                every { observeManga.flow } returnsMany listOf(
+                coJustRun { observeAnime() }
+                every { observeAnime.flow } returnsMany listOf(
                     flowOf(
                         MediaCollection(
                             lists = listOf(
                                 MediaListGroup(
-                                    name = "MyCustomMangaList",
-                                    entries = listOf(mangaMediaEntry1),
+                                    name = "MyCustomAnimeList",
+                                    entries = listOf(animeMediaEntry1),
                                 ),
                                 MediaListGroup(
-                                    name = "MyCustomMangaList2",
-                                    entries = listOf(mangaMediaEntry2),
+                                    name = "MyCustomAnimeList2",
+                                    entries = listOf(animeMediaEntry2),
                                 ),
                             ),
                         ).right(),
@@ -283,42 +283,42 @@ internal class MangaListsViewModelTest : FreeSpec() {
                     expectEffect(ListsEffect.LoadingListsFailure)
                 }
 
-                coVerify(exactly = 2) { observeManga() }
-                verify(exactly = 2) { observeManga.flow }
+                coVerify(exactly = 2) { observeAnime() }
+                verify(exactly = 2) { observeAnime.flow }
             }
         }
     }
 
     override suspend fun beforeEach(testCase: TestCase) {
         clearAllMocks()
-        viewModel = MangaListsViewModel(updateList, observeManga)
+        viewModel = AnimeListsViewModel(updateList, observeAnime)
     }
 
-    private fun mockMangaFlow() {
-        every { observeManga.flow } returns flowOf(
+    private fun mockAnimeFlow() {
+        every { observeAnime.flow } returns flowOf(
             MediaCollection(
                 lists = listOf(
                     MediaListGroup(
-                        name = "MyCustomMangaList",
-                        entries = listOf(mangaMediaEntry1),
+                        name = "MyCustomAnimeList",
+                        entries = listOf(animeMediaEntry1),
                     ),
                     MediaListGroup(
-                        name = "MyCustomMangaList2",
-                        entries = listOf(mangaMediaEntry2),
+                        name = "MyCustomAnimeList2",
+                        entries = listOf(animeMediaEntry2),
                     ),
                 ),
             ).right(),
         )
 
-        coJustRun { observeManga() }
+        coJustRun { observeAnime() }
     }
 
-    private suspend fun TestKatanaBaseViewModelScope<MangaState, *, *>.expectStateWithLists() {
+    private suspend fun TestKatanaBaseViewModelScope<AnimeState, *, *>.expectStateWithLists() {
         expectState {
             copy(
                 loading = false,
-                selectedList = "MyCustomMangaList",
-                items = persistentListOf(mangaListItem1),
+                selectedList = "MyCustomAnimeList",
+                items = persistentListOf(animeListItem1),
                 error = false,
             )
         }
