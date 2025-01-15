@@ -10,6 +10,6 @@ import platform.Foundation.NSHomeDirectory
 internal actual val fileSystem: FileSystem = FileSystem.SYSTEM
 
 internal actual fun dataStorePath(file: String): Path =
-    NSHomeDirectory().toPath().resolve("datastore").resolve(file)
+    NSHomeDirectory().toPath() / "datastore" / file
 
 internal actual fun <T> replaceFile(create: (CorruptionException) -> T) = ReplaceFileCorruptionHandler(create)

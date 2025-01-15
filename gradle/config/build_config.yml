@@ -42,3 +42,25 @@ ios:
     - type: String
       name: SENTRY_DSN
       value: '"https://3dface7cff194a87af8c131c42fa60db@o387687.ingest.sentry.io/4505596155265024"'
+desktop:
+  dev:
+    - type: Boolean
+      name: DEBUG
+      value: true
+    - type: String
+      name: SENTRY_DSN
+      value: '""'
+  beta:
+    - type: Boolean
+      name: DEBUG
+      value: false
+    - type: String
+      name: SENTRY_DSN
+      value: '"https://27ee99d642c1c6ddab29afe2d8d76d45@o387687.ingest.us.sentry.io/4508595717865472"'
+  release:
+    - type: Boolean
+      name: DEBUG
+      value: false
+    - type: String
+      name: SENTRY_DSN
+      value: '"https://016692fa855cfd97cbb8d4bc7a2ca7c5@o387687.ingest.us.sentry.io/4508595717865473"'

@@ -67,7 +67,9 @@ internal fun WelcomeCard(
                     },
                 )
 
-                WelcomeCardBody()
+                WelcomeCardBody(
+                    onIntent = onIntent,
+                )
             }
         }
     }
@@ -99,7 +101,9 @@ private fun WelcomeCardHeader(
 }
 
 @Composable
-private fun WelcomeCardBody() {
+private fun WelcomeCardBody(
+    onIntent: (HomeIntent) -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -112,7 +116,10 @@ private fun WelcomeCardBody() {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             WelcomeCardRegisterButton(Modifier.weight(1f))
-            WelcomeCardLoginButton(Modifier.weight(1f))
+            WelcomeCardLoginButton(
+                modifier = Modifier.weight(1f),
+                onIntent = onIntent,
+            )
         }
     }
 }
@@ -132,15 +139,23 @@ private fun WelcomeCardRegisterButton(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun WelcomeCardLoginButton(modifier: Modifier = Modifier) {
+private fun WelcomeCardLoginButton(
+    onIntent: (HomeIntent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val uriHandler = LocalUriHandler.current
 
     Button(
         modifier = modifier,
-        onClick = { uriHandler.openUri(ANILIST_LOGIN) },
+        onClick = {
+            onLoginButtonClick(onIntent)
+            uriHandler.openUri(ANILIST_LOGIN)
+        },
     ) {
         Text(
             text = Res.string.welcome_card_login_button.value,
         )
     }
 }
+
+internal expect fun onLoginButtonClick(intent: (HomeIntent) -> Unit)

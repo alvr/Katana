@@ -54,7 +54,7 @@ jobs:
         with:
           gradle-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
       - name: Assemble Katana
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
       - name: Upload debug artifacts
         uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # pin@v4.5.0
         with:
@@ -167,7 +167,7 @@ jobs:
           SENTRY_PROJECT: ${{ vars.SENTRY_ANDROID_BETA_PROJECT }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: ./gradlew assembleBeta -Pkatana.flavor=beta --no-daemon --stacktrace
+        run: ./gradlew :app:assembleBeta -Pkatana.flavor=beta --no-daemon --stacktrace
       - name: Publish beta APK to TestApp.io
         uses: testappio/github-action@57d81be5051e10ea7c07da5730b2eaae1b9b1fa1 # pin@v5
         with:
@@ -226,7 +226,7 @@ jobs:
           SENTRY_PROJECT: ${{ vars.SENTRY_ANDROID_RELEASE_PROJECT }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        run: ./gradlew assembleRelease bundleRelease -Pkatana.flavor=release --no-daemon --stacktrace
+        run: ./gradlew :app:assembleRelease :app:bundleRelease -Pkatana.flavor=release --no-daemon --stacktrace
       - name: Publish production AAB to Google Play
         uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb # pin@v1.1.3
         with:

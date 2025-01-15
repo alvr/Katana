@@ -1,19 +1,18 @@
 package dev.alvr.katana.features.explore.ui.navigation
 
-import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
 import dev.alvr.katana.core.ui.navigation.KatanaNavigator
 import dev.alvr.katana.core.ui.navigation.overridden
-import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
 interface ExploreNavigator : KatanaNavigator
 
-private class KatanaExploreNavigator : ExploreNavigator {
+private class KatanaExploreNavigator(
+    override val navController: NavHostController,
+) : ExploreNavigator {
     override fun navigateBack() {
         overridden()
     }
 }
 
-@Composable
-fun rememberKatanaExploreNavigator(): ExploreNavigator = rememberKatanaNavigator { _ ->
-    KatanaExploreNavigator()
-}
+fun katanaExploreNavigator(navController: NavHostController): ExploreNavigator =
+    KatanaExploreNavigator(navController)

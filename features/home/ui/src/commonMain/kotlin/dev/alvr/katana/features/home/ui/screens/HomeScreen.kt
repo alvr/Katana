@@ -46,14 +46,13 @@ import dev.alvr.katana.features.home.ui.screens.foryou.ForYouTabContent
 import dev.alvr.katana.features.home.ui.viewmodel.HomeEffect
 import dev.alvr.katana.features.home.ui.viewmodel.HomeViewModel
 import kotlinx.collections.immutable.toImmutableList
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun HomeScreen(
     homeNavigator: HomeNavigator,
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
 ) {
     val tabs = remember { HomeTab.entries.toImmutableList() }
     val pagerState = rememberPagerState { HomeTab.entries.size }
@@ -72,6 +71,7 @@ internal fun HomeScreen(
             HomeEffect.ForYouEffect.NavigateToTrending -> homeNavigator.navigateToTrending()
             HomeEffect.ForYouEffect.NavigateToPopular -> homeNavigator.navigateToPopular()
             HomeEffect.ForYouEffect.NavigateToUpcoming -> homeNavigator.navigateToUpcoming()
+            else -> effect.handleHomeEffect(homeNavigator)
         }
     }
 
@@ -103,7 +103,6 @@ internal fun HomeScreen(
                 }
             }
         },
-        blurTopBar = true,
         contentWindowInsets = WindowInsets.noInsets,
     ) { paddingValues ->
         HorizontalPager(
@@ -130,3 +129,5 @@ internal fun HomeScreen(
         }
     }
 }
+
+internal expect fun HomeEffect.handleHomeEffect(homeNavigator: HomeNavigator)

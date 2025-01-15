@@ -1,14 +1,12 @@
 package dev.alvr.katana.features.home.ui.navigation
 
-import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import dev.alvr.katana.core.ui.navigation.KatanaNavigator
 import dev.alvr.katana.core.ui.navigation.overridden
-import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 
-interface HomeNavigator : KatanaNavigator {
-    val homeNavController: NavHostController
+expect sealed interface PlatformHomeNavigator : KatanaNavigator
 
+interface HomeNavigator : PlatformHomeNavigator, KatanaNavigator {
     fun navigateToAnimeLists()
     fun navigateToMangaLists()
     fun navigateToTrending()
@@ -17,7 +15,7 @@ interface HomeNavigator : KatanaNavigator {
 }
 
 private class KatanaHomeNavigator(
-    override val homeNavController: NavHostController,
+    override val navController: NavHostController,
 ) : HomeNavigator {
     override fun navigateBack() {
         overridden()
@@ -44,7 +42,5 @@ private class KatanaHomeNavigator(
     }
 }
 
-@Composable
-fun rememberKatanaHomeNavigator(): HomeNavigator = rememberKatanaNavigator { navController ->
+fun katanaHomeNavigator(navController: NavHostController): HomeNavigator =
     KatanaHomeNavigator(navController)
-}

@@ -10,10 +10,8 @@ import com.apollographql.apollo.cache.normalized.FetchPolicy
 import com.apollographql.apollo.cache.normalized.api.CacheKey
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGenerator
 import com.apollographql.apollo.cache.normalized.api.CacheKeyGeneratorContext
-import com.apollographql.apollo.cache.normalized.api.NormalizedCacheFactory
 import com.apollographql.apollo.cache.normalized.fetchPolicy
 import com.apollographql.apollo.cache.normalized.normalizedCache
-import com.apollographql.apollo.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo.interceptor.ApolloInterceptor
 import com.apollographql.apollo.network.http.HttpInterceptor
 import com.apollographql.apollo.network.http.HttpInterceptorChain
@@ -31,6 +29,8 @@ import org.koin.core.scope.Scope
 import org.koin.core.scope.ScopeCallback
 import org.koin.dsl.bind
 import org.koin.dsl.module
+
+internal expect fun apolloDatabaseModule(): Module
 
 internal expect fun ApolloClient.Builder.sentryInterceptor(): ApolloClient.Builder
 
@@ -70,10 +70,6 @@ private val apolloClientModule = module {
             )
             .build()
     }
-}
-
-private val apolloDatabaseModule: Module = module {
-    single<NormalizedCacheFactory> { SqlNormalizedCacheFactory(CACHE_DATABASE) }
 }
 
 private val apolloInterceptorsModule = module {
@@ -134,12 +130,12 @@ private val apolloInterceptorsModule = module {
 }
 
 val coreRemoteModule = module {
-    includes(apolloClientModule, apolloDatabaseModule, apolloInterceptorsModule)
+    includes(apolloClientModule, apolloDatabaseModule(), apolloInterceptorsModule)
 }
 
 private const val ANILIST_BASE_URL = "https://graphql.anilist.co"
 
-private const val CACHE_DATABASE = "katana_data.db"
+internal const val CACHE_DATABASE = "katana_data.db"
 private const val CACHE_ID_KEY = "id"
 private const val CACHE_TYPE_KEY = "__typename"
 

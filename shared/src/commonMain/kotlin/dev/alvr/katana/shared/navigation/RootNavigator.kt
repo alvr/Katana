@@ -1,25 +1,31 @@
 package dev.alvr.katana.shared.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import co.touchlab.kermit.Logger
+import dev.alvr.katana.core.common.KatanaBuildConfig
 import dev.alvr.katana.core.ui.navigation.KatanaDestination
-import dev.alvr.katana.core.ui.navigation.rememberKatanaNavigator
 import dev.alvr.katana.core.ui.utils.hasRoute
 import dev.alvr.katana.features.account.ui.navigation.AccountNavigator
-import dev.alvr.katana.features.account.ui.navigation.rememberKatanaAccountNavigator
+import dev.alvr.katana.features.account.ui.navigation.katanaAccountNavigator
 import dev.alvr.katana.features.explore.ui.navigation.ExploreDestination
 import dev.alvr.katana.features.explore.ui.navigation.ExploreNavigator
-import dev.alvr.katana.features.explore.ui.navigation.rememberKatanaExploreNavigator
+import dev.alvr.katana.features.explore.ui.navigation.katanaExploreNavigator
 import dev.alvr.katana.features.home.ui.navigation.HomeDestination
 import dev.alvr.katana.features.home.ui.navigation.HomeNavigator
-import dev.alvr.katana.features.home.ui.navigation.rememberKatanaHomeNavigator
+import dev.alvr.katana.features.home.ui.navigation.katanaHomeNavigator
 import dev.alvr.katana.features.lists.ui.navigation.AnimeListsDestination
 import dev.alvr.katana.features.lists.ui.navigation.AnimeListsNavigator
 import dev.alvr.katana.features.lists.ui.navigation.MangaListsDestination
 import dev.alvr.katana.features.lists.ui.navigation.MangaListsNavigator
-import dev.alvr.katana.features.lists.ui.navigation.rememberKatanaAnimeListsNavigator
-import dev.alvr.katana.features.lists.ui.navigation.rememberKatanaMangaListsNavigator
+import dev.alvr.katana.features.lists.ui.navigation.katanaAnimeListsNavigator
+import dev.alvr.katana.features.lists.ui.navigation.katanaMangaListsNavigator
 
 internal sealed interface RootNavigator :
     HomeNavigator,
@@ -27,7 +33,6 @@ internal sealed interface RootNavigator :
     MangaListsNavigator,
     ExploreNavigator,
     AccountNavigator {
-    val navController: NavHostController
 
     fun navigateToHome()
 
@@ -99,20 +104,43 @@ private class KatanaRootNavigator(
 
 @Composable
 internal fun rememberKatanaNavigator(): RootNavigator {
-    val homeNavigator = rememberKatanaHomeNavigator()
-    val animeListsNavigator = rememberKatanaAnimeListsNavigator()
-    val mangaListsNavigator = rememberKatanaMangaListsNavigator()
-    val exploreNavigator = rememberKatanaExploreNavigator()
-    val accountNavigator = rememberKatanaAccountNavigator()
+    val navController = rememberNavController().sentryObserver().loggerObserver()
 
-    return rememberKatanaNavigator { navController ->
+    return remember {
         KatanaRootNavigator(
             navController = navController,
-            homeNavigator = homeNavigator,
-            animeListsNavigator = animeListsNavigator,
-            mangaListsNavigator = mangaListsNavigator,
-            exploreNavigator = exploreNavigator,
-            accountNavigator = accountNavigator,
+            homeNavigator = katanaHomeNavigator(navController),
+            animeListsNavigator = katanaAnimeListsNavigator(navController),
+            mangaListsNavigator = katanaMangaListsNavigator(navController),
+            exploreNavigator = katanaExploreNavigator(navController),
+            accountNavigator = katanaAccountNavigator(navController),
         )
     }
 }
+
+@Composable
+internal expect fun NavHostController.sentryObserver(): NavHostController
+
+@Composable
+private fun NavHostController.loggerObserver() = apply {
+    if (KatanaBuildConfig.DEBUG) {
+        DisposableEffect(this, LocalLifecycleOwner.current.lifecycle) {
+            val listener = NavController.OnDestinationChangedListener { navController, destination, args ->
+                Logger.d(LogTag) {
+                    buildString {
+                        append("Navigating to route ${destination.route}")
+
+                        navController.previousBackStackEntry?.destination?.route?.let { previousRoute ->
+                            append(" from $previousRoute")
+                        }
+                    }
+                }
+            }
+
+            addOnDestinationChangedListener(listener)
+            onDispose { removeOnDestinationChangedListener(listener) }
+        }
+    }
+}
+
+private const val LogTag = "KatanaNavigator"

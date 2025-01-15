@@ -15,7 +15,6 @@ ignore:
 
   # Classes
   ## Common
-  - '**/KatanaApp*.kt'
   - '**/KatanaBuildConfig.kt'
 
   ## Android
@@ -35,3 +34,6 @@ ignore:
   - '**/ui/navigation/**'
   - '**/ui/resources/**'
   - '**/ui/screens/**'
+
+  # Projects
+  - 'app/src/**'

@@ -14,9 +14,9 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        register("app-android") {
-            id = "katana.app.android"
-            implementationClass = "dev.alvr.katana.buildlogic.app.KatanaAppAndroidPlugin"
+        register("app") {
+            id = "katana.app"
+            implementationClass = "dev.alvr.katana.buildlogic.mp.KatanaAppPlugin"
         }
         register("common") {
             id = "katana.common"
@@ -36,7 +36,7 @@ gradlePlugin {
         }
         register("multiplatform-compose") {
             id = "katana.multiplatform.compose"
-            implementationClass = "dev.alvr.katana.buildlogic.mp.mobile.ui.KatanaMultiplatformComposePlugin"
+            implementationClass = "dev.alvr.katana.buildlogic.mp.ui.KatanaMultiplatformComposePlugin"
         }
         register("multiplatform-core") {
             id = "katana.multiplatform.core"
@@ -44,15 +44,11 @@ gradlePlugin {
         }
         register("multiplatform-data-preferences") {
             id = "katana.multiplatform.data.preferences"
-            implementationClass = "dev.alvr.katana.buildlogic.mp.mobile.data.KatanaMultiplatformDataPreferencesPlugin"
+            implementationClass = "dev.alvr.katana.buildlogic.mp.data.KatanaMultiplatformDataPreferencesPlugin"
         }
         register("multiplatform-data-remote") {
             id = "katana.multiplatform.data.remote"
-            implementationClass = "dev.alvr.katana.buildlogic.mp.mobile.data.KatanaMultiplatformDataRemotePlugin"
-        }
-        register("multiplatform-mobile") {
-            id = "katana.multiplatform.mobile"
-            implementationClass = "dev.alvr.katana.buildlogic.mp.mobile.KatanaMultiplatformMobilePlugin"
+            implementationClass = "dev.alvr.katana.buildlogic.mp.data.KatanaMultiplatformDataRemotePlugin"
         }
         register("multiplatform-tests") {
             id = "katana.multiplatform.tests"
@@ -60,7 +56,7 @@ gradlePlugin {
         }
         register("multiplatform-ui") {
             id = "katana.multiplatform.ui"
-            implementationClass = "dev.alvr.katana.buildlogic.mp.mobile.ui.KatanaMultiplatformUiPlugin"
+            implementationClass = "dev.alvr.katana.buildlogic.mp.ui.KatanaMultiplatformUiPlugin"
         }
     }
 }
