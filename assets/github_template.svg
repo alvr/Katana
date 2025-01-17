@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1280"
+   height="640"
+   viewBox="0 0 338.66666 169.33334"
+   version="1.1"
+   id="svg1030"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="github_template.svg"
+   inkscape:export-filename="katana_logo.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1032"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="pt"
+     showgrid="false"
+     units="px"
+     inkscape:zoom="0.5"
+     inkscape:cx="589"
+     inkscape:cy="573"
+     inkscape:window-width="2560"
+     inkscape:window-height="1369"
+     inkscape:window-x="1912"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1"
+     showguides="true">
+    <sodipodi:guide
+       position="-123.47222,155.22222"
+       orientation="0,1"
+       id="guide2"
+       inkscape:locked="false"
+       inkscape:label="Top Spacing"
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="-123.47222,14.111111"
+       orientation="0,1"
+       id="guide3"
+       inkscape:locked="false"
+       inkscape:label="Bottom Spacing"
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="14.111111,186.97222"
+       orientation="-1,0"
+       id="guide4"
+       inkscape:locked="false"
+       inkscape:label="Left Spacing"
+       inkscape:color="rgb(0,134,229)" />
+    <sodipodi:guide
+       position="324.55556,186.97222"
+       orientation="-1,0"
+       id="guide6"
+       inkscape:locked="false"
+       inkscape:label="End Spacing"
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1027">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient6344">
+      <stop
+         style="stop-color:#333941;stop-opacity:1"
+         offset="0"
+         id="stop6340" />
+      <stop
+         style="stop-color:#222831;stop-opacity:1"
+         offset="1"
+         id="stop6342" />
+    </linearGradient>
+    <rect
+       x="80.950935"
+       y="110.63295"
+       width="199.67899"
+       height="151.10841"
+       id="rect2765" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6344"
+       id="linearGradient1"
+       gradientUnits="userSpaceOnUse"
+       x1="0.21339925"
+       y1="0.21339773"
+       x2="528.95325"
+       y2="135.25327"
+       gradientTransform="matrix(0.63979443,0,0,1.2511231,0.05232686,-0.07709629)" />
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Capa 2"
+     style="display:inline">
+    <rect
+       style="fill:url(#linearGradient1);fill-opacity:1;stroke:#3282b8;stroke-width:0.382;stroke-dasharray:none;stroke-opacity:0.2"
+       id="rect6228"
+       width="338.285"
+       height="168.95149"
+       x="0.18885851"
+       y="0.18989052" />
+  </g>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:50.8px;line-height:1.25;font-family:'Rampart One';-inkscape-font-specification:'Rampart One';fill:#bbe1fa;fill-opacity:1;stroke:#3282b8;stroke-width:2.657;stroke-dasharray:none;stroke-opacity:0.2"
+       x="43.298634"
+       y="71.003525"
+       id="text4927"
+       inkscape:transform-center-x="-73.289586"
+       inkscape:transform-center-y="-26.722918"><tspan
+         sodipodi:role="line"
+         id="tspan4925"
+         style="font-size:50.8px;fill:#bbe1fa;fill-opacity:1;stroke:#3282b8;stroke-width:2.657;stroke-dasharray:none;stroke-opacity:0.2"
+         x="43.298634"
+         y="71.003525">刀 Katana</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;line-height:1.25;font-family:'Barlow Semi Condensed';-inkscape-font-specification:'Barlow Semi Condensed, ';fill:#bbe1fa;fill-opacity:1;stroke:#3282b8;stroke-width:2.657;stroke-dasharray:none;stroke-opacity:0.2"
+       x="169.31641"
+       y="115.33109"
+       id="text8"
+       inkscape:transform-center-x="-73.289586"
+       inkscape:transform-center-y="-26.722918"><tspan
+         sodipodi:role="line"
+         id="tspan8"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;font-family:'Barlow Semi Condensed';-inkscape-font-specification:'Barlow Semi Condensed, ';text-align:center;text-anchor:middle;fill:#bbe1fa;fill-opacity:1;stroke:#3282b8;stroke-width:2.657;stroke-dasharray:none;stroke-opacity:0.2"
+         x="169.31641"
+         y="115.33109">Compose Multiplatform client for Anilist.</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.9333px;font-family:'Barlow Semi Condensed';-inkscape-font-specification:'Barlow Semi Condensed, ';text-align:center;text-anchor:middle;fill:#bbe1fa;fill-opacity:1;stroke:#3282b8;stroke-width:2.657;stroke-dasharray:none;stroke-opacity:0.2"
+         x="169.31641"
+         y="136.49771"
+         id="tspan9">100% Kotlin &amp; Compose.</tspan></text>
+  </g>
+</svg>
