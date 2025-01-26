@@ -19,14 +19,14 @@ internal class HomePreferencesDataStoreTest : FreeSpec(), KoinTest {
     private val corruptedDataStore by inject<DataStore<HomePreferences>>(corruptedDataStoreNamed)
 
     init {
-        "initial session should equal to the Session class" {
+        "!initial home preferences should equal to the HomePreferences class" {
             dataStore.data.test {
                 awaitItem() shouldBeEqual HomePreferences()
                 ensureAllEventsConsumed()
             }
         }
 
-        "saving a session should return the same values" {
+        "!saving a home preferences should return the same values" {
             with(dataStore) {
                 updateData { p ->
                     p.copy(
@@ -43,7 +43,7 @@ internal class HomePreferencesDataStoreTest : FreeSpec(), KoinTest {
             }
         }
 
-        "corrupted dataStore should recreate again the file with initial values" {
+        "!corrupted dataStore should recreate again the file with initial values" {
             corruptedDataStore.data.test {
                 awaitItem() shouldBeEqual HomePreferences(welcomeCardVisible = false)
                 ensureAllEventsConsumed()

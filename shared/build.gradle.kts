@@ -31,8 +31,6 @@ kotlin {
             implementation(projects.features.lists.data)
             implementation(projects.features.lists.domain)
             implementation(projects.features.lists.ui)
-
-            implementation(libs.sentry.multiplatform)
         }
 
         commonTest.dependencies {

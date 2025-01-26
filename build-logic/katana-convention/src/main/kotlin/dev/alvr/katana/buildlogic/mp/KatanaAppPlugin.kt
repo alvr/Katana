@@ -7,7 +7,6 @@ import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import dev.alvr.katana.buildlogic.KatanaConfiguration
 import dev.alvr.katana.buildlogic.catalogBundle
 import dev.alvr.katana.buildlogic.configureAndroid
-import io.sentry.android.gradle.extensions.SentryPluginExtension
 import java.io.FileInputStream
 import java.time.Year
 import java.util.Properties
@@ -32,7 +31,6 @@ internal class KatanaAppPlugin : Plugin<Project> {
         apply(plugin = "com.android.application")
         commonConfiguration()
         apply(plugin = "katana.multiplatform.compose")
-        apply(plugin = "io.sentry.android.gradle")
 
         with(extensions) {
             configure<ComposeExtension> {
@@ -41,7 +39,6 @@ internal class KatanaAppPlugin : Plugin<Project> {
                     .configureDesktop(project)
             }
             configure<KotlinMultiplatformExtension> { configureMultiplatform() }
-            configure<SentryPluginExtension> { configureSentry() }
 
             configure<BaseAppModuleExtension> { configureAndroid(project) }
         }
@@ -174,18 +171,6 @@ internal class KatanaAppPlugin : Plugin<Project> {
 
         sourceSets["main"].manifest.srcFile("$AndroidDir/AndroidManifest.xml")
         sourceSets["main"].res.srcDirs("$AndroidDir/res")
-    }
-
-    private fun SentryPluginExtension.configureSentry() {
-        includeProguardMapping = true
-        autoUploadProguardMapping = System.getenv("CI").toBoolean()
-        dexguardEnabled = false
-        uploadNativeSymbols = false
-        includeNativeSources = false
-        tracingInstrumentation.enabled = false
-        autoInstallation.enabled = false
-        ignoredBuildTypes = setOf("debug")
-        telemetry = false
     }
 
     private fun ApplicationBuildType.configure(isDebug: Boolean) {

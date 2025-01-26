@@ -16,10 +16,6 @@ kotlin {
             implementation(libs.materialkolor)
         }
 
-        androidMain.dependencies {
-            implementation(libs.sentry.compose)
-        }
-
         commonTest.dependencies { implementation(projects.core.tests) }
     }
 }

@@ -6,10 +6,8 @@ import dev.alvr.katana.buildlogic.catalogBundle
 import dev.alvr.katana.buildlogic.commonExtensions
 import dev.alvr.katana.buildlogic.commonTasks
 import dev.alvr.katana.buildlogic.kspDependencies
-import io.sentry.kotlin.multiplatform.gradle.SentryExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -20,12 +18,10 @@ internal fun Project.commonConfiguration() {
     apply(plugin = "io.kotest.multiplatform")
     apply(plugin = "org.jetbrains.kotlinx.kover")
     apply(plugin = "dev.mokkery")
-    apply(plugin = "io.sentry.kotlin.multiplatform.gradle")
 
     with(extensions) {
         commonExtensions()
         configure<KotlinMultiplatformExtension> { configureMultiplatform(project) }
-        configure<SentryExtension> { configureSentryMultiplatform() }
     }
 
     tasks.commonTasks()
@@ -72,10 +68,4 @@ private fun KotlinMultiplatformExtension.configureSourceSets() {
             implementation(catalogBundle("core-jvm-test"))
         }
     }
-}
-
-private fun SentryExtension.configureSentryMultiplatform() {
-    autoInstall.enabled = false
-    autoInstall.commonMain.enabled = false
-    autoInstall.cocoapods.enabled = false
 }

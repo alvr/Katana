@@ -45,13 +45,6 @@
             ],
         },
         {
-            "groupName": "Sentry",
-            "groupSlug": "sentry",
-            "matchPackagePrefixes": [
-                "io.sentry",
-            ],
-        },
-        {
             "groupName": "Apollo",
             "groupSlug": "apollo",
             "matchPackagePatterns": [
