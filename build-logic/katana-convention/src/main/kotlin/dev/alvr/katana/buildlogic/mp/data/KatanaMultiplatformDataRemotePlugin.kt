@@ -72,7 +72,6 @@ internal class KatanaMultiplatformDataRemotePlugin : Plugin<Project> {
         }
     }
 
-    @OptIn(ApolloExperimental::class)
     private fun ApolloExtension.configureApollo(project: Project) {
         service("anilist") {
             decapitalizeFields = true

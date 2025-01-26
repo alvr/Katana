@@ -7,9 +7,8 @@ group = "dev.alvr.katana.buildlogic"
 version = extra["katana.plugins.version"].toString()
 
 dependencies {
+    implementation(libs.bundles.build.config)
     implementation(libs.bundles.gradle)
-    implementation(libs.kotlinpoet)
-    implementation(libs.kaml)
 }
 
 gradlePlugin {

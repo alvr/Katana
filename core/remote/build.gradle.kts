@@ -9,10 +9,6 @@ kotlin {
             implementation(projects.common.session.domain)
         }
 
-        androidMain.dependencies {
-            implementation(libs.sentry.apollo)
-        }
-
         commonTest.dependencies { implementation(projects.core.tests) }
     }
 }

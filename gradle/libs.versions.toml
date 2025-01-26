@@ -35,9 +35,6 @@ mokkery = "2.6.1"
 navigation = "2.8.0-alpha12"
 navigation-material = "1.7.0-beta02"
 okio = "3.10.2"
-sentry = "8.0.0"
-sentry-multiplatform = "0.10.0"
-sentry-plugin = "4.14.1"
 turbine = "1.2.0"
 
 [plugins]
@@ -52,7 +49,6 @@ kotlin = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
-sentry = { id = "io.sentry.android.gradle", version.ref = "sentry-plugin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 [libraries]
@@ -101,8 +97,6 @@ gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 gradle-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 gradle-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 gradle-mokkery = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
-gradle-sentry = { module = "io.sentry:sentry-android-gradle-plugin", version.ref = "sentry-plugin" }
-gradle-sentry-multiplatform = { module = "io.sentry.kotlin.multiplatform.gradle:io.sentry.kotlin.multiplatform.gradle.gradle.plugin", version.ref = "sentry-multiplatform" }
 
 # Kaml
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
@@ -151,12 +145,6 @@ navigation-material = { module = "org.jetbrains.compose.material:material-naviga
 # Okio
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 okio-fakefilesystem = { module = "com.squareup.okio:okio-fakefilesystem", version.ref = "okio" }
-
-# Sentry
-sentry = { module = "io.sentry:sentry-android-core", version.ref = "sentry" }
-sentry-apollo = { module = "io.sentry:sentry-apollo-3", version.ref = "sentry" }
-sentry-compose = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
-sentry-multiplatform = { module = "io.sentry:sentry-kotlin-multiplatform", version.ref = "sentry-multiplatform" }
 
 # Tests
 ## Kotest
@@ -323,10 +311,14 @@ app-android = [
     "androidx-activity",
     "androidx-splashscreen",
     "coil",
-    "sentry",
 ]
 app-ios = []
 app-desktop = []
+
+build-config = [
+    "kaml",
+    "kotlinpoet",
+]
 
 gradle = [
     "gradle-android",
@@ -339,6 +331,4 @@ gradle = [
     "gradle-kover",
     "gradle-ksp",
     "gradle-mokkery",
-    "gradle-sentry",
-    "gradle-sentry-multiplatform",
 ]
